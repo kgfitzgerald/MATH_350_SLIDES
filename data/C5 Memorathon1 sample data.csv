@@ -1,0 +1,25 @@
+studentID,color,Time,sound,buttons,maxLevelCompleted,itemMissed,Buttons Correct
+1988,BandW,46,Sound,Four,7,4,80
+1988,BandW,43,Quiet,Four,7,4,80
+1988,Color,14,Quiet,Four,4,0,20
+1988,Color,34,Sound,Four,6,3,53
+1988,Color,30,Sound,Four,6,2,54
+1988,BandW,37,Quiet,Four,7,1,83
+1988,BandW,11,Sound,Four,4,0,20
+1988,Color,30,Quiet,Four,6,2,54
+4444,Color,51,Quiet,Four,8,0,120
+4444,Color,27,Quiet,Four,6,1,55
+4444,BandW,86,Quiet,Four,10,6,214
+4444,Color,35,Sound,Four,6,4,52
+4444,BandW,45,Sound,Four,7,6,78
+4444,Color,51,Sound,Four,7,6,78
+4444,BandW,78,Sound,Four,9,4,161
+4444,BandW,67,Quiet,Four,8,7,113
+111,BandW,76,Sound,Four,8,6,114
+111,Color,48,Quiet,Four,8,1,119
+111,Color,41,Sound,Four,7,3,81
+111,Color,39,Sound,Four,7,0,84
+111,BandW,51,Sound,Four,8,5,115
+111,BandW,11,Quiet,Four,4,1,19
+111,Color,17,Quiet,Four,5,2,33
+111,BandW,29,Quiet,Four,6,4,52

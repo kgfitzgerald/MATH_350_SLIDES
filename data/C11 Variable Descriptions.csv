@@ -1,0 +1,4 @@
+Chapter,Data Set,Variable Name,Description
+11,MMs,Num B O,running total number of M&Ms in the sample
+11,MMs,Total,running total number of Brown and Orange M&Ms in the sample
+11,MMs,Proportion,running proportion of M&Ms in the sample

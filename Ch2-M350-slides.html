@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Welcome to MATH 350!</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Dr. Katie Fitzgerald" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/all.min.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.min.css" rel="stylesheet" />
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <link rel="stylesheet" href="boxes.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+layout: true
+  
+
+
+---
+
+
+
+class: middle, center
+
+# Chapter 2: Making connections: The Two-Sample t-Test, Regression, ANOVA
+
+---
+
+# AE-CH2
+
++ Create MATH_350 Project in RStudio
++ Download Github starter files
++ Run code in install_packages.R
++ Open AE-CH2.qmd
+
+---
+
+# Case study: Distractors &amp; Game Performance
+
++ Psychology research: slower to identify ink colors when ink was used to spell a different color
+    + `\(\color{#990000}{\textbf{yellow}}\)`             
+    + `\(\color{#990000}{\textbf{red}}\)`
+    
+--
+
++ The *automatized behavior* of reading interfered with the task of identifying ink color, slowed reaction time
++ "Stroop effect" (John Stroop, 1935)
+
+--
+
++ Research question: Do students perform differently when distracting colors are incorporated into a computerized game?
+
+--
+
+&lt;img src="images/shapesplosion.png" width="30%" style="display: block; margin: auto;" /&gt;
+---
+
+# Experimental set-up:
+
++ 40 students randomly sampled
++ 20 randomly assigned to no color distractor, 20 to color distractor version of the game
++ Both groups see picture &amp; have rules clearly explained before playing
++ Play in same area with similar background noise to control for other possible distractions
++ Response variable: time in seconds from "start" to when they complete the game
+
+--
+
+
+```r
+games1 &lt;- read_csv("./data/C2 Games1.csv") %&gt;% 
+  clean_names()
+```
+
+
+```r
+glimpse(games1)
+```
+
+```
+## Rows: 40
+## Columns: 3
+## $ student_id &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 1…
+## $ type       &lt;chr&gt; "Standard", "Color", "Color", "Standard", "S…
+## $ time       &lt;dbl&gt; 38, 36, 42, 35, 32, 37, 38, 38, 37, 36, 35, …
+```
+
+---
+
+# AE-CH2 #1-4
+
+---
+
+# Three Analysis Approaches
+
+1. Econ major suggests regression: y = completion time; is x = distractor a useful predictor variable in the model?
+2. Biology major suggests ANOVA: does factor x = distractor explain significant variation in y? 
+3. Third student suggests two-sample t-test
+
+Which is correct???
+
+---
+
+# Statistical models
+
+`$$\text{observed value = mean response + random error}$$`
+
+Statistical model describes each observed value in a data set as the sum of a mean response for some subgroup of interest (often called a group mean) and a random error term. The mean response is fixed for each group, while the random error term is used to model the uncertainty of each individual outcome. The random error term for each individual outcome cannot be predicted, but in the long run there is a regular pattern that can be modeled with a distribution (such as the normal distribution).
+
+**Key question: do the two game types have different average completion types?**
+
+---
+
+# Two-sample t-test
+
+Start by assuming two group means are equal:
+
+`$$H_0: \mu_1 = \mu_2$$`
+
+Model for color distractor group:
+
+`$$y_{1j} = \mu_1 + \epsilon_{1j}, \ \ \ j = 1, 2, \dots n_1$$`
+
+Model for standard group:
+
+`$$y_{2j} = \mu_2 + \epsilon_{2j}, \ \ \ j = 1, 2, \dots n_1$$`
+--
+
+What's random and what's fixed (a.k.a. constant)? For random components: what's the assumed distribution?
+
+--
+
+More succinctly:
+
+`$$y_{ij} = \mu_i + \epsilon_{ij}, \ \ \ \text{for } i = 1,2; \ j = 1, 2, \dots n_i, \text{where } \epsilon_{ij} \sim N(0, \sigma^2)$$`
+
+---
+
+# Two-sample t-test
+
+`$$y_{ij} = \mu_i + \epsilon_{ij}, \ \ \ \text{for } i = 1,2; \ j = 1, 2, \dots n_i, \text{where } \epsilon_{ij} \sim N(0, \sigma^2)$$`
+
+Mathematical note: This implies `\(y_{ij}\sim N(\mu_i, \sigma^2)\)`. Why? 
+
+--
+
+Note : Equal variance assumption! (homoscedasticity) Why? 
+
+--
+
+Recall : parameters vs. statistics
+
+Recall : residuals are used to estimate random error terms
+
+`$$\epsilon_{1,12} = y_{1,12} - \mu_1$$` estimated by
+`$$e_{1,12} = y_{1,12} - \overline{y}_1$$`
+
+---
+
+# Model Assumptions of the two-sample t-test
+
++ Constant parameters ($\mu_1, \mu_2, \sigma^2$ not changing throughout the study)
++ Additive terms: response = parameter + error (not `\(y_{ij} = \mu_i \times \epsilon_{ij}\)`, for example)
++ `\(\epsilon_{ij} \overset{\text{iid}}{\sim} N(0, \sigma^2)\)`
+    + errors are independent and identically distributed
+    + error follow a normal distribution
+    + errors have a mean of 0 (i.e. average of observations should be close to true mean. That is, there is no systematic bias in the error terms)
+    + population variance is same for both groups (color and standard)
+
+Can use residual plots to test these assumptions! 
+
+More complex models and/or data transformations can help us if additive assumption is violated. 
+
+What does iid mean in context? When might it be violated?
+
+What does equal variance mean in context? When might it be violated?
+
+---
+
+# Check model assumptions (AE-CH2 #7 - 9)
+
++ Residuals roughly normal?
+
++ Informal test for equal variances:
+
+`$$\frac{max(s_1, s_2)}{min(s_1, s_2)} &lt; 2$$`
+or equivalently
+
+`$$\frac{max(s_1^2, s_2^2)}{min(s_1^2, s_2^2)} &lt; 4$$`
+---
+
+# Regression approach (AE-CH2 #11 - 13)
+
+`$$y_i = \beta_0 + \beta_1x_i + \epsilon_i, \ \ \text{for } i = 1, 2, \dots n, \text{ where } \epsilon_i \sim N(0, \sigma^2)$$`
+
++ Here, mean response = `\(\beta_0 + \beta_1x_i\)`
+
++ `\(x_i\)` is a *dummy variable* or *indicator variable* for game type
+
+--
+
+NOTICE:
+
+$$\mu_1 = \beta_0 + \beta_1(1) = $$
+$$\mu_2 = \beta_0 + \beta_1(0) = $$
+$$\mu_1 - \mu_2 = $$
+--
+
+KEY CONCEPT: Testing the null hypothesis `\(H_0: \beta_1 = 0\)` for a regression model with one categorical predictor is equivalent to testing the two-sample t-test hypothesis `\(H_0: \mu_1 - \mu_2 = 0\)` (when using equal variance assumption). 
+
+---
+
+# Model assumptions for regression (#14 - 15)
+
++ Parameters `\(\beta_0, \beta_1, \sigma^2\)` constant
++ `\(\epsilon_{ij} \overset{\text{iid}}{\sim} N(0, \sigma^2)\)`
+    + errors are independent and identically distributed
+    + error follow a normal distribution
+    + errors have a mean of 0 (i.e. average of observations should be close to true mean. That is, there is no systematic bias in the error terms)
+    + error terms come from one population with variance `\(\sigma^2\)` (i.e. variance isn't changing as x changes)
+    
+Recall: 
+
++ `\(y_i\)` = observed response
++ `\(\hat{y}_i = b_0 + b_1x_i\)` = estimated mean response, so
++ residual = `\(e_i = y_i - \hat{y}_i\)`
+    
+Check: histogram (normality) and scatterplot (constant variance) of residuals
+
+---
+
+# ANOVA approach
+
+ANalysis Of VAriance
+
+Explanatory variable also called **factor**; here factor has 2 levels
+
+`$$y_{ij} = \mu + \alpha_i + \epsilon_{ij}, \ \ for i = 1,2, \ \text{ and } j = 1, 2, \dots n_i, \ \ \text{ where } \epsilon_{ij} \overset{\text{iid}}{\sim} N(0, \sigma^2)$$`
+
++ `\(\mu\)` = grand mean
++ `\(\alpha_1\)` = effect of color distractor group
++ `\(\alpha_2\)` = effect of standard group
+
+Different notation, but mean response for ANOVA model is mathematically equivalent to mean response in the t-test
+
+$$\mu_1 = $$
+$$\mu_2 = $$
+---
+
+## ANOVA notation
+
+AE-CH2 #16 - 18
+
+Estimate notation:
+
++ `\(\overline{y}_{\cdot\cdot}\)` = grand mean (average over all observations) 
++ `\(\overline{y}_{1\cdot}\)` = average for color distractor observations
++ `\(\overline{y}_{2\cdot}\)` = average for standard observations
++ `\(\hat{\alpha}_1 = \overline{y}_{1\cdot} - \overline{y}_{\cdot\cdot}\)`
++ `\(\hat{\alpha}_2 = \overline{y}_{2\cdot} - \overline{y}_{\cdot\cdot}\)`
+
+Residuals:
+
+`$$\begin{aligned}
+e_{ij} &amp;= \text{observed - (grand mean + effect of group i)} \\
+&amp;= y_{ij} - (\overline{y}_{\cdot\cdot} + \hat{\alpha}_i) \\
+&amp;= y_{ij} - [\overline{y}_{\cdot\cdot} + (\overline{y}_{i\cdot} - \overline{y}_{\cdot\cdot})]\\
+&amp;= y_{ij} - \overline{y}_{i\cdot}
+\end{aligned}$$`
+
+KEY CONCEPT: Since the mean responses are mathematically equivalent for the t-test, regression, and ANOVA, the residual values will be identical for all three models. 
+
+AE-CH2 #19 - 20, AND: compute residuals for regression model &amp; ANOVA model to compare
+
+---
+
+# ANOVA assumptions
+
+Identical to t-test and regression assumptions
+
++ Parameters `\(\mu, \alpha_i, \sigma^2\)` constant
++ Each term in ANOVA is additive
++ Errors are iid
++ Errors follow normal distribution
++ Errors have mean 0
++ Population variances within each factor are equal
+
+These are known as the six *Fisher assumptions*, named after Ronald Fisher, who developed ANOVA and the corresponding F-test.
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+<style>
+.logo {
+  background-image: url(Azusa-Pacific-University-Logo.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  width: 350px;
+  height: 200px;
+  z-index: 0;
+}
+</style>
+
+<script>
+document
+  .querySelectorAll(
+    '.remark-slide-content' +
+    ':not(.title-slide)' +
+    // add additional classes to exclude here, e.g.
+    // ':not(.inverse)' +
+    ':not(.hide-logo)'
+  )
+  .forEach(el => {
+    el.innerHTML += '<div class="logo"></div>';
+  });
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

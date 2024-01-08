@@ -1,0 +1,97 @@
+Chapter,Data Set,Variable Name,Description
+3,2008Movies,Movie,The name of the movie
+3,2008Movies,RottenTomatoesScore,The percentage of positive reviews from Approved Tomotameter Critics for a certain movie. Shown on the website as TOMATOMETER 
+3,2008Movies,ReleaseDate,The first date on which each movie (not DVD) was released in U.S. theaters. If the movie has an exlusive released day and then expanded to wide release. Here we use the exclusive date. 
+3,2008Movies,CreativeType,One criteria that the-numbers uses to identify a movie.
+3,2008Movies,DistributedBy,The company that distributed this film.
+3,2008Movies,StorySource,One criteria that the-numbers uses to identify a movie.
+3,2008Movies,Budget,Estimated budget (estimated by imdb)
+3,2008Movies,BoxOfficeGross,The most recently updated amount of box office in the USA as shown on imdb (as of April 2010)
+3,2008Movies,OpeningWeekendGross,Gross within the opening week
+3,2008Movies,Genre,"The genre of each movie (Action-Adventure, Animation, Biography, Crime, Documentary, Drama, Family, Horror, Musical, Mystery, Romance, Romantic-Comedy)"
+3,2008Movies,MPAA,Provided by MPAA
+3,2008Movies,RunTime,The length of each movie in minutes
+3,2008Movies,NumberScreensOpeningWeekend,Number of Screens on Opening Weekend
+3,2008Movies,GrossperScreenOpenWeekend,Gross per Screen (Opening Weekend)
+3,2008Movies,IMDB score,average public rating (out of 10)
+3,2008Movies,AcademyAwardNominations,amount of acting Academy Award nominations of entire cast in their careers
+3,2008Movies,GoogleHitsOfDirector,"Name as provided by imdb.com in quotes all searched on Nov 31 and Dec 1, 2009"
+3,2008Movies,Rank,By US sales among all movies in 2008
+3,AIDS,Country,
+3,AIDS,LiteracyRate,2005 data for percentage of adults ages 15 and over
+3,AIDS,GDPperCapita,2006 data in current US
+3,AIDS,PopulationDensity,2006 data in people per km^2
+3,AIDS,PoliticalStability,"Fund for Peace (Failed State Index). 2006 data on a 120 point scale (0=Stable, 120=Unstable)"
+3,AIDS,CO2Emissions,Carbon Dioxide Information Analysis Center. 2004 data for metric tons per capita
+3,AIDS,GDPGrowth,World Development Indicators (World Bank Data).  Collected using 2006 data in percentages
+3,AIDS,AidperGNI,World Development Indicators (World Bank Data).  Collected using 2006 data in percentages of GNI
+3,AIDS,UrbanPopulation,2006 data in percentages of total population living in urban areas
+3,AIDS,HIVprevalence,Collected using 2005 data of estimated adult rate (15-49 yrs. Old) of people living with HIV/AIDS (%)
+3,Arsenic,Age,
+3,Arsenic,Sex(1isMale),
+3,Arsenic,Drink, Household well used for drinking (1=<1/4ÿ 2=1/4ÿ 3=1/2 ÿÿÿÿ4=3/4ÿ 5=>3/4).
+3,Arsenic,Cook, Household well used for cooking (1=<1/4ÿ 2=1/4ÿ 3=1/2 ÿÿÿÿ4=3/4ÿ 5=>3/4).
+3,Arsenic,Water, Arsenic in water (ppm).
+3,Arsenic,Toenails, Arsenic in toenails (ppm).ÿ
+3,Caucuses,County,
+3,Caucuses,Obama,the percentage of county delegates for Obama
+3,Caucuses,MedianAge,Median Age
+3,Caucuses,Male,% Male
+3,Caucuses,White,% White
+3,Caucuses,AverageFamilySize,Average Family Size
+3,Caucuses,BachelorsorHigher,% Bachelors or Higher
+3,Caucuses,MedianHouseholdIncome,Median Household Income
+3,Caucuses,IndividualsBelowPoverty,% Individuals Below Poverty
+3,Caucuses,Population,Population
+3,Caucuses,Registered Democrat,% Registered Democrat
+3,Politics,States,States
+3,Politics,Unemployed,Percent Unemployed of the Civilian Labor Force (age 16+)
+3,Politics,Bachelor's,Percent of the Population with Bachelor's Degree or more (age 25+)
+3,Politics,Retirement,Percent of Population 65+
+3,Politics,MedianIncome,Median Income level (1999 Dollars)
+3,Politics,Christian,Percent Christian Chruch Adherents 2000
+3,Politics,NumberPeoplePerFamily,Average Number of people per family 2000
+3,Politics,HealthInsurance,Percentage of people with health insurance (private + govt)
+3,Politics,Voted,Percentage of people 18+ having voted in 2000
+3,Politics,2001 Lower Democrat,The number of democrats in the 2001 lower house
+3,Politics,2001 Lower Republican,The number of repulicans in the 2001 lower house
+3,Politics,2001 Lower Other,The number of vacant positions in the 2001 lower house
+3,Politics,2001 Lower Vacancies,The number of other parties in the 2001 lower house
+3,Politics,2001 Upper Democrat,The number of democrats in the 2001 upper house
+3,Politics,2001 Upper Republican,The number of repulicans in the 2001 upper house
+3,Politics,2001 Upper Other,The number of vacant positions in the 2001 upper house
+3,Politics,2001 Upper Vacancies,The number of other parties in the 2001 upper house
+3,Worldbank,Agricultural land,Agricultural land (% of land area)
+3,Worldbank,Agriculture,"Agriculture, value added (% of GDP)"
+3,Worldbank,CO2 emissions,CO2 emissions (metric tons per capita)
+3,Worldbank,Exports of goods and services,Exports of goods and services (% of GDP)
+3,Worldbank,Fertility rate,"Fertility rate, total (births per woman)"
+3,Worldbank,Fixed line and mobile phone,"Fixed line and mobile phone subscribers (per 1,000 people)"
+3,Worldbank,Foreign direct investment,"Foreign direct investment, net inflows (BoP, current US$)"
+3,Worldbank,GDP,GDP (current US$)
+3,Worldbank,GDP growth,GDP growth (annual %)
+3,Worldbank,GNI per capita,"GNI per capita, Atlas method (current US$)"
+3,Worldbank,GNI,"GNI, Atlas method (current US$)"
+3,Worldbank,Gross capital formation,Gross capital formation (% of GDP)
+3,Worldbank,"Immunization, measles ","Immunization, measles (% of children ages 12-23 months)"
+3,Worldbank,Imports of goods and services ,Imports of goods and services (% of GDP)
+3,Worldbank,Industry,"Industry, value added (% of GDP)"
+3,Worldbank,Inflation,"Inflation, GDP deflator (annual %)"
+3,Worldbank,Internet users,"Internet users (per 1,000 people)"
+3,Worldbank,Life expectancy ,"Life expectancy at birth, total (years)"
+3,Worldbank,Long-term debt ,"Long-term debt (DOD, current US$)"
+3,Worldbank,Merchandise trade,Merchandise trade (% of GDP)
+3,Worldbank,Military expenditure,Military expenditure (% of GDP)
+3,Worldbank,Net barter,Net barter terms of trade (2000 = 100)
+3,Worldbank,Official development assistance,Official development assistance and official aid (current US$)
+3,Worldbank,Personal computers,"Personal computers (per 1,000 people)"
+3,Worldbank,Population growth,Population growth (annual %)
+3,Worldbank,Population,"Population, total"
+3,Worldbank,Services,"Services, etc., value added (% of GDP)"
+3,Worldbank,Short-term debt,"Short-term debt outstanding (DOD, current US$)"
+3,Worldbank,Surface area,Surface area (sq. km)
+3,Worldbank,ln GNI,natural log of GNI
+3,Worldbank,pop/area,Population divided by Surface Area
+3,Weights,Species,
+3,Weights,Bodyweight,Body weight in kg
+3,Weights,Brainweight,Brain weight in grams

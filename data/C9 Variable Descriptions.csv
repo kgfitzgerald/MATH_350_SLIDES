@@ -1,0 +1,32 @@
+9,Data Set,Variable Name,Description
+9,Firstdrink,Age,Age = age at first drink
+9,Firstdrink,Censor,Censor = 1 means time is complete
+9,Firstdrink,Gender,"Gender: 1 = male, 2 = female"
+9,Graduate,Years,the number of years taken to complete the requirements for a bachelor’s
+9,Graduate,Censor,degree
+9,Graduate,Gender,Gender = 0 males
+9,Hornhonk,seconds,time in seconds
+9,Hornhonk,Censor, 0 = censored time
+9,Rearrest,months,time in months
+9,Rearrest,censor,censor = 1 time is complete
+9,Rearrest,personal,indicator of a history of property-related crimes
+9,Rearrest,property,indicator of a history of person-related crimes
+9,Rearrest,cenage,"difference between the age of the individual
+on release and the average age of all inmates in the study"
+9,Fruitfly,Partners,"number of companions (0, 1, or 8)"
+9,Fruitfly,Type,"type of companion (0 = newly pregnant female, 1 = virgin female, 9 = not applicable"
+9,Fruitfly,Longevity,"lifespan, in days (This is the time-to-event variable.)"
+9,Fruitfly,Thorax,length of thorax in mm
+9,Fruitfly,Sleep,percentage of each day spent sleeping
+9,Fruitfly,Censor,"this variable takes only value 1, since the data are all complete"
+9,MeltingChipsJS,Time,time in seconds
+9,MeltingChipsJS,Censor,1 represents complete
+9,MeltingChipsJS,Type,white or chocolate chip
+9,Veteran,trt,"1 = standard chemotherapy, 2 = test chemotherapy"
+9,Veteran,celltype,"1 = squamous, 2 = smallcell, 3 = adeno, 4 = large"
+9,Veteran,time,survival time in days
+9,Veteran,status,"censoring status (1 = complete, 0 = censored)"
+9,Veteran,karno,Karnofsky performance scale index score (100 = good)
+9,Veteran,diagtime,months from diagnosis to randomization
+9,Veteran,age,age in years
+9,Veteran,prior,"prior therapy (0 = no, 1 = yes)"

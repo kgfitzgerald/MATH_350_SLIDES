@@ -1,0 +1,13 @@
+Brand,Temp,Box,Bag,% Popped
+Expensive,Room,1,1,84
+Expensive,Frig,1,2,76
+Expensive,Room,2,3,86
+Expensive,Frig,2,4,86
+Expensive,Room,3,5,91
+Expensive,Frig,3,6,84
+Generic,Room,1,7,74
+Generic,Frig,1,8,87
+Generic,Room,2,9,84
+Generic,Frig,2,10,83
+Generic,Room,3,11,83
+Generic,Frig,3,12,90
