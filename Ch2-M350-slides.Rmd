@@ -123,7 +123,7 @@ $$y_{1j} = \mu_1 + \epsilon_{1j}, \ \ \ j = 1, 2, \dots n_1$$
 
 Model for standard group:
 
-$$y_{2j} = \mu_2 + \epsilon_{2j}, \ \ \ j = 1, 2, \dots n_1$$
+$$y_{2j} = \mu_2 + \epsilon_{2j}, \ \ \ j = 1, 2, \dots n_2$$
 --
 
 What's random and what's fixed (a.k.a. constant)? For random components: what's the assumed distribution?
@@ -159,13 +159,21 @@ $$e_{1,12} = y_{1,12} - \overline{y}_1$$
 
 # Model Assumptions of the two-sample t-test
 
-+ Constant parameters ($\mu_1, \mu_2, \sigma^2$ not changing throughout the study)
++ Constant parameters $(\mu_1, \mu_2, \sigma^2$ not changing throughout the study)
+
+--
+
 + Additive terms: response = parameter + error (not $y_{ij} = \mu_i \times \epsilon_{ij}$, for example)
+
+--
+
 + $\epsilon_{ij} \overset{\text{iid}}{\sim} N(0, \sigma^2)$
     + errors are independent and identically distributed
     + error follow a normal distribution
     + errors have a mean of 0 (i.e. average of observations should be close to true mean. That is, there is no systematic bias in the error terms)
     + population variance is same for both groups (color and standard)
+
+--
 
 Can use residual plots to test these assumptions! 
 
@@ -218,7 +226,9 @@ KEY CONCEPT: Testing the null hypothesis $H_0: \beta_1 = 0$ for a regression mod
     + error follow a normal distribution
     + errors have a mean of 0 (i.e. average of observations should be close to true mean. That is, there is no systematic bias in the error terms)
     + error terms come from one population with variance $\sigma^2$ (i.e. variance isn't changing as x changes)
-    
+
+--
+
 Recall: 
 
 + $y_i$ = observed response
