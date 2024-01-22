@@ -1,0 +1,283 @@
+---
+title: "AE-CH1"
+author: "Your Name Here"
+format: 
+  html:
+    self-contained: true
+    toc: true
+    toc_float: true
+    number_section: false
+    highlight: "tango"
+    theme: "cosmo"
+    df-print: paged
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+This Application Exercise walks through the guided activities in Chapter 1 of the textbook. There are spaces for you to answer each question (with code and/or text). Feel free to also use this document to add your own notes along the way.
+
+```{r}
+#| label: load-packages
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(janitor)
+library(infer)
+library(broom)
+```
+
+```{r}
+#| label: load-data
+#| message: false
+#| warning: false
+
+mice <- read_csv("./data/C1 Mice.csv") %>% 
+  clean_names()
+```
+
+```{r}
+mice_long <- mice %>% 
+  pivot_longer(cols = 1:4, 
+               names_to = "group",
+               values_to = "worm_count")
+
+mice_long <- mice_long %>% 
+  separate_wider_delim(group, 
+                       delim = "_",
+                       names = c("sex", "group"))
+
+ggplot(mice_long, aes(x = group, y = worm_count)) +
+  facet_wrap(~sex) +
+  geom_point()
+```
+
+\[Skip Q1\]
+
+### Question 2
+
+```{r}
+#compute difference in means for females
+diff_female <- mean(mice$female_trt) - mean(mice$female_ctl)
+diff_female
+
+#compute difference in means for males
+
+```
+
+Which group had the larger mean for females? For males? What does this indicate about the drugs' effectiveness?
+
+> YOUR ANSWER HERE
+
+\[Q3 - Q6 discussed in class\]
+
+### Questions 7 - 10
+
+```{r}
+#create subset for female mice only
+female_mice <- mice_long %>% 
+  filter(sex == "female") %>% 
+  select(worm_count)
+
+#randomly shuffle the 10 observations
+
+#consider first 5 obs to be treatment and last 5 obs to be control 
+#compute mean_trt and mean_ctl
+
+#compute difference in means (ctl - trt)
+
+#initialize empty vector and then use for loop to repeat many times
+
+#plot histogram of differences in means (ctl - trt)
+#add vertical line at observed difference 7.6
+
+#count # of sims greater than 7.6, divide by # of iterations 
+#this is empirical (one-sided) p-value
+
+
+#find the two-sided empirical p-value
+
+diff <- c()
+for(i in 1:100000){
+  sample_i <- sample(female_mice$worm_count, size = 10)
+  mean_trt <- mean(sample_i[1:5])
+  mean_ctl <- mean(sample_i[6:10])
+  diff[i] <- mean_ctl - mean_trt
+}
+
+sim_data <- data.frame(diff = diff)
+ggplot(sim_data, aes(x = diff)) +
+  geom_histogram(color = "white", binwidth = 2)
+```
+
+### Question 11
+
+> YOUR ANSWER HERE
+
+### Question 12
+
+> YOUR ANSWER HERE
+
+\[Skip Q13 - Q16\]
+
+### Question 17
+
+```{r}
+#adapt code from simulations above
+```
+
+### Question 18
+
+```{r}
+#adapt code from simulations above
+```
+
+## Randomization Example
+
+Let’s see the magic of randomization in action. Imagine that we have a promising new curriculum for teaching math to Kindergarteners, and we want to know whether or not the curriculum is effective. Let's explore how a randomized experiment would help us test this. First, we'll load in a dataset called `ed_data`. This data originally came from the Early Childhood Longitudinal Study (ECLS) program but has been adapted for this example. Let's take a look at the data.
+
+```{r, warning = FALSE}
+ed_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vTQ9AvbzZ2DBIRmh5h_NJLpC_b4u8-bwTeeMxwSbGX22eBkKDt7JWMqnuBpAVad6-OXteFcjBY4dGqf/pub?gid=300215043&single=true&output=csv")
+
+glimpse(ed_data)
+```
+
+`Trt_rand` gives the treatment assignment that was the result of a RANDOM process. 1 = Treatment group, 0 = Control group.
+
+```{r}
+ed_data %>% 
+  count(Trt_rand)
+```
+
+Because the treatment assignment was RANDOM, we expect the students in the treatment and control to look approximately the same *on average* for ALL variables.
+
+```{r}
+ed_data %>% 
+  group_by(Trt_rand) %>% 
+  summarise_if(is.numeric, mean) %>% 
+  select(-c(ID, Trt_non_rand))
+```
+
+Since the two groups are similar, we would implement our experiment, with students in the treatment group getting a new curriculum and students in the control group getting a "business as usual" curriculum. We would then measure student math scores again at the end of the year, and if we observed that the treatment group was scoring higher (or lower) on average than the control group, we could attribute that difference entirely to the new curriculum. We would not have to worry about other omitted variables being the cause of the difference in test scores, because randomization ensured that the two groups were equivalent on average on *all* pre-treatment characteristics, both observed and unobserved.
+
+In comparison, in an observational study, the two groups are not equivalent on these pre-treatment variables. In the same example above, let us imagine where instead of being randomly assigned to treatment, instead students with lower SES are assigned to the new specialized curriculum (`Trt_non_rand = 1`), and those with higher SES are assigned to the business as usual curriculum (`Trt_non_rand = 0`). The indicator variable `Trt_non_rand` is the result of this non-random treatment group assignment process.
+
+```{r}
+ed_data %>% 
+  group_by(Trt_non_rand) %>% 
+  summarise_if(is.numeric, mean) %>% 
+  select(-c(ID, Trt_rand))
+```
+
+There are somewhat large differences between the treatment and control group on several pre-treatment variables in addition to SES (e.g. % minority, and reading and math scores). Notice that the two groups still appear to be balanced in terms of gender. This is because gender is in general not associated with SES. However, minority status and test scores are both correlated with SES, so assigning treatment based on SES (instead of via a random process) results in an imbalance on those other pre-treatment variables. Therefore, if we observed differences in test scores at the end of the year, it would be difficult to disambiguate whether the differences were caused by the intervention or due to some of these other pre-treatment differences.
+
+## Estimating the treatment effect
+
+Imagine that the truth about this new curriculum is that it raises student math scores by 10 points, on average. We can use R to mimic this process and randomly generate post-test scores that raise the treatment group's math scores by 10 points on average, but leave the control group math scores largely unchanged. Note that we will never know the true treatment effect in real life - the treatment effect is what we're trying to estimate; this is for demonstration purposes only.
+
+We use another random process function in R, `rnorm()` to generate these random post-test scores. Don't worry about understanding exactly how the code below works, just note that in both the `Trt_rand` and `Trt_non_rand` case, we are creating post-treatment math scores that increase a student's score by 10 points on average, if they received the new curriculum.
+
+```{r}
+set.seed(73)
+ed_data <- ed_data %>% 
+  mutate(MATH_post_trt_rand = 
+           case_when(Trt_rand == 1 ~ MATH_pre + rnorm(1, 10, 2), 
+                     Trt_rand == 0 ~ MATH_pre + rnorm(1, 0, 2)),
+         MATH_post_trt_non_rand = 
+           case_when(Trt_non_rand == 1 ~ MATH_pre + rnorm(1, 10, 2), 
+                     Trt_non_rand == 0 ~ MATH_pre + rnorm(1, 0, 2)))
+```
+
+Look at the results for the first 10 students. We can convince ourselves that both the `MATH_post_trt_rand` and `MATH_post_trt_non_rand` scores reflect this truth that the treatment raises test scores by 10 points, on average. For example, we see that for student 1, they were assigned to the treatment group in both scenarios and their test scores increased from about 18 to about 28. Student 2, however, was only assigned to treatment in the second scenario, and their test scores increased from about 31 to 41, but in the first scenario since they did not receive the treatment, their score stayed at about 31. Remember that here we are showing two hypothetical scenarios that could have occurred for these students - one if they were part of a randomized experiment and one where they were part of an observational study - but in real life, the study would only be conducted one way on the students and not both.:
+
+```{r}
+ed_data %>% 
+  select(ID, MATH_pre, Trt_rand, 
+         MATH_post_trt_rand, Trt_non_rand, 
+         MATH_post_trt_non_rand) %>% 
+  filter(ID <= 10)
+```
+
+Let's examine how students in each group performed on the post-treatment math assessment on average in the first scenario where they were randomly assigned (i.e. using `Trt_rand` and `MATH_post_trt_rand`).
+
+```{r}
+ed_data %>% 
+  group_by(Trt_rand) %>% 
+  summarise(post_trt_rand_avg = mean(MATH_post_trt_rand))
+```
+
+Remember that in a randomized experiment, we calculate the treatment effect by simply taking the difference in the group averages (i.e. $\overline{y}_T - \overline{y}_C$), so here our estimated treatment effect is 49.6−39.6=10.0. Recall that we said this could be estimated using the simple linear regression model $\hat{y} = b_0 + b_1T$. We can fit this model in R to verify that our estimated treatment effect is $b_1 = 10$
+
+```{r}
+fit <- lm(MATH_post_trt_rand ~ Trt_rand, data = ed_data)
+tidy(fit)
+```
+
+Let's look at the non-randomized experiment case (i.e. the observational study).
+
+```{r}
+ed_data %>% 
+  group_by(Trt_non_rand) %>% 
+  summarise(post_trt_non_rand_avg = mean(MATH_post_trt_non_rand))
+
+fit_non_rand <- lm(MATH_post_trt_non_rand ~ Trt_non_rand, data = ed_data)
+tidy(fit_non_rand)
+```
+
+Note that even though the treatment raised student scores by 10 points on average, in the observational case we estimate the treatment effect is *much* smaller. This is because treatment was confounded with SES and other pre-treatment variables, so we could not obtain an accurate estimate of the treatment effect.
+
+## If you know Z, what about multiple regression?
+
+In the previous sections, we made clear that you cannot calculate the causal effect of a treatment using a *simple* linear regression model unless you have random assignment. What about a *mutiple* linear regression model?
+
+The answer here is more complicated. We’ll give you an overview, but note that this is a tiny sliver of an introduction and that there is an entire *field* of methods devoted to this problem. The field is called **causal inference methods** and focuses on the conditions under and methods in which you can calculate causal effects in observational studies.
+
+Recall, we said before that in an observational study, the reason you can’t attribute causality between X and Y is because the relationship is **confounded** by an omitted variable Z. What if we included Z in the model (making it no longer omitted), as in:
+
+$$
+\hat{y} = b_0 + b_1T + b_2Z
+$$
+
+we can now interpret the coefficient $b_1$ as **the estimated effect of the treatment on outcomes, holding constant (or adjusting for) Z**.
+
+Importantly, the relationship between T and Y, adjusting for Z can be similar or different than the relationship between T and Y alone. In advance, you simply cannot know one from the other.
+
+Let's again look at our model `fit1_non_rand` that looked at the relationship between treatment and math scores, and compare it to a model that adjusts for the confounding variable SES.
+
+```{r}
+fit_non_rand <- lm(MATH_post_trt_non_rand ~ Trt_non_rand, data = ed_data)
+tidy(fit_non_rand)
+fit2_non_rand <- lm(MATH_post_trt_non_rand ~ Trt_non_rand + SES_CONT, data = ed_data)
+tidy(fit2_non_rand)
+```
+
+The two models give quite different indications of how effective the treatment is. In the first model, the estimate of the treatment effect is 2.176, but in the second model once we control for SES, the estimate is 8.931. Again, this is because in our non-random assignment scenario, treatment status was confounded with SES.
+
+Importantly, in the randomized experiment case, controlling for confounders using a multiple regression model is **not** necessary - again, because of the randomization. Let's look at the same two models using the data from the experimental case (i.e. using `Trt_rand` and `MATH_post_trt_rand`).
+
+```{r}
+fit <- lm(MATH_post_trt_rand ~ Trt_rand, data = ed_data)
+tidy(fit)
+
+fit2_rand_exp <- lm(MATH_post_trt_rand ~ Trt_rand + SES_CONT, data = ed_data)
+tidy(fit2_rand_exp)
+```
+
+We can see that both models give estimates of the treatment effect that are roughly the same (10.044 and 9.891), regardless of whether or not we control for SES. This is because randomization ensured that the treatment and control group were balanced on all pre-treatment characteristics - including SES, so there is no need to control for them in a multiple regression model.
+
+## What if you don't know Z?
+
+In the observational case, if you *know* the process through which people are assigned to or select treatment then the above multiple regression approach can get you pretty close to the causal effect of the treatment on the outcomes. This is what happened in our `fit2_non_rand` model above where we knew treatment was determined by SES, and so we controlled for it in our model.
+
+But this is **rarely** the case. In most studies, selection of treatment is **not based on a single variable**. That is, before treatment occurs, those that will ultimately receive the treatment and those that do not might differ in a myriad of ways. For example, students that play instruments may not only come from families with more resources and have higher motivation, but may also play fewer sports, already be great readers, have a natural proclivity for music, or come from a musical family. As an analyst, it is typically very difficult – if not impossible – to know how and why some people selected a treatment and others did not.
+
+Without randomization, here is the best approach:
+
+1.  Remember: your goal is to approximate a random experiment. You want the two groups to be similar on any and all variables that are related to uptake of the treatment and the outcome.
+
+2.  Think about the treatment selection process. Why would people choose to play an instrument (or not)? Attend an after-school program (or not)? Be part of a sorority or fraternity (or not)?
+
+3.  Look for variables in your data that you can use in a multiple regression to control for these other possible confounders. Pay attention to how your estimate of the treatment impact changes as you add these into your model (often it will decrease).
+
+4.  State very clearly the assumptions you are making, the variables you have controlled for, and the possible other variables you were unable to control for. Be tentative in your conclusions and make clear their limitations – that this work is suggestive and that future research – a randomized experiment – would be more definitive.
