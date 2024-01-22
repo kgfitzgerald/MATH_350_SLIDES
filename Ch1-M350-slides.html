@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Chapter 1: Non-parametric methods</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Dr. Katie Fitzgerald" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/all.min.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.min.css" rel="stylesheet" />
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <link rel="stylesheet" href="boxes.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+layout: true
+  
+
+
+---
+
+
+
+class: middle, center
+
+# Chapter 1: Nonparametric Methods: Schistosomiasis
+
+---
+
+# AE-CH1
+
++ Navigate to course Github page
++ Open AE-CH1.qmd and copy contents
++ Create new .qmd in your MATH_350 project folder and paste contents from GitHub
++ Render your .qmd
+
+---
+
+# Case study: Schistosomiasis
+
++ Schistosomiasis (skis-tuh-soh-mahy'-us-sis) is a potentially deadly disease in humans caused by parasitic flatworms
++ Affects about 200 million people worldwide, serious in sub-Saharan Africa, South America, China, and Southeast Asia
+
+**Research question: Can new drug K11777 prevent schistosome worms from growing?**
+
+**Research design:**
+
++ 10 female lab mice, 10 male lab mice deliberately infected with the parasitic worms
+
+--
+
++ 7 days after infection, each injected every day for 28 days
+    + Within each sex, 5 randomly assigned to receive K11777 injections
+    + Control group got equal volume water injection
++ Response variables: # of eggs and # of worms in their livers, on day 49
+    + both expected to be lower if drug was effective
+    
+---
+
+# Data
+
+.pull-left[
+
+```r
+mice &lt;- read_csv("./data/C1 Mice.csv") %&gt;% 
+  clean_names()
+mice
+```
+
+```
+## # A tibble: 5 × 4
+##   female_trt female_ctl male_trt male_ctl
+##        &lt;dbl&gt;      &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
+## 1          1         16        3       31
+## 2          2         10        5       26
+## 3          2         10        9       28
+## 4         10          7       10       13
+## 5          7         17        6       47
+```
+]
+
+.pull-right[
+&lt;img src="./images/worm_count_fig1-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
++ What do you notice / wonder?
++ What conclusions can we draw from this? What else (if anything) do we need to know/investigate? 
+
+]
+
+---
+
+# Analysis
+
++ What analysis is appropriate here? Are the assumptions reasonably met? 
+
+--
+
++ This is a really small sample size to be making distributional assumptions! E.g. CLT requires n &gt; 30
+
+--
+
++ Most of what you've learned about (inferential) statistics has been a **parametric** approach. 
+
++ **Parametric** means we assume the data come from a population that follows a probability **distribution** (or use CLT) in order to conduct a test or construct a confidence interval (e.g. t, F, chi-squared)
+
+--
+
++ **Non-parametric** tests do NOT require assumptions about a distribution OR large sample sizes (e.g. for CLT) to make inferences
+
++ **Randomization test** is an example of a non-parametric method. It's a significance test that simulates the random allocation of units to treatments many times in order to determine the likelihood of observing an outcome at least as extreme as the one found in the actual study.
+
+---
+
+# Randomization test
+
+.pull-left[
+`$$H_0: \text{random chance alone}$$`
+
+`$$H_A: \text{real difference}$$`
+
+Reasons contributing to variability:
+
++ Number of parasitic worms in the liver naturally varies from mouse to mouse
++ Whether or not the drug is effective, there is clearly variability in the responses of mice to the infestation of schistosomes
++ Each group exhibits this variability, and even if the drug is not effective, some mice do better than others
+
+]
+
+.pull-right[
+&lt;img src="./images/table_1-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+Null hypothesis claims that the ONLY explanation for the observed difference of 7.6 worms in the means is that the random allocation placed mice with larger # of worms in the control group and mice with smaller # of worms in the treatment group (just due to chance - making it seem like there is a difference when there's not one)
+
+]
+
+
+---
+
+# Fundamental question for inference
+
+BOTH parametric and non-parametric procedures are based on the question: "How does what we observed in our data compare to what would happen if the null hypothesis were actually true and we repeated the process many times?"
+
+--
+
+For randomization tests, this question takes the form: "... compare to what would happen if the treatment actually had no effect on the individual responses and we repeated the random allocation of individuals to groups many times?"
+
+---
+
+# By hand simulation
+
++ Write the 10 female worm counts on 10 index cards
++ Shuffle the cards and draw 5 at random. 
+    + These are the treatment group. 
+    + Record the treatment group mean
+    + Record the control group mean (the 5 cards you didn't draw)
+    + Calculate the difference in means
++ Repeat the previous step 4 more times (end with a total of 5 simulated differences in means)
++ Plot your 5 differences in means as a dotplot on the board
+
+--
+
+**Empirical p-value**: How often (what proportion) did we observe a difference of 7.6 or larger? 
+
+---
+
+# Analysis in R
+
+.pull-left[
+
+```r
+mice
+```
+
+```
+## # A tibble: 5 × 4
+##   female_trt female_ctl male_trt male_ctl
+##        &lt;dbl&gt;      &lt;dbl&gt;    &lt;dbl&gt;    &lt;dbl&gt;
+## 1          1         16        3       31
+## 2          2         10        5       26
+## 3          2         10        9       28
+## 4         10          7       10       13
+## 5          7         17        6       47
+```
+]
+
+.pull-right[
+&lt;img src="./images/worm_count_fig1-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
++ What form does the data need to be in to create this visualization? What code do we need?
+ 
+]
+
+---
+
+# Permutation Test
+
+In observational studies, subjects are not randomly assigned to groups. In these situations, we perform the same inferential procedure but call it a **permutation test** instead of a randomization test, and the results cannot be used to claim causality. [See notes at end of slides / AE for a discussion about WHY]
+
+**Permutation tests** don't assume normality. However, the null hypothesis does assume the two samples are taken from two populations that are similar. So if the two variances are very unequal, the p-value from a permutation test may not be very reliable. In this case, a t-test is better (allows for unequal variances). 
+
+---
+
+# Age Discrimination Study
+
++ Westvaco is a company that produces paper products
++ In 1991, Robert Martin sued the company for age discrimination after he was laid off from a job in the engineering department
+
++ Ages of the 10 people in department: 25, 33, 35, 38, 48, 55, 55, 55, 56, 64
++ Ages of people laid off: 55, 55, 64
+
+&lt;img src="Ch1-M350-slides_files/figure-html/unnamed-chunk-7-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Randomization test for matched pair design
+
+A **matched pair** design is when each subject receives both the treatment and control conditions, and the response variable of interest is the *difference* between the two observations for each subject.
+
+--
+
+For example, in the color distractor experiment from Chapter 2, this would mean each person would play the color distractor version AND the standard version. 
+
+--
+
+A randomization test can be employed by randomly assigning a 1 or -1 to the computed differences (randomizes the order in which they get subtracted). 
+
+
+```
+##   ID color_time standard_time diff rand diff_rand
+## 1  1         36            38   -2    1        -2
+## 2  2         42            35    7   -1        -7
+## 3  3         37            32    5    1         5
+## 4  4         38            38    0    1         0
+## 5  5         35            37   -2   -1         2
+```
+
+---
+
+# Permutation test
+
+`$$H_0: \text{no relationship between age and layoff (result just due to chance alone)}$$`
+`$$H_A: \text{relationship between age and layoff (result NOT due to chance alone)}$$`
+
+To simulate `\(H_0\)` in a permutation test, we can randomly permute the labels "no" and "yes" for the `layoff` variable
+
+[AE-CH1, 17-18]
+
+*Note: a permutation test can also be used on a matched paired design using similar logic to the randomization test for a matched paired design*
+
+---
+
+# A deeper dive into causal claims
+
+Randomized experiments allow us to make CAUSAL CLAIMS (x caused y)
+
+--
+
+If our data is simply observational (no random assignment), we CANNOT make causal claims (x is associated with y)
+
+Why?? 
+
+--
+
+Randomization protects against potential confounding variables
+
+But is it really that big of a deal??
+
+---
+
+# Omitted variables
+
+.pull-left[
+
+We have to be very careful not to make unwarranted causal claims from observational data, because there may be an omitted variable (Z), also known as a confounder.
+
+Some examples:
+
++ There is a positive relationship between sales of ice cream (X) from street vendors and crime (Y). Does this mean that eating ice cream causes increased crime? 
+
++ Students that play an instrument (X) have higher grades (Y) than those that do not. Does this mean that playing an instrument causes improved academic outcomes? 
+
++ Countries that eat a lot of chocolate (X) also win the most Nobel Prizes (Y). Does this mean that higher chocolate consumption leads to more Nobel Prizes?
+
+]
+
+.pull-right[
+&lt;img src="./images/confounder.png" width="60%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# Magic of Randomization
+
+If omitted variables / confounders are such a threat to determining causality in observational data, why aren’t they also a threat in randomized experiments?
+
+--
+
+The answer is simple: randomization. Because people are randomized to treatment and control groups, on average there is no difference between these two groups on any characteristics other than their treatment.
+
+--
+
+This means that before the treatment is given, on average the two groups (T and C) are equivalent to one another on every observed and unobserved variable. For example, the two groups should be similar in all pre-treatment variables: age, gender, motivation levels, heart disease, math ability, etc. Thus, when the treatment is assigned and implemented, any differences between outcomes can be attributed to the treatment.
+
+---
+
+# AE-CH1
+
+Demo, starting with "Randomization Example" section. 
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+<style>
+.logo {
+  background-image: url(Azusa-Pacific-University-Logo.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  width: 350px;
+  height: 200px;
+  z-index: 0;
+}
+</style>
+
+<script>
+document
+  .querySelectorAll(
+    '.remark-slide-content' +
+    ':not(.title-slide)' +
+    // add additional classes to exclude here, e.g.
+    // ':not(.inverse)' +
+    ':not(.hide-logo)'
+  )
+  .forEach(el => {
+    el.innerHTML += '<div class="logo"></div>';
+  });
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

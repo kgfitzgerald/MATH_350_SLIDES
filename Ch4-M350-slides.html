@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Chapter 4: Design &amp; Analysis of Factorial Experiments</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Dr. Katie Fitzgerald" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/all.min.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.min.css" rel="stylesheet" />
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <link rel="stylesheet" href="boxes.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+layout: true
+  
+
+
+---
+
+
+
+class: middle, center
+
+# Chapter 4: Design &amp; Analysis of Factorial Experiments
+
+---
+
+# AE-CH4
+
++ Navigate to course Github page
++ Open AE-CH4.qmd and copy contents
++ Create new .qmd in your MATH_350 project folder and paste contents from GitHub
++ Render your .qmd
+
+---
+
+# The process of statistics
+
++ Formulating well-defined questions
++ Properly designing a study
++ Collecting meaningful data
++ Deciding how to properly analyze and draw conclusions from data
+
+---
+
+# Case study: which popcorn brand is best?
+
+Want to test the quality to two microwave popcorn brands. Could test with a two-sample t-test, but would have to assume that many other factors are held constant. What other factors (besides brand) might affect the quality of popcorn? 
+
+--
+
+In **Factorial designs** are structured to use factors (i.e. explanatory variables) to organize meaningful groups of treatment conditions and simultaneously test the effects of multiple factor-level combinations on a response variable of interest.
+
+--
+
+Two-sample t-test is a special case of a factorial design that has just one factor and two levels (e.g. Brand, levels A and B).
+
+---
+
+# Elements of a Well-Designed Experiment
+
++ Attempts to answer the question(s) of interest as clearly and efficiently as possible. Any statistical analysis is only as good as the quality of the data.
+
+    + What measurements will be taken?
+    + What material is needed? 
+    + What procedures will be used?
+    + What background knowledge is needed?
+
+1. Clearly define the problem and objective of the experiment
+2. Identify a response variable
+3. Identify the factors and levels
+4. Choose a design
+5. Determine a sample size
+
+---
+
+# Identifying a Response Variable
+
+What are possible ways of measuring "quality" of the popcorn?
+
+--
+
++ taste rating
++ texture rating
++ volume of the kernels
++ Number of popped kernels
++ Number of unpopped kernels remaining
+
+--
+
+They chose % of kernels that were popped. Why is this important?
+
+--
+
+Considered only looking at a random sample of 20 kernels, but decided against it. Was this a good move? 
+
+---
+
+# Identifying the Factors and Levels
+
++ Factor 1: popcorn `Brand` at two levels, Fastco (relatively cheap) and Pop Secret (relatively expensive)
++ Factor 2: `Microwave` at two levels, dorm lounge and dorm room
++ Factor 3: cooking `Time` at two levels, 105 seconds and 135 seconds
+
+Held Constant:
+
++ Highest power setting on both microwaves
++ Scored all popcorn on a shelf in their room
++ Butter flavor of each brand
+
+Could not control:
+
++ age of popcorn
++ manufacturing plant
++ storage before purchase
+
+Attempt to take random sample of bags, and to randomly allocate bags to factor-level conditions, to control for uncontrollable factors. 
+
+---
+
+# Choosing a Design
+
+**Experimental units** are the smallest part of the experimental material that is randomly assigned to a factor-level condition. Here, the units are the bags of popcorn. 
+
+--
+
+If each unit is randomly assigned to just one condition, and all factor-levels are **crossed** (each level of a factor is tested in combination with each level of the other factors), this is called a **completely randomized factorial design**. 
+
+--
+
+Block designs, split-plot (repeated measures), and nested designs are more complex alternatives (Chapter 5).
+
+---
+
+# Sample size
+
+More power to detect differences between groups with larger sample. But larger sample costs more (time and $). 
+
++ Estimate they can count one bag in 10-15 minutes
++ Can recruit friends to count too (concern?)
+
+--
+
+Can conduct 32 tests in about 4 hours. Why not 30? 
+
+--
+
+**Balanced design** has same number of tests/trials for each factor-level combination. This will result in a more powerful test. 
+
+---
+
+## Analyzing Two-Way ANOVA
+
+|Source | DF | SumSq | MeanSq | F | p-value
+|-------|-------|-------|-------|-------|-------|
+|Factor A | (a - 1) | SSA | MSA | MSA/MSE
+|Factor B | (b - 1) | SSB | MSB | MSB/MSE
+|AxB      | (a -1)(b -1)| SSAB | MSAB | MSAB / MSE
+|Residuals | (n - ab) | SSE | MSE
+
+Variability in Y can be broken down into 
++ Variability between groups in Factor A (SSA)
++ Variability between groups in Factor B (SSB)
++ Variability between groups in FactorAxB combinations (SSAB)
++ Variability within groups that's left unexplained by A, B, and AB.
+
++ The F-statistics are the ratios of the **between-group** variability and the **within-group** variability
++ When `\(H_0\)` is true (no differences between groups), the F ratio will be close to 1
++ As the differences between groups increases ($H_A$ true), the F-ratio grows large
++ We reject `\(H_0\)` for large F values
+
+---
+
+# Analyzing Two-Way ANOVA
+
+There are three sets of hypotheses
+
+`$$H_{01}: \mu_{\text{Fastco}} = \mu_{\text{PopSecret}}$$`
+`$$H_{A1}: \mu_{\text{Fastco}} \neq \mu_{\text{PopSecret}}$$`
+
+`$$H_{02}: \mu_{105} = \mu_{135}$$`
+`$$H_{A2}: \mu_{103} \neq \mu_{135}$$`
+
+`$$H_{03}: \text{There is no interaction between Time and Brand}$$`
+`$$H_{A3}: \text{There IS an interaction between Time and Brand}$$`
+
+Saying there is no interaction `\((H_{03})\)` is equivalent to saying that `Time` has no influence on how `Brand` affects `pop_rate`. Or equivalently, `Brand` has no influence on how `Time` affects `pop_rate`. 
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+<style>
+.logo {
+  background-image: url(Azusa-Pacific-University-Logo.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  width: 350px;
+  height: 200px;
+  z-index: 0;
+}
+</style>
+
+<script>
+document
+  .querySelectorAll(
+    '.remark-slide-content' +
+    ':not(.title-slide)' +
+    // add additional classes to exclude here, e.g.
+    // ':not(.inverse)' +
+    ':not(.hide-logo)'
+  )
+  .forEach(el => {
+    el.innerHTML += '<div class="logo"></div>';
+  });
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
