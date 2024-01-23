@@ -178,6 +178,10 @@ Variability in Y can be broken down into
 
 # Analyzing Two-Way ANOVA
 
+$$y_{ijk} = \mu + \alpha_i + \beta_j + (\alpha\beta)_{ij} + \epsilon_{ijjk}$$
+
+$$i = 1,2; j = 1,2; k = 1,2,\dots 8$$
+
 There are three sets of hypotheses
 
 $$H_{01}: \mu_{\text{Fastco}} = \mu_{\text{PopSecret}}$$
