@@ -1,0 +1,73 @@
+Gender,Title,Title2,PhD graduated year,PhD School,Salary,Dept
+Male,AssocProfCourtesy,Associate,1999,"SUNY, Stony Brook",96238,Statistics
+Male,Distinguished Professor,Full,1967,Stanford University,140649,Statistics
+Male,Full Professor,Full,1972,University of Minnesota,68316,Statistics
+Male,Full Professor,Full,1983,"University of Canifornia, Los Angeles",160177,Statistics
+Male,Full Prof Courtesy,Full,1986,"The Weizmann Institute of Science, Israel",175599,Statistics
+Female,Associate Professor,Associate,2003,"University  of North Carolina, Chapel Hill",91000,Statistics
+Female,Full Professor,Full,1989,Iowa State University,161333,Statistics
+Male,Full Professor,Full,1993,"Australian National University, Australia",94611,Statistics
+Female,Full Professor,Full,1993,Rutgers University,130133,Statistics
+Male,Full Professor,Full,1986,"Cornell University, Ithaca, NY, 1986",162600,Statistics
+Female,Associate Professor,Associate,2001,"University of Canifornia, Los Angeles",95147,Statistics
+Female,Associate Professor,Associate,2000,"University of Illinois, Urbana-Champaign",105238,Statistics
+Female,Assistant Professor,Assistant,2005,"University of Dortmund, Germany",79304,Statistics
+Male,Assistant Professor,Assistant,2005,"University of North Carolina, Chapel Hill",108943,Statistics
+Female,Associate Professor,Associate,2000,"Augsburg University, Germany",102036,Statistics
+Male,Full Professor,Full,1990,"University of Missouri, Columbia",145782,Statistics
+Male,Associate Professor,Associate,2000,Iowa State University,116667,Statistics
+Male,University Professor,Full,1977,University of Minnesota,174533,Statistics
+Female,Assistant Professor,Assistant,2006,Cornell University,106087,Statistics
+Male,University Professor,Full,1981,Iowa State University,152201,Statistics
+Male,Associate Professor,Associate,1996,University of Washington,125803,Statistics
+Male,Associate Professor,Associate,1980,Kansas State University,73281,Statistics
+Male,Distinguished Professor,Full,1975,Union College,196955,Statistics
+Male,Full Professor,Full,1977,Virginia Polytechnic Institute,143089,Statistics
+Male,Full Professor,Full,1996,Iowa State University,175064,Statistics
+Male,Assistant Professor,Assistant,2002,Iowa State University,95667,Statistics
+Female,Full Professor,Full,1990,Iowa State University,180000,Statistics
+Male,Associate Professor,Associate,1983,Iowa State University,67757,Statistics
+Male,Full Professor,Full,1990,Iowa State University,163439,Statistics
+Male,Assistant Professor,Assistant,2008,University of Florida,86667,Statistics
+Male,University Professor,Full,1977,University of Wisconsin-Madison,114876,Statistics
+Male,Associate Professor,Associate,1984,University of Wisconsin-Madison,92920,Statistics
+Male,University Professor,Full,1979,University of Connecticut,109348,Statistics
+Male,University Professor,Full,1975,Michigan State University,124768,Statistics
+Male,Assistant Professor,Assistant,2006,Cornell University,44318,Statistics
+Female,Associate Professor,Associate,1995,Duke University,122500,Statistics
+Male,Associate Professor,Associate,1997,"University of Michigan, Ann Arbor",86529,Statistics
+Female,Assistant Professor,Assistant,2005,Cornell University,104000,Statistics
+Male,Lecturer,Term,,,34759,English Lit
+Female,Associate Professor,Associate,1980,University of Oregon,178798,English Lit
+Male,Associate Professor,Associate,,,65649,English Lit
+Female,Full Professor,Full,1977,University of Maryland,82423,English Lit
+Male,Associate Professor,Associate,,,103584,English Lit
+Male,University Professor,Full,1972,Indiana University,64603,English Lit
+Female,Associate Professor,Associate,1996,The University of Iowa,65237,English Lit
+Male,Full Professor,Full,1973,University of Oregon,92344,English Lit
+Female,Associate Professor,Associate,1986,Columbia University,64864,English Lit
+Female,Full Professor,Full,,University of North Carolina - Chapel Hill. ,77896,English Lit
+Female,Assistant Professor,Assistant,,University of Minnesota ,60507,English Lit
+Male,Assistant Professor,Assistant,,Oklahoma State University,58889,English Lit
+Female,Assistant Professor,Assistant,,,57778,English Lit
+Female,Associate Professor,Associate,,University of Pennsylvania ,85380,English Lit
+Female,Associate Professor,Associate,1999,Iowa State University,67641,English Rhetoric
+Female,Associate Professor,Associate,1996,University of Wisconsin–Madison,59785,English Rhetoric
+Female,Full Professor,Full,1976,Indiana University,71378,English Rhetoric
+Male,Full Professor,Full,1979,University of Illinois—Urbana,21268,English Rhetoric
+Female,Full Professor,Full,,University of North Carolina at Chapel Hill,69913,English Rhetoric
+Male,Full Professor,Full,1986,University of Minnesota,77896,English Rhetoric
+Male,Associate Professor,Associate,1998,Rensselaer Polytechnic Institute,56849,English Rhetoric
+Female,Assistant Professor,Assistant,1975,"University of Illinois, Urbana, Illinois",80697,English Rhetoric
+Male,Full Professor,Full,,University of Illinois at Urbana-Champaign,100828,English Rhetoric
+Male,University Professor,Full,1982,Washington State University,75797,English Rhetoric
+Male,Associate Professor,Associate,,University of Illinois at Urbana-Champaign. ,86126,English Rhetoric
+Male,Associate Professor,Associate,1979,Arizona State University ,82610,English Rhetoric
+Male,Full Professor,Full,1981,University of Oklahoma,85018,English Rhetoric
+Male,Assistant Professor,Assistant,2001,New Mexico State University,56200,English Rhetoric
+Female,Full Professor,Full,,,88571,English Linquistics
+Male,Associate Professor,Associate,,,80489,English Linquistics
+Male,Associate Professor,Associate,,,70000,English Linquistics
+Female,Associate Professor,Associate,,,63376,English Linquistics
+Female,Lecture,Term,,,10115,English Linquistics
+Female,Adj Instructor,Term,,,37533,English Linquistics

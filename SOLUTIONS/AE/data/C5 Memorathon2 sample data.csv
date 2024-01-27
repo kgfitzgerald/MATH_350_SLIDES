@@ -1,0 +1,37 @@
+Score,Subject,Location,Speed,Order
+10,Albatross,Library,Slow,1
+7,Albatross,Grill,Fast,2
+12,Albatross,Grill,Slow,3
+15,Albatross,Grill,Slow,4
+7,Albatross,Library,Fast,5
+5,Albatross,Game Room,Slow,6
+18,Albatross,Library,Slow,7
+14,Albatross,Game Room,Slow,8
+13,Albatross,Game Room,Fast,9
+10,Albatross,Grill,Fast,10
+7,Albatross,Game Room,Fast,11
+9,Albatross,Library,Fast,12
+14,Baldeagle,Grill,Fast,1
+6,Baldeagle,Game Room,Fast,2
+5,Baldeagle,Grill,Slow,3
+10,Baldeagle,Grill,Fast,4
+20,Baldeagle,Library,Slow,5
+16,Baldeagle,Library,Slow,6
+8,Baldeagle,Library,Fast,7
+10,Baldeagle,Game Room,Fast,8
+9,Baldeagle,Game Room,Slow,9
+12,Baldeagle,Grill,Slow,10
+11,Baldeagle,Game Room,Slow,11
+16,Baldeagle,Library,Fast,12
+12,Cormorant,Library,Slow,1
+13,Cormorant,Grill,Slow,2
+9,Cormorant,Game Room,Fast,3
+6,Cormorant,Library,Fast,4
+7,Cormorant,Grill,Fast,5
+8,Cormorant,Library,Slow,6
+15,Cormorant,Game Room,Slow,7
+10,Cormorant,Game Room,Fast,8
+7,Cormorant,Library,Fast,9
+6,Cormorant,Grill,Fast,10
+8,Cormorant,Game Room,Slow,11
+12,Cormorant,Grill,Slow,12

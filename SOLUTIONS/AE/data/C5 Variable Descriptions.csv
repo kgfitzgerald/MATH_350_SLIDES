@@ -1,0 +1,67 @@
+Chapter,Data Set,Variable Name,Description
+5,Colors,studentID,Each participant played a total of eight games
+5,Colors,numPegs,The number of pegs in the game
+5,Colors,toBeMatched,both represents when the colors and pegs match and distract represents when the colors are different than the shaped pegs
+5,Colors,Time,the completion time of the game in seconds
+5,Colors,Division,whether or not the student was majoring or intending to major in the sciences or not
+5,Colors2,studentID,Each participant played a total of eight games
+5,Colors2,numPegs,The number of pegs in the game
+5,Colors2,toBeMatched,both represents when the colors and pegs match and distract represents when the colors are different than the shaped pegs
+5,Colors2,Time,the completion time of the game in seconds
+5,Colors2,Division,whether or not the student was majoring or intending to major in the sciences or not
+5,Colors2,Gender,Male or Female
+5,Cookies,Taste,The taste score given by participants (10 is best)
+5,Cookies,Day,the age of the cookie in days
+5,Cookies,Sugar,The amount of sugar added based upon the original recipe
+5,Cookies,Batch,nine batches of cookies with different recipes were made
+5,Cookies2,Person,Participant number
+5,Cookies2,Cookie,"Type of cookie, chocolate chip or gingersnap"
+5,Cookies2,Ingredient,"Whether butter, margerine or crisco was used in the recipee"
+5,Cookies2,Time,"cooking time, short represents 9 minutes and long represents 11 minutes"
+5,Cookies2,Rating,The taste score given by participants (10 is best)
+5,Corn,Replication,Grain Yield of of 5 corn hypbrids grown with 4 levels of nitrogen in a split-plot experiment with 2 replications
+5,Corn,Hybrid,Type of hybrid corn
+5,Corn,Nit. Rate,nitrogen application rate (pounds of nitrogen per acre)
+5,Corn,Yield,The amount of corn harvested in bushels per acre
+5,Corn,Plot,one of eight plots
+5,Flower,Flower,each of 18 flowers
+5,Flower,Store,Store where the flower was purchased
+5,Flower,Water,type of water
+5,Flower,Days,days until the flower started to wilt (checked four times each day)
+5,Football,Subject,each of the 18 volunteers
+5,Football,Experience,participants self identified as experienced or inexperienced paper football players
+5,Football,Football,two sizes of the paper football
+5,Football,Goals,the number of goals (out of 20 attempts)
+5,Football,Proportion,goals divided by 20
+5,Handwash,Cleanser,three types of handwashing soaps used in this study
+5,Handwash,CFU Before,"Colony-forming
+units (CFUs) were then counted on each plate before washing their hands with a cleanser"
+5,Handwash,CFU After,Colony-forming units (CFUs) were then counted on each plate after washing their hands with a cleanser
+5,Handwash,Groups,A grouping variable based on the CFU before variable.
+5,Memory,Major,Students major
+5,Memory,Student,Student ID
+5,Memory,Test,Test number
+5,Memory,Wordlist,abstract or concrete wordlists
+5,Memory,Distracter,type of distracter (math or poetry)
+5,Memory,Score,the number of words recalled
+5,Memory,Student2,optional way to count students
+5,Memory,Student3,optional way to count students
+5,Music,Subject,Student ID
+5,Music,Trial,trial number
+5,Music,Song,The song played during each test
+5,Music,Length,"length of the test, one minute or three minutes"
+5,Music,WPM,Words-per-minute (WPM) is the number of characters typed (including spaces) divided by 5.ÿ
+5,Music,Accuracy,"Accuracy is the number of correct words typed divided by the number of total words, then multiplied by 100.ÿ Multiple mistakes in a single word only counts as a single mistake."
+5,Music,Subject WPM Ave,The average WPM by subject
+5,Music,SubjectWPMChange,Subject WPM Ave - WPM
+5,Music,AWPM,Adjusted WPM  (AWPM) is WPM * Accuracyÿ(then rounded up).
+5,Popcorn,Brand,popcorn brand name
+5,Popcorn,Temp,storage temperature
+5,Popcorn,Box,the boxes (larger containers of several microwave popcorn bags)
+5,Popcorn,Bag,each bag of popcorn
+5,Popcorn,% Popped,the percentage of popcorn that popped
+5,Tennis,Speed,radar gun was used to measure the speed of each hit
+5,Tennis,Accuracy,the velocity of each player?s serve
+5,Tennis,Player,player identifier
+5,Tennis,Trial,trial number
+5,Tennis,Racquet,Type of racquet

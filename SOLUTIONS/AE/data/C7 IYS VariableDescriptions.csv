@@ -1,0 +1,62 @@
+Short Name ,Survey Question
+grade,In what grade school are you?
+age,What is your current age?
+gender,Are you a male or female?
+live,Do you live?
+times moved,How many different times has your family moved to a different home or apartment in the last 2 years?
+now living,Where are you now living?
+time work,"On the average during the school year, how many hours a week do you spend working in a paid job?"
+time no adult,"On the average during the school year, how many hours a week do you spend outside of school with no adult supervision?"
+time friend,"On the average during the school year, how many hours a week do you spend helping friends, neighbors, or others (including volunteer activities)?"
+time school act,"On the average during the school year, how many hours a week do you spend participating in extra-curricular activities at school (sports, music, clubs, etc.)?"
+time noschool act,"On the average during the school year, how many hours a week do you spend participating in activities outside of school (sports, music, 4-H, Scouts, clubs, etc.)?"
+time reading,"On the average during the school year, how many hours a week do you spend reading just for fun?"
+time church,"On the average during the school year, how many hours a week do you spend at church or synagogue worship service, programs, or activities?"
+time HW,"On the average during the school year, how many hours a week do you spend doing school assignments?"
+time excersize,On how many of the past 7 days did you exercise or do physical activity for at least 20 minutes?
+time fruit,"During the past 7 days, how many times did you eat fruit and/or vegetables?"
+30 smoke,"During the past 30 days, on the days you smoked, how many cigarettes did you smoke per day?"
+30 5drinks,"During the last 30 days, on how many days did you have 5 or more drinks of alcohol (glasses of wine, liquor, mixed drinks) in a row, that is within a couple of hours?"
+30dr driving,"In the last 30 days, how many times have you driven a car or other motor vehicle after using any amount of alcohol or other drugs?"
+30 cig,"In the past 30 days, on how many days have you smoked cigarettes?"
+30cigars,"In the past 30 days, on how many days have you smoked cigars?"
+30drink,"In the past 30 days, on how many days have you had at least one drink of alcohol (glass, bottle or can of beer; glass of wine, liquor or mixed drink)?"
+30marijuana,"In the past 30 days, on how many days have you used marijuana (pot, grass, hash, bud, weed)?"
+30glue,"In the past 30 days, on how many days have you sniffed glue, breathed the contents of gases or sprays in order to get high?"
+30meth,"In the past 30 days, on how many days have you used methamphetamines (crank, ice)?"
+30coke,"In the past 30 days, on how many days have you used cocaine (coke, rock, crack)?"
+30amph,"In the past 30 days, on how many days have you used amphetamines other than methamphetamines (like stimulants, uppers, speed)?"
+30prescription,"In the past 30 days, on how many days have you used prescription medications that were not prescribed for you by your doctor?"
+30counter,"In the past 30 days, on how many days have you used over the counter medications different from the directions?"
+30chew,"If you have ever used any of the substances below, on how many of the last 30 days have you used smokeless tobacco (chewing tobacco, snuff, plug, dipping tobacco)?"
+30steroid,"If you have ever used any of the substances below, on how many of the last 30 days have you taken steroid pills or shots without a doctor's prescription?"
+30barbituates,"If you have ever used any of the substances below, on how many of the last 30 days have you taken any other illegal drug (like barbiturates, heroin, hallucinogens) without a doctor's prescription?"
+pride,I feel I do not have much to be proud of.
+truth,It is important to tell the truth.
+values drug,It is against my values to use alcohol and drugs as a teenager.
+responsibility,I accept responsibility for my actions when I make a mistake or get into trouble.
+friends,I am good at make friends.
+fix problems,"When I have problems, I am good at finding a way to fix them."
+decision,I think things through carefully before I make a decision.
+excite,"Even if it is dangerous, I like to do exciting things."
+hard work,I believe that working hard now will make my life successful in the future.
+Pop cig,"Would you be more or less likely to be popular (respected or cool) with the other students in your school, if you smoked cigarettes?"
+Pop drink,"Would you be more or less likely to be popular (respected or cool) with the other students in your school, if you drank alcoholic beverages?"
+Pop marijuana,"Would you be more or less likely to be popular (respected or cool) with the other students in your school, if you smoked marijuana?"
+Pop otherdrug,"Would you be more or less likely to be popular (respected or cool) with the other students in your school, if you used any other illegal drug?"
+safe,I can feel safe at school.
+best school,I try to do my best in school.
+talk adult,There is at least one adult at school that I could to to for help with a problem.
+grades,"At school, my grades are mostly."
+home rules,In my home there are clear rules about what I can and cannot do.
+home happy,I have a happy home.
+home al drug,There are people living in my home who have a serious alcohol or drug problem.
+home close,I feel very close to at least one of my parents/guardians.
+home talk,I can talk about the things that bother me or I don't understand with someone in my home.
+home support,I can get help and support when I need it from someone in my home.
+home know,"A parent/guardian knows where I am and who I am with, especially in the evening and on weekends."
+home chores,"A parent/guardian checks to make sure I have done the things I am supposed to do (school homework, household chores, get home on time, etc.)."
+home wrong,"A parent/guardian generally finds out if I have done something wrong, and then punishes me."
+home praise,"When I am doing a good job, someone in my home lets me know about it."
+Wpdrink,"How wrong would your parents/guardians feel it would be for you to drink beer, wine or hard liquor (for example vodka, whiskey, gin) without their permission?"
+N safe,My neighborhood is a safe place to live.

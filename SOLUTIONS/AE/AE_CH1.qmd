@@ -1,6 +1,6 @@
 ---
 title: "AE-CH1"
-author: "Your Name Here"
+author: "SOLUTIONS"
 format: 
   html:
     self-contained: true
@@ -63,79 +63,200 @@ diff_female <- mean(mice$female_trt) - mean(mice$female_ctl)
 diff_female
 
 #compute difference in means for males
-
+diff_male <- mean(mice$male_trt) - mean(mice$male_ctl)
+diff_male
 ```
 
 Which group had the larger mean for females? For males? What does this indicate about the drugs' effectiveness?
 
-> YOUR ANSWER HERE
+> Control had larger mean for females (treatment was potentially effective).
+>
+> Control had larger mean for males (treatment was potentially effective).
+>
+> Note we say "potentially" effective because we need to check if it could have plausibly been due to chance (i.e. conduct HT or CI).
 
 \[Q3 - Q6 discussed in class\]
 
 ### Questions 7 - 10
 
+Note, there are two versions of the simulations below. The one that uses `sample_n()` is much slower than the one that uses `sample()`. A few comments on their differences:
+
+-   `sample_n()` expects a *data frame* as its input and returns a *data frame* as its output.
+
+    -   data input: `females` (10 x 1) data frame
+
+    -   `allocation` output object: 10x1 data frame with column `worm_count`. Rows have been randomly shuffled.
+
+-   In contrast, `sample()` expects a *vector* as its input and returns a *vector* as its output.
+
+    -   data input: `females$worm_count`
+
+    -   `allocation` output object: vector of length 10, whose worm count values have been randomly shuffled
+
+Note how the different output determines how the `allocation` object needs to be entered into `mean()`. `mean()` expects a vector as its input.
+
+The `tictoc` package, and its functions `tic()` and `toc()` are used to compute the amount of time it takes to run the for-loop.
+
 ```{r}
 #create subset for female mice only
-female_mice <- mice_long %>% 
+females <- mice_long %>% 
   filter(sex == "female") %>% 
   select(worm_count)
 
+#######################################
+########### sample_n version ##########
+#######################################
+
 #randomly shuffle the 10 observations
+allocation <- sample_n(females, size = 10)
+allocation #10 x 1data frame
 
 #consider first 5 obs to be treatment and last 5 obs to be control 
 #compute mean_trt and mean_ctl
+mean_trt <- mean(allocation$worm_count[1:5])
+mean_ctl <- mean(allocation$worm_count[6:10])
+
 
 #compute difference in means (ctl - trt)
+diff_sample <- mean_ctl - mean_trt
+
 
 #initialize empty vector and then use for loop to repeat many times
+#install.packages("tictoc")
+library(tictoc)
+tic()
+diff <- c(1:10000)
+for(i in 1:10000){
+  allocation <- sample_n(females, size = 10)
+  mean_trt <- mean(allocation$worm_count[1:5])
+  mean_ctl <- mean(allocation$worm_count[6:10])
+  diff[i] <- mean_ctl - mean_trt
+}
+toc() #18.757 sec
+
+
+#######################################
+########### sample() version ##########
+#######################################
+tic()
+diff <- c(1e5)
+for(i in 1:100000){
+  allocation <- sample(females$worm_count, size = 10)
+  mean_trt <- mean(allocation[1:5])
+  mean_ctl <- mean(allocation[6:10])
+  diff[i] <- mean_ctl - mean_trt
+}
+toc() #0.313 sec for 10K
+#2.4 sec for 100K
+#23.962 sec for 1M
 
 #plot histogram of differences in means (ctl - trt)
 #add vertical line at observed difference 7.6
+sims <- data.frame(diff = diff)
+ggplot(sims, aes(x = diff)) +
+  geom_histogram(color = "white",
+                 binwidth = 1) +
+  geom_vline(xintercept = diff_sample, 
+             color = "blue") +
+  geom_vline(xintercept = -diff_sample, 
+             color = "blue")
 
 #count # of sims greater than 7.6, divide by # of iterations 
 #this is empirical (one-sided) p-value
+p_value1 <- sum(diff > 7.6)/100000
+p_value1
 
 
 #find the two-sided empirical p-value
+p_value2 <- sum(diff > 7.6 | diff < -7.6)/100000
+p_value2
 
-diff <- c()
-for(i in 1:100000){
-  sample_i <- sample(female_mice$worm_count, size = 10)
-  mean_trt <- mean(sample_i[1:5])
-  mean_ctl <- mean(sample_i[6:10])
-  diff[i] <- mean_ctl - mean_trt
-}
 
-sim_data <- data.frame(diff = diff)
-ggplot(sim_data, aes(x = diff)) +
-  geom_histogram(color = "white", binwidth = 2)
+
 ```
 
 ### Question 11
 
-> YOUR ANSWER HERE
+> My one-sided p-value is `r p_value1` , and my two-sided p-value is `r p_value2`
 
 ### Question 12
 
-> YOUR ANSWER HERE
+> The small p-value indicates it's very unlikely that the null hypothesis is true. In other words, it's very unlikely that the observed difference between the treatment and control group was simply due to chance. Therefore, there is sufficient evidence that K11777 has a positive inhibitory effect on the schistosome worm in female mice.
 
 \[Skip Q13 - Q16\]
 
 ### Question 17
 
+*H*<sub>0</sub> : age and layoff are independent - observed relationship was just due to chance
+
+*H*<sub>*A*</sub> : age and layoff are NOT independent - observed relationship was NOT just due to chance
+
 ```{r}
+#read data
+age <- read_csv("./data/C1 Age.csv") %>% 
+  clean_names()
+
+#subset for layoffs
+layoffs <- age %>% filter(layoff == "yes")
+no_layoff <- age %>% filter(layoff == "no")
+diff_sample <- mean(layoffs$age) - mean(no_layoff$age)
+
 #adapt code from simulations above
+diff <- c(1e5)
+for(i in 1:100000){
+  allocation <- sample(age$age, size = 10)
+  mean_trt <- mean(allocation[1:3])
+  mean_ctl <- mean(allocation[4:10])
+  diff[i] <- mean_ctl - mean_trt
+}
+
+sims <- data.frame(diff = diff)
+ggplot(sims, aes(x = diff)) +
+  geom_histogram(color = "white",
+                 binwidth = 5) +
+  geom_vline(xintercept = diff_sample, 
+             color = "blue") +
+  geom_vline(xintercept = -diff_sample, 
+             color = "blue")
+
+p_value <- sum(diff > diff_sample)/100000
+p_value
 ```
+
+> With an *α* = 0.01, since our p-value is `p_value`, we fail to reject *H*<sub>0</sub> .
 
 ### Question 18
 
 ```{r}
+diff_sample <- median(layoffs$age) - median(no_layoff$age)
+
 #adapt code from simulations above
+diff <- c(1e5)
+for(i in 1:100000){
+  allocation <- sample(age$age, size = 10)
+  med_trt <- median(allocation[1:3])
+  med_ctl <- median(allocation[4:10])
+  diff[i] <- med_ctl - med_trt
+}
+
+sims <- data.frame(diff = diff)
+ggplot(sims, aes(x = diff)) +
+  geom_histogram(color = "white",
+                 binwidth = 5) +
+  geom_vline(xintercept = diff_sample, 
+             color = "blue") +
+  geom_vline(xintercept = -diff_sample, 
+             color = "blue")
+
+p_value <- sum(diff > diff_sample)/100000
+p_value
 ```
+
+> > With an *α* = 0.01, since our p-value is `p_value`, we fail to reject *H*<sub>0</sub> .
 
 ## Randomization Example
 
-Let’s see the magic of randomization in action. Imagine that we have a promising new curriculum for teaching math to Kindergarteners, and we want to know whether or not the curriculum is effective. Let's explore how a randomized experiment would help us test this. First, we'll load in a dataset called `ed_data`. This data originally came from the Early Childhood Longitudinal Study (ECLS) program but has been adapted for this example. Let's take a look at the data.
+Let's see the magic of randomization in action. Imagine that we have a promising new curriculum for teaching math to Kindergarteners, and we want to know whether or not the curriculum is effective. Let's explore how a randomized experiment would help us test this. First, we'll load in a dataset called `ed_data`. This data originally came from the Early Childhood Longitudinal Study (ECLS) program but has been adapted for this example. Let's take a look at the data.
 
 ```{r, warning = FALSE}
 ed_data <- read_csv("https://docs.google.com/spreadsheets/d/e/2PACX-1vTQ9AvbzZ2DBIRmh5h_NJLpC_b4u8-bwTeeMxwSbGX22eBkKDt7JWMqnuBpAVad6-OXteFcjBY4dGqf/pub?gid=300215043&single=true&output=csv")
@@ -207,7 +328,7 @@ ed_data %>%
   summarise(post_trt_rand_avg = mean(MATH_post_trt_rand))
 ```
 
-Remember that in a randomized experiment, we calculate the treatment effect by simply taking the difference in the group averages (i.e. $\overline{y}_T - \overline{y}_C$), so here our estimated treatment effect is 49.6−39.6=10.0. Recall that we said this could be estimated using the simple linear regression model $\hat{y} = b_0 + b_1T$. We can fit this model in R to verify that our estimated treatment effect is $b_1 = 10$
+Remember that in a randomized experiment, we calculate the treatment effect by simply taking the difference in the group averages (i.e. $\overline{y}\_T - \overline{y}\_C$), so here our estimated treatment effect is 49.6−39.6=10.0. Recall that we said this could be estimated using the simple linear regression model *ŷ* = *b*<sub>0</sub> + *b*<sub>1</sub>*T*. We can fit this model in R to verify that our estimated treatment effect is *b*<sub>1</sub> = 10
 
 ```{r}
 fit <- lm(MATH_post_trt_rand ~ Trt_rand, data = ed_data)
@@ -231,15 +352,13 @@ Note that even though the treatment raised student scores by 10 points on averag
 
 In the previous sections, we made clear that you cannot calculate the causal effect of a treatment using a *simple* linear regression model unless you have random assignment. What about a *mutiple* linear regression model?
 
-The answer here is more complicated. We’ll give you an overview, but note that this is a tiny sliver of an introduction and that there is an entire *field* of methods devoted to this problem. The field is called **causal inference methods** and focuses on the conditions under and methods in which you can calculate causal effects in observational studies.
+The answer here is more complicated. We'll give you an overview, but note that this is a tiny sliver of an introduction and that there is an entire *field* of methods devoted to this problem. The field is called **causal inference methods** and focuses on the conditions under and methods in which you can calculate causal effects in observational studies.
 
-Recall, we said before that in an observational study, the reason you can’t attribute causality between X and Y is because the relationship is **confounded** by an omitted variable Z. What if we included Z in the model (making it no longer omitted), as in:
+Recall, we said before that in an observational study, the reason you can't attribute causality between X and Y is because the relationship is **confounded** by an omitted variable Z. What if we included Z in the model (making it no longer omitted), as in:
 
-$$
-\hat{y} = b_0 + b_1T + b_2Z
-$$
+*ŷ* = *b*<sub>0</sub> + *b*<sub>1</sub>*T* + *b*<sub>2</sub>*Z*
 
-we can now interpret the coefficient $b_1$ as **the estimated effect of the treatment on outcomes, holding constant (or adjusting for) Z**.
+we can now interpret the coefficient *b*<sub>1</sub> as **the estimated effect of the treatment on outcomes, holding constant (or adjusting for) Z**.
 
 Importantly, the relationship between T and Y, adjusting for Z can be similar or different than the relationship between T and Y alone. In advance, you simply cannot know one from the other.
 
@@ -270,7 +389,7 @@ We can see that both models give estimates of the treatment effect that are roug
 
 In the observational case, if you *know* the process through which people are assigned to or select treatment then the above multiple regression approach can get you pretty close to the causal effect of the treatment on the outcomes. This is what happened in our `fit2_non_rand` model above where we knew treatment was determined by SES, and so we controlled for it in our model.
 
-But this is **rarely** the case. In most studies, selection of treatment is **not based on a single variable**. That is, before treatment occurs, those that will ultimately receive the treatment and those that do not might differ in a myriad of ways. For example, students that play instruments may not only come from families with more resources and have higher motivation, but may also play fewer sports, already be great readers, have a natural proclivity for music, or come from a musical family. As an analyst, it is typically very difficult – if not impossible – to know how and why some people selected a treatment and others did not.
+But this is **rarely** the case. In most studies, selection of treatment is **not based on a single variable**. That is, before treatment occurs, those that will ultimately receive the treatment and those that do not might differ in a myriad of ways. For example, students that play instruments may not only come from families with more resources and have higher motivation, but may also play fewer sports, already be great readers, have a natural proclivity for music, or come from a musical family. As an analyst, it is typically very difficult -- if not impossible -- to know how and why some people selected a treatment and others did not.
 
 Without randomization, here is the best approach:
 
@@ -280,4 +399,4 @@ Without randomization, here is the best approach:
 
 3.  Look for variables in your data that you can use in a multiple regression to control for these other possible confounders. Pay attention to how your estimate of the treatment impact changes as you add these into your model (often it will decrease).
 
-4.  State very clearly the assumptions you are making, the variables you have controlled for, and the possible other variables you were unable to control for. Be tentative in your conclusions and make clear their limitations – that this work is suggestive and that future research – a randomized experiment – would be more definitive.
+4.  State very clearly the assumptions you are making, the variables you have controlled for, and the possible other variables you were unable to control for. Be tentative in your conclusions and make clear their limitations -- that this work is suggestive and that future research -- a randomized experiment -- would be more definitive.
