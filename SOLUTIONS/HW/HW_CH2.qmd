@@ -1,0 +1,457 @@
+---
+title: "Homework Chapter 2"
+author: "SOLUTIONS"
+format: 
+  html:
+    self-contained: true
+    toc: true
+    toc_float: true
+    number_section: false
+    highlight: "tango"
+    theme: "cosmo"
+    df-print: paged
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+## Instructions
+
+This Homework comes from Chapter 2 of the Textbook. You should refer to AE_CH2 for some template code.
+
+Complete the following exercises:
+
+-   E.2
+-   E.4
+-   E.6
+-   E.7
+-   E.8
+-   E.13 (skip part d)
+
+```{r}
+#| label: load-packages
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(janitor)
+library(infer)
+library(broom)
+```
+
+## E.2
+
+> If the hypothesis test results in a small p-value, we can be confident that *β*<sub>1</sub> ≠ 0, but that is different from being confident that the regression model provides a good estimate of the response value for a given value of *x*<sub>*i*</sub>. If *x*<sub>*i*</sub> is an outlier or not within the range of the observed data, the regression line will not give a useful estimate of *y*<sub>*i*</sub>. Additionally, just because there is a small p-value doesn't mean the model was appropriate - assumptions should be checked.
+
+## E.4
+
+> The first model involving parameters should have an *ϵ*<sub>*i*</sub> for the random error term - it's not appropriate to have an observed *y*<sub>*i*</sub> without an error term. The second model does not need the random error term because it is describing the fitted regression line computed from the sample data. The fitted/predicted values *ŷ* all fall on a straight line with slope *b*<sub>1</sub> and *b*<sub>0</sub>.
+
+## E.6
+
+```{r}
+#| label: load-data2
+#| message: false
+#| warning: false
+
+games2 <- read_csv("./data/C2 Games2.csv") %>% 
+  clean_names()
+```
+
+### Part a
+
+```{r}
+#plot the data
+ggplot(games2, aes(x = type2, y = time)) +
+  geom_point()
+ggplot(games2, aes(x = type2, y = time)) +
+  geom_boxplot()
+  
+```
+
+> Color Left group has highest median
+>
+> Standard right has lowest median
+>
+> Spread looks relatively similar across groups
+>
+> Potential low outlier in Standard Left group
+
+### Part b
+
+```{r}
+#conduct ANOVA
+time_type2_model <- aov(time ~ type2, 
+                        data = games2)
+results <- tidy(time_type2_model)
+results
+
+```
+
+> The ANOVA test shows a large F-statistic of `r results[1,5] %>% pull()` with a corresponding p-value of `r results[1,6] %>% pull()`. Therefore we can reject the null hypothesis that the group means are all the same, in favor of the alternative that at least one group mean differs from the others. 
+
+### Part c
+
+```{r, warning = FALSE}
+#residual plot
+residuals <- augment(time_type2_model)
+ggplot(residuals, aes(x = .fitted, 
+                      y = .resid)) +
+  geom_point()
+
+ggplot(residuals, aes(x = .resid)) +
+  geom_histogram(color = "white",
+                 binwidth = 1)
+
+residuals %>% 
+  rownames_to_column(var = "order") %>% 
+  ggplot(aes(x = as.numeric(order), 
+             y = .resid)) +
+  geom_point()
+```
+
+> Residuals appear to be approximately normally distributed and there are not apparent patterns to suggest equal variance or independence assumptions are violated. 
+
+### Part d
+
+> Answers will vary. Skill level of the subjects and the order in which they played the game could influence the results. If all students chosen were right-handed, this could bias the results in one direction; however, it does not appear that right-handed group has a lower mean. 
+
+### Part e
+
+> There is sufficient evidence to claim there is a difference in group means. Because random assignment was used, we can say this difference was *caused* by the game type. Since random sampling was used to recruit college students, we can generalize these findings to the population of college students who agreed to participate. Since this was done only at one college, we can't generalize to all college students at other colleges. 
+
+## E.7
+
+### Part a
+
+> Explanatory variable: brand
+> observational units: paper towels
+> Response variable: breaking strength (total weight held)
+
+$$H_0: \mu_1 = \mu_2 = \mu_3 \text{ average strength is the same for all three brands}$$
+$$H_A: \text{mean for at least one brand differs}$$
+
+### Part b
+
+```{r}
+#| message: false
+#| warning: false
+
+paper_towels <- read_csv("./data/C2 PaperTowel.csv") %>% 
+  clean_names()
+
+ggplot(paper_towels, aes(x = brand,
+                         y = strength)) +
+  geom_point()
+
+ggplot(paper_towels, aes(x = brand,
+                         y = strength)) +
+  geom_boxplot()
+```
+
+> The center and spread are very different for Bounty compared to the other brands. 
+
+> None of the groups appear to have skew or outliers.
+
+### Part c
+
+```{r}
+paper_towel_model <- aov(strength ~ brand, 
+                        data = paper_towels)
+results <- tidy(paper_towel_model)
+results
+```
+
+> The ANOVA gives a very large F-statistic of `r results[1,5] %>% pull()` and corresponding p-value of `r results[1,6] %>% pull()`. This indicates there is a significant difference in average strength between brands.
+
+### Part d
+
+```{r}
+#show equal variance violated
+sds <- paper_towels %>% 
+  group_by(brand) %>% 
+  summarize(sd = sd(strength))
+sds
+s1 <- sds[1,2]
+s2 <- sds[2,2]
+s3 <- sds[3,2]
+max(s1,s2,s3)/min(s1,s2,s3)
+
+#create variable for log(Strength). Note, by default in R, log() computes the natural log
+paper_towels <- paper_towels %>% 
+  mutate(ln_strength = log(strength))
+
+#conduct ANOVA with log(Strength) as outcome
+log_model <- aov(ln_strength ~ brand, 
+                        data = paper_towels)
+results <- tidy(log_model)
+results
+
+```
+
+> The equal variance assumption is violated because the ratio of standard deviations exceeds 2
+
+> The ANOVA gives a very large F-statistic of `r results[1,5] %>% pull()` and corresponding p-value of `r results[1,6] %>% pull()`. This indicates there is a significant difference in average strength between brands.
+
+### Part e
+
+```{r}
+paper_towels <- paper_towels %>% 
+  mutate(res_orig_model = paper_towel_model$residuals,
+         res_log_model = log_model$residuals,
+         fit_orig_model = paper_towel_model$fitted.values,
+         fit_log_model = log_model$fitted.values)
+
+ggplot(paper_towels, aes(x = fit_orig_model,
+                         y = res_orig_model)) +
+  geom_point()
+
+ggplot(paper_towels, aes(x = fit_log_model,
+                         y = res_log_model)) +
+  geom_point()
+
+ggplot(paper_towels, aes(x = res_orig_model)) +
+  geom_histogram(color = "white",
+                 bins = 15)
+ggplot(paper_towels, aes(x = res_log_model)) +
+  geom_histogram(color = "white",
+                 bins = 15)
+```
+
+> The residual plots indicate that the equal variance assumption is severely violated in the original model, but the log model fixes this problem. Similarly, the histogram of the residuals is more normal for the log model. The log model is therefore more appropriate for conducting the ANOVA test. 
+
+### Part f
+
+> The results would generalize only to those individual rolls of paper towels because they may be different from the population of rolls in some way. 
+
+### Part g
+
+> The results would hold for the entire population of paper towels. However, you should still be cautious about extraneous variables such as the distribution centers the rolls came from. 
+
+## E.8
+
+### Part a
+
+```{r}
+#| message: false
+#| warning: false
+
+jury <- read_csv("./data/C2 Jury.csv") %>% 
+  clean_names()
+glimpse(jury)
+
+ggplot(jury, aes(x = judge, y = percent_women)) +
+  geom_point()
+
+ggplot(jury, aes(y = judge, x = percent_women)) +
+  geom_boxplot()
+```
+
+> The medians and the spreads appear to differ substantially across judges. There may be an upper outlier for Judge B and a lower outlier for Judge Spock.
+
+### Part b
+
+```{r}
+jury_model <- aov(percent_women ~ judge, 
+                        data = jury)
+results <- tidy(jury_model)
+results
+```
+
+> The ANOVA gives a large F-statistic of `r results[1,5] %>% pull()` and corresponding p-value of `r results[1,6] %>% pull()`. This indicates there is a significant difference in average percentage of women across judges.
+
+### Part c
+
+> We should inquire how the data was collected. For example, were Judges A - F chosen as a random sample of judges in Boston? What years were included? Was the data recent enough to be relevant? If a random sample was not used or there are other features of the sample that are not representative of relevent judges in Boston, then the results may be biased and should not be used in court.
+
+### Part d
+
+> The ANOVA only concludes that one of the means differs, but it does not tell us which mean differs. Additionally, the equal variance assumption might be violated. It may be better to conduct a two-sample t-test for Spock vs. all other judges.
+
+## E.13
+
+\[Read Section 2.9 before completing this exercise\]
+
+```{r}
+#| label: load-data3
+#| message: false
+#| warning: false
+
+weights <- read_csv("./data/C2 Weights.csv") %>% 
+  clean_names()
+glimpse(weights)
+```
+
+### Part a
+
+```{r}
+weights_model <- lm(maximumlifespan ~ bodyweight,
+                    data = weights)
+
+weights <- weights %>% 
+  mutate(residuals = weights_model$residuals,
+         fitted = weights_model$fitted.values)
+ggplot(weights, aes(x = bodyweight, y = residuals)) +
+  geom_point()
+ggplot(weights, aes(x = fitted, y = residuals)) +
+  geom_point()
+ggplot(weights, aes(x = residuals)) +
+  geom_histogram(color = "white",
+                 bins = 10)
+```
+
+### Part b
+
+```{r}
+weights <- weights %>% 
+  mutate(log_y = log(maximumlifespan),
+         inverse_y = 1/maximumlifespan,
+         sqrt_y = sqrt(maximumlifespan))
+
+## log_y
+weights_model <- lm(log_y ~ bodyweight,
+                    data = weights)
+
+weights <- weights %>% 
+  mutate(residuals = weights_model$residuals,
+         fitted = weights_model$fitted.values)
+ggplot(weights, aes(x = bodyweight, y = residuals)) +
+  geom_point()
+ggplot(weights, aes(x = fitted, y = residuals)) +
+  geom_point()
+ggplot(weights, aes(x = residuals)) +
+  geom_histogram(color = "white",
+                 bins = 10)
+
+## 1/y
+weights_model <- lm(inverse_y ~ bodyweight,
+                    data = weights)
+
+weights <- weights %>% 
+  mutate(residuals = weights_model$residuals,
+         fitted = weights_model$fitted.values)
+ggplot(weights, aes(x = bodyweight, y = residuals)) +
+  geom_point()
+ggplot(weights, aes(x = fitted, y = residuals)) +
+  geom_point()
+ggplot(weights, aes(x = residuals)) +
+  geom_histogram(color = "white",
+                 bins = 10)
+
+#sqrt y
+weights_model <- lm(sqrt_y ~ bodyweight,
+                    data = weights)
+
+weights <- weights %>% 
+  mutate(residuals = weights_model$residuals,
+         fitted = weights_model$fitted.values)
+ggplot(weights, aes(x = bodyweight, y = residuals)) +
+  geom_point()
+ggplot(weights, aes(x = fitted, y = residuals)) +
+  geom_point()
+ggplot(weights, aes(x = residuals)) +
+  geom_histogram(color = "white",
+                 bins = 10)
+
+## log_y and log_x
+weights_model <- lm(log_y ~ log(bodyweight),
+                    data = weights)
+
+weights <- weights %>% 
+  mutate(residuals = weights_model$residuals,
+         fitted = weights_model$fitted.values)
+ggplot(weights, aes(x = log(bodyweight), y = residuals)) +
+  geom_point()
+ggplot(weights, aes(x = fitted, y = residuals)) +
+  geom_point()
+ggplot(weights, aes(x = residuals)) +
+  geom_histogram(color = "white",
+                 bins = 10)
+```
+
+### Part c
+
+```{r}
+weights <- weights %>% 
+  mutate(log_y = log(gestationtime),
+         inverse_y = 1/gestationtime,
+         sqrt_y = sqrt(gestationtime))
+
+## log_y
+weights_model <- lm(log_y ~ bodyweight,
+                    data = weights)
+
+weights <- weights %>% 
+  mutate(residuals = weights_model$residuals,
+         fitted = weights_model$fitted.values)
+ggplot(weights, aes(x = bodyweight, y = residuals)) +
+  geom_point()
+ggplot(weights, aes(x = fitted, y = residuals)) +
+  geom_point()
+ggplot(weights, aes(x = residuals)) +
+  geom_histogram(color = "white",
+                 bins = 10)
+
+## 1/y
+weights_model <- lm(inverse_y ~ bodyweight,
+                    data = weights)
+
+weights <- weights %>% 
+  mutate(residuals = weights_model$residuals,
+         fitted = weights_model$fitted.values)
+ggplot(weights, aes(x = bodyweight, y = residuals)) +
+  geom_point()
+ggplot(weights, aes(x = fitted, y = residuals)) +
+  geom_point()
+ggplot(weights, aes(x = residuals)) +
+  geom_histogram(color = "white",
+                 bins = 10)
+
+#sqrt y
+weights_model <- lm(sqrt_y ~ bodyweight,
+                    data = weights)
+
+weights <- weights %>% 
+  mutate(residuals = weights_model$residuals,
+         fitted = weights_model$fitted.values)
+ggplot(weights, aes(x = bodyweight, y = residuals)) +
+  geom_point()
+ggplot(weights, aes(x = fitted, y = residuals)) +
+  geom_point()
+ggplot(weights, aes(x = residuals)) +
+  geom_histogram(color = "white",
+                 bins = 10)
+
+## log_y and log_x
+weights_model <- lm(log_y ~ log(bodyweight),
+                    data = weights)
+
+weights <- weights %>% 
+  mutate(residuals = weights_model$residuals,
+         fitted = weights_model$fitted.values)
+ggplot(weights, aes(x = log(bodyweight), y = residuals)) +
+  geom_point()
+ggplot(weights, aes(x = fitted, y = residuals)) +
+  geom_point()
+ggplot(weights, aes(x = residuals)) +
+  geom_histogram(color = "white",
+                 bins = 10)
+```
+
+\[skip part d\]
+
+## Reflection prompts
+
+*Respond to each of the following after you have completed all exercises in this assignment*
+
+*(RP1): What were the main concepts covered in this assignment?*
+
+> YOUR ANSWER HERE
+
+*(RP2): What's one thing you understand better after completing these exercises?*
+
+> YOUR ANSWER HERE
+
+*(RP3): What exercise(s) gave you the most trouble? What was difficult about them/where did you get stuck?*
+
+> YOUR ANSWER HERE

@@ -1,0 +1,67 @@
+Chapter,Data Set,Variable Name,Description
+7,BirdKeeping,Gender,1 represents females.
+7,BirdKeeping,Status,1 represents high economic status
+7,BirdKeeping,Age,owners age
+7,BirdKeeping,Smoked,years of smoking
+7,BirdKeeping,Cigarettes,number of cigarettes per day
+7,BirdKeeping,Bird,1 represents owning a bird
+7,BirdKeeping,LungCancer,1 represents having lung cancer
+7,Birdnest,Species,species of North American passerine bird
+7,Birdnest,Common,the common name for each species
+7,Birdnest,Length,"average length of the
+average length of the species"
+7,Birdnest,Nesttype,the type of nest made by each species
+7,Birdnest,Location,the location where nests are built
+7,Birdnest,No.eggs,the average number of eggs 
+7,Birdnest,Color,"whether or not the eggs are colored, 0 represents white eggs"
+7,Birdnest,Incubate,The incubation time of the eggs
+7,Birdnest,Nestling,The time the hatched birds stay in the next
+7,Birdnest,Totcare,incubation time plus nestling time
+7,Birdnest,Closed,1 represents a closed type of nest
+7,Burns,Area,"size of the third-degree burns on their body, the midpoint of set intervals: ln (area in square centimeters +1)"
+7,Burns,Survive,1 represents survival
+7,Cancer2,Malignant,1 represents a malignant sample
+7,Cancer2,radius,"radius is actually the average radius (in micrometers, mm) of all visible cell nuclei"
+7,Cancer2,concavity,1 represents a concave cell
+7,Cancercells,MedianRadius,the median radius of all samples within each group
+7,Cancercells,Malignant,1 represents a malignant sample
+7,Convict,Education,“short” education (15 years or less) or a “long” education (more than 15 years)
+7,Convict,convicted,1 represents a post treatment conviction
+7,Donner,Name,individual name
+7,Donner,Gender,individual gender
+7,Donner,Age,age of individual
+7,Donner,Survived,1 represents survival
+7,Donner,Family Group Size,the number of family members the individual had in this group
+7,Oscars,Movie,movie name
+7,Oscars,Year,year the movie was made
+7,Oscars,Actor in a Leading Role,1 represents winning an award in this category
+7,Oscars,Actress in a Leading Role,1 represents winning an award in this category
+7,Oscars,Actor in a Supporting Role,1 represents winning an award in this category
+7,Oscars,Actress in a Supporting Role,1 represents winning an award in this category
+7,Oscars,Art Direction,1 represents winning an award in this category
+7,Oscars,Cinematography,1 represents winning an award in this category
+7,Oscars,Costume Design,1 represents winning an award in this category
+7,Oscars,Directing,1 represents winning an award in this category
+7,Oscars,Film Editing,1 represents winning an award in this category
+7,Oscars,Makeup,1 represents winning an award in this category
+7,Oscars,Original Score,1 represents winning an award in this category
+7,Oscars,Original Song,1 represents winning an award in this category
+7,Oscars,Sound Editing,1 represents winning an award in this category
+7,Oscars,Sound Mixing,1 represents winning an award in this category
+7,Oscars,Visual Effects,1 represents winning an award in this category
+7,Oscars,Adapted Screenplay,1 represents winning an award in this category
+7,Oscars,Original Screenplay,1 represents winning an award in this category
+7,Oscars,Best Picture,1 represents winning an award in this category
+7,Oscars2,Movie,movie name
+7,Oscars2,Year,year the movie was made
+7,Oscars2,GoldenGlobeNominations,number of Golden Globe nominations
+7,Oscars2,GoldenGlobeWins,number of Golden Globe wins
+7,Oscars2,SAGNominations,number of SAG nominations
+7,Oscars2,SAGWins,number of SAG wins
+7,Oscars2,BestPicture,1 represents winning a best picture award
+7,Tatoos,method,indicator or which method was used
+7,Tatoos,gender,1=Male
+7,Tatoos,depth, 1= deep
+7,Tatoos,removal,1 = successful
+7,SIRDS,birthweight,Birthweight of infant in kg
+7,SIRDS,survival,Survival = 1 represents that the child lived.  Survival = 0 represents that the child died. 

@@ -1,0 +1,50 @@
+Chapter,Data Set,Variable Name,Description
+1,Age,age,The age of the employee
+1,Age,layoff,Whether or not a person was laid off at Westvaco
+1,Birdnest,Species,species of North American passerine bird
+1,Birdnest,Common,the common name for each species
+1,Birdnest,Length,"average length of the
+average length of the species"
+1,Birdnest,Nest Type,the type of nest made by each species
+1,Birdnest,Location,the location where nests are built
+1,Birdnest,No.eggs,the average number of eggs 
+1,Birdnest,Color,"whether or not the eggs are colored, 0 represents white eggs"
+1,Birdnest,Incubate,The incubation time of the eggs
+1,Birdnest,Nestling,The time the hatched birds stay in the next
+1,Birdnest,Totcare,incubation time plus nestling time
+1,Birdnest,Closed,1 represents a closed type of nest
+1,Car1,Price,The  suggested retail price from Kelley Blue Book of randomly selected used 2005 General Motors cars.
+1,Car1,Make,Car manufacturers that are part of the GM coorporation
+1,Car1,Sound,"Whether or not the car has upgraded speakers, 1 = yes"
+1,Car1,Leather,"Whether or not the car has a leather interior, 1 = yes"
+1,ChiSq,,random values from a highly skewed populatio
+1,Faculty,Gender,gender of the faculty member
+1,Faculty,Title,The title of the faculty member
+1,Faculty,Title2,titles are grouped into four categories
+1,Faculty,PhD graduated year,the year the faculty member graduated with their most recent PhD
+1,Faculty,PhD School,the location where the faculty member obtained their PhD
+1,Faculty,Salary,The current salary (in 2009) of the faculty member
+1,Faculty,Dept,"The department where the faculty member is primarily located. Note that sometimes college deans (who are paid much higher salaries), are still listed under a particular department"
+1,MedSalaries,,random sample of 100 salaries of medical doctors who were teaching at United States universities in 2009.
+1,Mice,Female-Trt,Number of worms found in the liver of the female treatment mice in the schistosomiasis study
+1,Mice,Female-Ctl,Number of worms found in the liver of the female control mice in the schistosomiasis study
+1,Mice,Male-Trt,Number of worms found in the liver of the male treatment  mice in the schistosomiasis study
+1,Mice,Male-Ctl,Number of worms found in the liver of the male control mice in the schistosomiasis study
+1,Music,Prepulse,Pulse rate in the beginning of the study
+1,Music,Slowsong,"Pulse rate after listening to a slow song, Vocalise by Rachmaninoff"
+1,Music,Fastsong,"Pulse rate after listening to a fast song, Beyond, by Nine Inch
+Nails,"
+1,Music,Favmusic,"1 = strong preference for slow songs, 2 = mild preference for slow songs, 3 = mild preference for fast songs, 4 = strong preference for fast songs"
+1,Music,Slowdiff,Slowsong minus prepulse
+1,Music,Fastdiff,Fastsong minus prepulse
+1,Music,Fastdiff_Minus_Slowdiff,Fastdiff minus slowdiff
+1,NLBB Salaries,Team,The major league baseball team that each player is on in 2005
+1,NLBB Salaries,Position,"Pitcher, Catcher and First Baseman are three of the nine fielding positions in baseball"
+1,NLBB Salaries,Name,"Randomly selected players (catchers, pitchers, and first basemen) from 2005 National League baseball teams."
+1,NLBB Salaries, Salary ,Salaries in 2005
+1,NLBB Salaries,Rank,"Rank of salaries, from lowest to highest"
+1,SameMean,,Three generated columns of data
+1,Twins,Pair #,Identifier for each pair of twins
+1,Twins,Unaffected,volume (cm3) of the hippocampus of the twin without schizophrenia
+1,Twins,Affected,volume (cm3) of the hippocampus of the twin with schizophrenia
+1,Twins,Difference,Unaffected minus Affected

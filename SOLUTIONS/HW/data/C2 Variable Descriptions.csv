@@ -1,0 +1,36 @@
+Chapter,Data Set,Variable Name,Description
+2,Emission,Year,Year the car was manufactured
+2,Emission,emission,hydrocarbon emission in parts per million (ppm) at idling speed for the car
+2,Games1,studentID,student ID
+2,Games1,Type,"The type of game played, standard represents a game where all pieces are the same color"
+2,Games1,Time,The completion time of the game
+2,Games2,studentID,student ID
+2,Games2,numPegs,The number of pieces withing the game
+2,Games2,Type,"The type of game played, standard represents a game where all pieces are the same color"
+2,Games2,Time,The completion time of the game
+2,Games2,Hand,Whether the student played with their right or left hand
+2,Games2,Type2,the type and hand used in each game
+2,Hodgkin's,PatientType,"normal, patient with active Hodgkin?s disease, or patient with inactive Hodgkin?s disease"
+2,Hodgkin's,PlasmaLevels,plasma bradykininogen levels (in micrograms of bradykininogen per milliliter of plasma)
+2,Jury,Judge,Identifier of seven judges in the Boston area
+2,Jury,PercentWomen,the percentage of women selected in the judge?s venire
+2,Normal,,generated data used for creating normal probability plots
+2,PaperTowel,Brand,The brand of the paper towel
+2,PaperTowel,Water,The number of drops of water added to the center of the paper towel
+2,PaperTowel,Strength,The weight in grams added to the paper towel before it tore
+2,Skinfold,Disease,The type of disease
+2,Skinfold,Thickness,a measurement made by pinching the skin near the biceps and then using a calipers to measure the skin thickness (mm)
+2,Tires,Brand,five brands of tires chosen at random from local stores
+2,Tires,Miles,tread durability in thousands of miles
+2,Weights,species ,
+2,Weights,bodyweight,body weight in kg
+2,Weights,brainweight,brain weight in grams
+2,Weights,maximumlifespan,maximum life span in years
+2,Weights,gestationtime,gestation time in days
+2,Weights,totalsleep,the number of hours each day that the species typically sleeps
+2,Winglength1,Experiment,
+2,Winglength1,WingLength,length of each wing in cm
+2,Winglength1,FlightTime,flight time in seconds
+2,Winglength2,WingLength,length of each wing in cm
+2,Winglength2,FlightTime,flight time in seconds
+2,Winglength2,Order,Randomized Ordering of Experiments

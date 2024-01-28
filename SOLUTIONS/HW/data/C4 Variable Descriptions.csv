@@ -1,0 +1,44 @@
+Chapter,Data Set,Variable Name,Description
+4,Bacteria,Building,The buildings where data was collected
+4,Bacteria,Location,the surfaces where swabs were collected
+4,Bacteria,Count,number of colony-forming units (CFUs) a measure of bacteria levels.
+4,Cholesterol,Patient,patient number
+4,Cholesterol,Exercies,Does the patient excersize regularly?
+4,Cholesterol,Diet,Does the patient have a healthy diet?
+4,Cholesterol,Drug,Drug type used
+4,Cholesterol,Cholesterol,cholesterol levels
+4,Cups,Side Temp,The temperature levels when the side seam was connected
+4,Cups,Adhesive,whether an additional adheasive was used
+4,Cups,Bottom Temp,the temperature levels when the bottom seam was connected
+4,Cups,Bottom Pressure,The pressure levels (psi) when the bottom seam was connected
+4,Cups,Supplier,The company that provided the paper
+4,Cups,Coating,whether or not the paper type has an additional coating
+4,Cups,Leaks,the number of leaks observed (per 1000) in testing
+4,Games2,studentID,
+4,Games2,numPegs,The number of pieces withing the game
+4,Games2,Type,"The type of game played, standard represents a game where all pieces are the same color"
+4,Games2,Time,The completion time of the game
+4,Games2,Hand,Whether the student played with their right or left hand
+4,Games2,Type2,the type and hand used in each game
+4,MemoryA,Age,age group of participant
+4,MemoryA,Process,method used to remember words
+4,MemoryA,Words,number of words remembered
+4,Movies,Movie,The name of the movie
+4,Movies,Total Gross,The amount of box office in the USA as shown on imdb (as of April 2010)
+4,Movies,Genre,The genre of each movie
+4,Movies,Rating,The movie rating
+4,PaperTowel2,Brand,The brand of the paper towel
+4,PaperTowel2,Water,The number of drops of water added to the center of the paper towel
+4,PaperTowel2,Strength,The weight in grams added to the paper towel before it tore
+4,PaperTowels,Brand,The brand of the paper towel
+4,PaperTowels,Water,The number of drops of water added to the center of the paper towel
+4,PaperTowels,Strength,The weight in grams added to the paper towel before it tore
+4,Popcorn,Brand,The brand of microwave popcorn
+4,Popcorn,Microwave,"Whether they used the smaller and newer microwave in their room or the older, larger microwave in the student lounge"
+4,Popcorn,Time,the cook time in seconds
+4,Popcorn,Unpopped (percent),the percent of kernals that were unpopped
+4,Popcorn,PopRate,100-Unpopped
+4,Soda,Soda,Type of soda
+4,Soda,Tilt,Whether or not the cup was tilted during pouring the soda
+4,Soda,Temp,The temperature of the soda
+4,Soda,Fizz,the height of the fizz (in cm)

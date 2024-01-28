@@ -1,0 +1,10 @@
+Chapter,Data Set,Variable Name,Description
+6,Baboon,Infant,each of the 11 infants in the study
+6,Baboon,MotherRnk,rank of the mother (1 is high ranking)
+6,Baboon,HandlRnk,the rank of the baboon handling the baby
+6,Baboon,Passive,movement to within 1m. of the mother-infant pair with no attempt to handle
+6,Baboon,Unsuccessful,movement to within 1m. of the mother-infant pair with an unsuccessful attempt to handle
+6,Baboon,Successful,number of successful handling attempts
+6,Baboon,Hand.Name,The name of the handler
+6,Baboon,Pass.Act,"Sum of Passive, Unsuccessful, and Successful"
+6,Baboon,Hand.ID,The ID of the handler
