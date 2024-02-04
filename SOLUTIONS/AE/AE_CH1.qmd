@@ -328,7 +328,7 @@ ed_data %>%
   summarise(post_trt_rand_avg = mean(MATH_post_trt_rand))
 ```
 
-Remember that in a randomized experiment, we calculate the treatment effect by simply taking the difference in the group averages (i.e. $\overline{y}\_T - \overline{y}\_C$), so here our estimated treatment effect is 49.6−39.6=10.0. Recall that we said this could be estimated using the simple linear regression model *ŷ* = *b*<sub>0</sub> + *b*<sub>1</sub>*T*. We can fit this model in R to verify that our estimated treatment effect is *b*<sub>1</sub> = 10
+Remember that in a randomized experiment, we calculate the treatment effect by simply taking the difference in the group averages (i.e. $\overline{y}\\T - \overline{y}\\C$), so here our estimated treatment effect is 49.6−39.6=10.0. Recall that we said this could be estimated using the simple linear regression model *ŷ* = *b*<sub>0</sub> + *b*<sub>1</sub>*T*. We can fit this model in R to verify that our estimated treatment effect is *b*<sub>1</sub> = 10
 
 ```{r}
 fit <- lm(MATH_post_trt_rand ~ Trt_rand, data = ed_data)

@@ -85,10 +85,9 @@ time_type2_model <- aov(time ~ type2,
                         data = games2)
 results <- tidy(time_type2_model)
 results
-
 ```
 
-> The ANOVA test shows a large F-statistic of `r results[1,5] %>% pull()` with a corresponding p-value of `r results[1,6] %>% pull()`. Therefore we can reject the null hypothesis that the group means are all the same, in favor of the alternative that at least one group mean differs from the others. 
+> The ANOVA test shows a large F-statistic of `r results[1,5] %>% pull()` with a corresponding p-value of `r results[1,6] %>% pull()`. Therefore we can reject the null hypothesis that the group means are all the same, in favor of the alternative that at least one group mean differs from the others.
 
 ### Part c
 
@@ -110,26 +109,24 @@ residuals %>%
   geom_point()
 ```
 
-> Residuals appear to be approximately normally distributed and there are not apparent patterns to suggest equal variance or independence assumptions are violated. 
+> Residuals appear to be approximately normally distributed and there are not apparent patterns to suggest equal variance or independence assumptions are violated.
 
 ### Part d
 
-> Answers will vary. Skill level of the subjects and the order in which they played the game could influence the results. If all students chosen were right-handed, this could bias the results in one direction; however, it does not appear that right-handed group has a lower mean. 
+> Answers will vary. Skill level of the subjects and the order in which they played the game could influence the results. If all students chosen were right-handed, this could bias the results in one direction; however, it does not appear that right-handed group has a lower mean.
 
 ### Part e
 
-> There is sufficient evidence to claim there is a difference in group means. Because random assignment was used, we can say this difference was *caused* by the game type. Since random sampling was used to recruit college students, we can generalize these findings to the population of college students who agreed to participate. Since this was done only at one college, we can't generalize to all college students at other colleges. 
+> There is sufficient evidence to claim there is a difference in group means. Because random assignment was used, we can say this difference was *caused* by the game type. Since random sampling was used to recruit college students, we can generalize these findings to the population of college students who agreed to participate. Since this was done only at one college, we can't generalize to all college students at other colleges.
 
 ## E.7
 
 ### Part a
 
-> Explanatory variable: brand
-> observational units: paper towels
-> Response variable: breaking strength (total weight held)
+> Explanatory variable: brand observational units: paper towels Response variable: breaking strength (total weight held)
 
-$$H_0: \mu_1 = \mu_2 = \mu_3 \text{ average strength is the same for all three brands}$$
-$$H_A: \text{mean for at least one brand differs}$$
+*H*<sub>0</sub> : *μ*<sub>1</sub> = *μ*<sub>2</sub> = *μ*<sub>3</sub> average strength is the same for all three brands
+*H*<sub>*A*</sub> : mean for at least one brand differs
 
 ### Part b
 
@@ -149,7 +146,7 @@ ggplot(paper_towels, aes(x = brand,
   geom_boxplot()
 ```
 
-> The center and spread are very different for Bounty compared to the other brands. 
+> The center and spread are very different for Bounty compared to the other brands.
 
 > None of the groups appear to have skew or outliers.
 
@@ -218,15 +215,15 @@ ggplot(paper_towels, aes(x = res_log_model)) +
                  bins = 15)
 ```
 
-> The residual plots indicate that the equal variance assumption is severely violated in the original model, but the log model fixes this problem. Similarly, the histogram of the residuals is more normal for the log model. The log model is therefore more appropriate for conducting the ANOVA test. 
+> The residual plots indicate that the equal variance assumption is severely violated in the original model, but the log model fixes this problem. Similarly, the histogram of the residuals is more normal for the log model. The log model is therefore more appropriate for conducting the ANOVA test.
 
 ### Part f
 
-> The results would generalize only to those individual rolls of paper towels because they may be different from the population of rolls in some way. 
+> The results would generalize only to those individual rolls of paper towels because they may be different from the population of rolls in some way.
 
 ### Part g
 
-> The results would hold for the entire population of paper towels. However, you should still be cautious about extraneous variables such as the distribution centers the rolls came from. 
+> The results would hold for the entire population of paper towels. However, you should still be cautious about extraneous variables such as the distribution centers the rolls came from.
 
 ## E.8
 

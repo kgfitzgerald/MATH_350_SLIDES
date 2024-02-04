@@ -1,0 +1,316 @@
+---
+title: "Homework Chapter 1"
+author: "SOLUTIONS"
+format: 
+  html:
+    self-contained: true
+    toc: true
+    toc_float: true
+    number_section: false
+    highlight: "tango"
+    theme: "cosmo"
+    df-print: paged
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+## Instructions
+
+This Homework comes from Chapter 1 of the Textbook. You should refer to AE_CH1 for some template code.
+
+Complete the following exercises:
+
+-   E.1
+-   E.2
+-   E.3
+-   E.4
+-   E.10
+-   E.11
+-   E.13
+-   E.14
+
+```{r}
+#| label: load-packages
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(janitor)
+library(infer)
+library(broom)
+```
+
+## E.1
+
+> Yes, we need all 20 mice to come from the same population. Otherwise observed differences in worm counts could be due to differences in populations. Different populations might respond differently to the worms and/or the treatment.
+
+## E.2
+
+> No, there could be confounding variables that could invalidate the causal relationship between treatment and worm count if mice are not randomly assigned. For example, perhaps the first 5 mice were less healthy and therefore slower and easier to catch.
+
+## E.3
+
+> No, causation cannot be inferred because there are many confounding variables that could be at play in causing the obesity, and random assignment was not used to rule out those confounding variables. For example, children may watch more TV because they aren't involved in sports and have more free time, and the lack of physical activity is what causes the obesity.
+
+## E.4
+
+> A random sample is a sample where each person (or other observational unit) is chosen randomly from a population. A randomized experiment is where randomization is used to split observational units into treatment groups.
+
+## E.10
+
+> A p-value of 0.85 is greater than a significance level of *α* = 0.05, so the difference in group means is not significant. However, we cannot claim that there is no difference (can't conclude the null hypothesis). It's possible there is a true difference that could not be detected due to small sample size.
+
+## E.11
+
+```{r}
+#| label: load-data
+#| message: false
+#| warning: false
+
+mice <- read_csv("./data/C1 Mice.csv") %>% 
+  clean_names()
+```
+
+### Part a
+
+*Modify the code from the Q7 - Q9 section of AE-CH1*
+
+```{r}
+#compute difference observed in sample
+diff_sample <- median(mice$female_trt) - median(mice$female_ctl)
+diff_sample
+
+mice_long <- mice %>% 
+  pivot_longer(cols = 1:4, 
+               names_to = "group",
+               values_to = "worm_count")
+
+mice_long <- mice_long %>% 
+  separate_wider_delim(group, 
+                       delim = "_",
+                       names = c("sex", "group"))
+
+#create subset for female mice only
+females <- mice_long %>% 
+  filter(sex == "female") %>% 
+  select(worm_count)
+
+diff <- c(1e5)
+for(i in 1:100000){
+  allocation <- sample(females$worm_count, size = 10)
+  median_trt <- median(allocation[1:5])
+  median_ctl <- median(allocation[6:10])
+  diff[i] <- median_ctl - median_trt
+}
+
+
+#plot histogram of differences in medians (ctl - trt)
+#add vertical line at observed difference in medians
+sims <- data.frame(diff = diff)
+ggplot(sims, aes(x = diff)) +
+  geom_histogram(color = "white",
+                 binwidth = 1) +
+  geom_vline(xintercept = diff_sample, 
+             color = "blue") +
+  geom_vline(xintercept = -diff_sample, 
+             color = "blue")
+#find the two-sided empirical p-value
+p_value2 <- sum(diff > abs(diff_sample) | 
+                  diff < -abs(diff_sample))/100000
+p_value2
+```
+
+> The empirical p-value is `r p_value2`, so we can conclude there is a significant difference in medians between the two groups that could not have been due to chance.
+
+### Part b
+
+```{r}
+#compute difference observed in sample
+diff_sample <- var(mice$female_trt) - var(mice$female_ctl)
+diff_sample
+
+diff <- c(1e5)
+for(i in 1:100000){
+  allocation <- sample(females$worm_count, size = 10)
+  var_trt <- var(allocation[1:5])
+  var_ctl <- var(allocation[6:10])
+  diff[i] <- var_ctl - var_trt
+}
+
+
+#plot histogram of differences in variances (ctl - trt)
+#add vertical line at observed difference 7.6
+sims <- data.frame(diff = diff)
+ggplot(sims, aes(x = diff)) +
+  geom_histogram(color = "white",
+                 binwidth = 5) +
+  geom_vline(xintercept = diff_sample, 
+             color = "blue") +
+  geom_vline(xintercept = -diff_sample, 
+             color = "blue")
+#find the two-sided empirical p-value
+p_value2 <- sum(diff > abs(diff_sample) | 
+                  diff < -abs(diff_sample))/100000
+p_value2
+
+```
+
+> The p-value is `r p_value2` so there is not sufficient evidence to conclude that the variances between the two groups differ.
+
+## E.13
+
+### Part a
+
+```{r, warning = FALSE, message = FALSE}
+birdnest <- read_csv("./data/C1 Birdnest.csv") %>% 
+  clean_names()
+
+glimpse(birdnest)
+
+birdnest <- birdnest %>% 
+  mutate(length = as.numeric(length),
+         closed_fct = if_else(closed == 0, "no", "yes"))
+
+ggplot(birdnest, aes(x = closed_fct, y = length)) +
+  geom_point(aes(alpha = 0.5)) +
+  geom_boxplot() +
+  guides(alpha = "none")
+
+stats <- birdnest %>% 
+  group_by(closed_fct) %>% 
+  summarize(mean_length = mean(length, na.rm = TRUE),
+            sd_length = sd(length, na.rm = TRUE),
+            n = n())
+stats
+```
+
+> The average body length does appear to differ somewhat between the two nest types, with closed nests having higher average. The standard deviations are comparable. Both groups have outliers.
+
+### Part b
+
+```{r}
+#compute difference observed in sample
+diff_sample <- as.numeric(stats[1,2] - stats[2,2])
+diff_sample
+n_no <- stats[1,4] %>% as.numeric()
+n <- dim(birdnest)[1]
+
+diff <- c(1e5)
+for(i in 1:100000){
+  allocation <- sample(birdnest$length, 
+                       size = n)
+  mean_no <- mean(allocation[1:n_no], na.rm = TRUE)
+  mean_yes <- mean(allocation[(n_no + 1):n],
+                   na.rm = TRUE)
+  diff[i] <- mean_no - mean_yes
+}
+
+
+#plot histogram of differences in means (no - yes)
+#add vertical line at observed difference
+sims <- data.frame(diff = diff)
+ggplot(sims, aes(x = diff)) +
+  geom_histogram(color = "white",
+                 binwidth = 1) +
+  geom_vline(xintercept = diff_sample, 
+             color = "blue") +
+  geom_vline(xintercept = -diff_sample, 
+             color = "blue")
+#find the two-sided empirical p-value
+p_value2 <- sum(diff > abs(diff_sample) | 
+                  diff < -abs(diff_sample))/100000
+p_value2
+```
+
+> Here we are testing the hypotheses *H*<sub>0</sub> : *μ*<sub>*o**p**e**n*</sub> − *μ*<sub>*c**l**o**s**e**d*</sub> = 0 vs. *H*<sub>0</sub> : *μ*<sub>*o**p**e**n*</sub> − *μ*<sub>*c**l**o**s**e**d*</sub> ≠ 0. We obtain an empirical p-value of `r p_value2`, which is greater than *α* = 0.05, so we fail to reject *H*<sub>0</sub>. That is, there is not sufficient evidence to claim that bodylength differs by type of nest built. There was no random sampling or random allocation used here since it is based on evolutionary data, so even if the finding was significant it could not be used to infer a causal relationship between length and nest type. Other confounding variables could be affecting what type of nest the birds create.
+
+## E.14
+
+### Part a
+
+```{r, message=FALSE, warning = FALSE}
+twins <- read_csv("./data/C1 Twins.csv") %>% 
+  clean_names()
+
+glimpse(twins)
+```
+
+> The data should be analyzed as matched pairs because each pair of twins is genetically identical and are therefore not independent.
+
+### Part b
+
+```{r}
+twins_longer <- twins %>% 
+  pivot_longer(cols = 2:3, names_to = "schizophrenia",
+               values_to = "brain_volume")
+
+ggplot(twins_longer, aes(x = schizophrenia,
+                         y = brain_volume,
+                         group = pair_number)) +
+  geom_point() +
+  geom_line()
+
+ggplot(twins, aes(x = difference)) +
+  geom_histogram(color = "white", bins = 5) +
+  labs(x = "Difference in brain volumne\n unaffected - affected",
+       y = "# of twin pairs")
+
+diff_sample <- twins %>% 
+  summarize(mean_diff = mean(difference)) %>% 
+  pull(mean_diff)
+diff_sample
+```
+
+> The first graph indicates that in most twin pairs, the unaffected twin has a higher brain volume (positive slope between the pairs). The second graph shows that the difference in brain volume (unaffected - affected) tends to be positive for most pairs, again indicating the unaffected twin has a higher brain volumne. The average difference is `r round(diff_sample, 4)` in this sample of twins.
+
+### Part c
+
+```{r}
+set.seed(437)
+twins <- twins %>% 
+  mutate(rand_01 = rbinom(dim(twins)[1], 
+                          size = 1, prob = 0.5),
+         rand = if_else(rand_01 == 0, -1, 1),
+         diff_rand = rand*difference)
+
+n <- dim(twins)[1]
+diff <- c(1e5)
+for(i in 1:100000){
+  #simulate 0-1 coin flip for each twin pair
+  allocation <- rbinom(n, 
+                       size = 1, prob = 0.5)
+  #convert 0s to -1s
+  allocation2 <- if_else(allocation == 0, -1, 1)
+  #multiply differences by random 1s and -1s 
+  #to mimic the process of randomizing the order of subtraction
+  diff_rand <- twins$difference*allocation2
+  diff[i] <- mean(diff_rand)
+}
+
+sims <- data.frame(diff = diff)
+ggplot(sims, aes(x = diff)) +
+  geom_histogram(color = "white") +
+  geom_vline(xintercept = diff_sample, 
+             color = "blue")
+p_value <- sum(diff > abs(diff_sample))/100000
+p_value
+```
+
+> The resulting p-value is `r p_value`, which is smaller than *α* = 0.05. Therefore, we have sufficient evidence to reject *H*<sub>0</sub>. That is, the brain volume of the twin unaffected by schizophrenia is larger than the brain volume of the affected twin, and the difference is statistically significant.
+
+## Reflection prompts
+
+*Respond to each of the following after you have completed all exercises in this assignment*
+
+*(RP1): What were the main concepts covered in this assignment?*
+
+> YOUR ANSWER HERE
+
+*(RP2): What's one thing you understand better after completing these exercises?*
+
+> YOUR ANSWER HERE
+
+*(RP3): What exercise(s) gave you the most trouble? What was difficult about them/where did you get stuck?*
+
+> YOUR ANSWER HERE
