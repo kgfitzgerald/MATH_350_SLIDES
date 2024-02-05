@@ -17,6 +17,9 @@ editor_options:
 
 ## Homework Revisited
 
++ [Group 1 link](https://docs.google.com/document/d/1nnd-VCId3tgB5-UHSaHJsSHNqn28YDWnlYW8dcAG4JI/edit?usp=sharing)
++ [Group 2 link](https://docs.google.com/document/d/1ZHH0SqFNPGHhE1ZJ2H8GnSwTXDH4K29xNebelIfzHCY/edit?usp=share_link)
+
 ### Chapter 2, E.2
 
 Suppose a test for *H*<sub>0</sub> : *β*<sub>1</sub> = 0 vs. *H*<sub>*A*</sub> : *β*<sub>1</sub> ≠ 0 returns a small p-value. Which of the following CAN we conclude, and which can we NOT conclude? Why? If the answer is nuanced or "it depends", indicate what information you would need to draw a more clear conclusion.
