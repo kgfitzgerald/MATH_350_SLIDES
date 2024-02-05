@@ -19,7 +19,7 @@ editor_options:
 
 ### Chapter 2, E.2
 
-Suppose a test for *H*<sub>0</sub> : *β*<sub>1</sub> = 0 vs. *H*<sub>*A*</sub> : *β*<sub>1</sub> ≠ 0 returns a small p-value. What CAN we conclude, and what can we NOT conclude? Why? If the answer is nuanced or "it depends", indicate what information you would need to draw a more clear conclusion.
+Suppose a test for *H*<sub>0</sub> : *β*<sub>1</sub> = 0 vs. *H*<sub>*A*</sub> : *β*<sub>1</sub> ≠ 0 returns a small p-value. Which of the following CAN we conclude, and which can we NOT conclude? Why? If the answer is nuanced or "it depends", indicate what information you would need to draw a more clear conclusion.
 
 a\. Reject *H*<sub>0</sub>
 
@@ -49,7 +49,7 @@ A recent study in the northwest United States found that children who watched mo
 
 ### Chapter 1, E.10
 
-Suppose that in our study of schistosomiasis in female mice, the p-value was 0.85. What conclusions CAN you draw and which ones can you NOT draw? WHY? If the answer is nuanced or "it depends", indicate what information you would need to draw a more clear conclusion.
+Suppose that in our study of schistosomiasis in female mice, the p-value was 0.85. Which of the following conclusions CAN you draw and which ones can you NOT draw? WHY? If the answer is nuanced or "it depends", indicate what information you would need to draw a more clear conclusion.
 
 a\. Reject *H*<sub>0</sub>
 
@@ -57,13 +57,72 @@ b\. *μ*<sub>1</sub> − *μ*<sub>2</sub> = 0
 
 c\. observed difference was just due to chance
 
-Let's say the p-value was 0.001. What conclusions CAN you draw and which ones can you NOT draw? WHY? If the answer is nuanced or "it depends", indicate what information you would need to draw a more clear conclusion.
+Let's say the p-value was 0.001. Which of the following conclusions CAN you draw and which ones can you NOT draw? WHY? If the answer is nuanced or "it depends", indicate what information you would need to draw a more clear conclusion.
 
 a\. the treatment caused worm count to decrease
 
 b\. the difference in average worm count is significant
 
 c\. Reject the null hypothesis that *β*<sub>1</sub> = 0.
+
+### Chapter 1, E.13
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+library(tidyverse)
+library(janitor)
+library(infer)
+library(broom)
+birdnest <- read_csv("./data/C1 Birdnest.csv") %>% 
+  clean_names()
+```
+
+
+Explain what EACH step is doing in the following code
+
+```{r}
+birdnest <- birdnest %>% 
+  mutate(length = as.numeric(length),
+         closed_fct = if_else(closed == 0, "no", "yes"))
+
+stats <- birdnest %>% 
+  group_by(closed_fct) %>% 
+  summarize(mean_length = mean(length, na.rm = TRUE),
+            sd_length = sd(length, na.rm = TRUE),
+            n = n())
+stats
+
+diff_sample <- as.numeric(stats[1,2] - stats[2,2])
+diff_sample
+
+n_no <- stats[1,4] %>% as.numeric()
+n <- dim(birdnest)[1]
+
+diff <- c(1e5)
+for(i in 1:100000){
+  allocation <- sample(birdnest$length, 
+                       size = n)
+  mean_no <- mean(allocation[1:n_no], na.rm = TRUE)
+  mean_yes <- mean(allocation[(n_no + 1):n],
+                   na.rm = TRUE)
+  diff[i] <- mean_no - mean_yes
+}
+
+sims <- data.frame(diff = diff)
+
+ggplot(sims, aes(x = diff)) +
+  geom_histogram(color = "white",
+                 binwidth = 1) +
+  geom_vline(xintercept = diff_sample, 
+             color = "blue") +
+  geom_vline(xintercept = -diff_sample, 
+             color = "blue")
+
+
+p_value2 <- sum(diff > abs(diff_sample) | 
+                  diff < -abs(diff_sample))/100000
+p_value2
+```
+
 
 ## About the Exam
 
@@ -115,5 +174,6 @@ c\. Reject the null hypothesis that *β*<sub>1</sub> = 0.
     - Determine whether causal relationships can be infered, and whether results can be generalized
     - Comment on potential confounding variables and whether or not they are of potential concern
     
+- Review your graded homework and feedback for where points were taken off. Compare to posted solutions.
 
 
