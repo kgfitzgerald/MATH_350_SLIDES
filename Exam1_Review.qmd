@@ -67,6 +67,10 @@ c\. Reject the null hypothesis that *β*<sub>1</sub> = 0.
 
 ## About the Exam
 
+- In-class exam on Monday, Feb 12
+
+- Covers chapters 1, 2, 4
+
 - You will be allowed one NOTECARD for a cheat sheet
 
 - No calculations required
