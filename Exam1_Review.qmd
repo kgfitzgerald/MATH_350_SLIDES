@@ -1,0 +1,115 @@
+---
+title: "Exam 1 Review"
+subtitle: "Chapters 1, 2, 4"
+format: 
+  html:
+    self-contained: true
+    toc: true
+    toc_float: true
+    number_section: false
+    highlight: "tango"
+    theme: "cosmo"
+    df-print: paged
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+## Homework Revisited
+
+### Chapter 2, E.2
+
+Suppose a test for *H*<sub>0</sub> : *β*<sub>1</sub> = 0 vs. *H*<sub>*A*</sub> : *β*<sub>1</sub> ≠ 0 returns a small p-value. What CAN we conclude, and what can we NOT conclude? Why? If the answer is nuanced or "it depends", indicate what information you would need to draw a more clear conclusion.
+
+a\. Reject *H*<sub>0</sub>
+
+b\. *μ*<sub>1</sub> − *μ*<sub>2</sub> ≠ 0
+
+c\. model provides a good estimate of response for a given value of *x*<sub>*i*</sub>
+
+d\. *x* is a significant predictor of *y*
+
+e\. *x* causes *y* to increase
+
+f\. there is a linear relationship between *x* and *y*
+
+### Chapter 2, E.4
+
+What would need to be changed about *y*<sub>*i*</sub> = *β*<sub>0</sub> + *β*<sub>1</sub>*x*<sub>*i*</sub> in order to make the equation appropriate.
+
+Why does this same change not need to be made to *ŷ*<sub>*i*</sub> = *b*<sub>0</sub> + *b*<sub>1</sub>*x*<sub>*i*</sub>?
+
+### Chapter 1, E.2
+
+Assume the researchers in this study haphazardly pulled the female mice from a cage and assigned the first five to the treatment and the last five to the control. WHY would you not trust these results as much as if they were randomly assigned? Give an example of a potential confounding variable.
+
+### Chapter 1, E.3
+
+A recent study in the northwest United States found that children who watched more television were more likely to be obese than children who watched less television. WHY can causation not be inferred from this study? Give at least one example of a potential confounding variable.
+
+### Chapter 1, E.10
+
+Suppose that in our study of schistosomiasis in female mice, the p-value was 0.85. What conclusions CAN you draw and which ones can you NOT draw? WHY? If the answer is nuanced or "it depends", indicate what information you would need to draw a more clear conclusion.
+
+a\. Reject *H*<sub>0</sub>
+
+b\. *μ*<sub>1</sub> − *μ*<sub>2</sub> = 0
+
+c\. observed difference was just due to chance
+
+Let's say the p-value was 0.001. What conclusions CAN you draw and which ones can you NOT draw? WHY? If the answer is nuanced or "it depends", indicate what information you would need to draw a more clear conclusion.
+
+a\. the treatment caused worm count to decrease
+
+b\. the difference in average worm count is significant
+
+c\. Reject the null hypothesis that *β*<sub>1</sub> = 0.
+
+## About the Exam
+
+- You will be allowed one NOTECARD for a cheat sheet
+
+- No calculations required
+
+- No formulas needed, other than being able to write out statistical models and hypotheses
+
+- 104 points possible, three multi-part problems
+
+
+## Review Tips
+
+- (Re)-read the textbook :)
+    - Chapter 1: focus on Sections 1.1 - 1.7
+    - Chapter 2: focus on Sections 2.1 - 2.7
+    - Chapter 4: focus on Sections 4.1 - 4.6
+
+-   Know the similarities and differences between each of the 6 models/tests discussed so far this semester, including when each one is appropriate and preferable, what assumptions they rely on, what hypotheses they tests, what conclusions they allow, what their limitations are, etc:
+
+    -   two-sample independent t-test
+
+    -   paired t-test
+
+    -   randomization test
+
+    -   permutation test
+
+    -   linear regression
+
+    -   ANOVA
+
+- When given R code, be able to:
+
+    - identify what test/analysis is being conducted
+    - what conclusions can be drawn from the results
+
+- When given a research scenario / data description, be able to:
+
+    - Identify what statistical analysis is appropriate
+    - Write out the corresponding statistical model
+    - Write out the corresponding hypotheses to be tested
+    - Describe what assumptions should be checked, and how to evaluate those assumptions
+    - Determine whether causal relationships can be infered, and whether results can be generalized
+    - Comment on potential confounding variables and whether or not they are of potential concern
+    
+
+

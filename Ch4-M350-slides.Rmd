@@ -110,7 +110,7 @@ Considered only looking at a random sample of 20 kernels, but decided against it
 Held Constant:
 
 + Highest power setting on both microwaves
-+ Scored all popcorn on a shelf in their room
++ Stored all popcorn on a shelf in their room
 + Butter flavor of each brand
 
 Could not control:
@@ -167,11 +167,19 @@ Variability in Y can be broken down into
 + Variability between groups in Factor A (SSA)
 + Variability between groups in Factor B (SSB)
 + Variability between groups in FactorAxB combinations (SSAB)
-+ Variability within groups that's left unexplained by A, B, and AB.
++ Variability within groups that's left unexplained by A, B, and AB (SSE)
+
+--
 
 + The F-statistics are the ratios of the **between-group** variability and the **within-group** variability
+
+--
 + When $H_0$ is true (no differences between groups), the F ratio will be close to 1
+
+--
 + As the differences between groups increases ($H_A$ true), the F-ratio grows large
+
+--
 + We reject $H_0$ for large F values
 
 ---
