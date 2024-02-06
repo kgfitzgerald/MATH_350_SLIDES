@@ -1,0 +1,360 @@
+---
+title: "AE-CH4"
+author: "Your Name Here"
+format: 
+  html:
+    self-contained: true
+    toc: true
+    toc_float: true
+    number_section: false
+    highlight: "tango"
+    theme: "cosmo"
+    df-print: paged
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+This Application Exercise walks through the guided activities in Chapter 4 of the textbook. There are spaces for you to answer each question (with code and/or text). Feel free to also use this document to add your own notes along the way.
+
+```{r}
+#| label: load-packages
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(janitor)
+library(broom)
+library(cowplot)
+library(kableExtra)
+```
+
+```{r}
+#| label: load-data
+#| message: false
+#| warning: false
+
+popcorn <- read_csv("./data/C4 Popcorn.csv") %>% 
+  clean_names()
+```
+
+## Question 1
+
+*Don't need to list them out*
+
+> 3 times x 2 brands = 6
+>
+> OR 3 times x 2 brands x 2 microwave locations = 12
+
+## Question 2
+
+> 5x3x4=60
+
+## Question 3
+
+> The means between the four groups do appear to differ slightly, but the standard deviations seem comparable. There does not appear to be any skewness or outliers. The average pop rate is highest for Pop Secret cooked for 135 seconds. For both groups, the 135 cook time resulted in a higher average pop rate, but the difference is much more pronounced for the Pop Secret brand.
+
+## Question 4
+
+```{r}
+#overall average
+mean(popcorn$pop_rate)
+
+#average for each brand
+popcorn %>% 
+  group_by(brand) %>% 
+  summarize(mean = mean(pop_rate)) %>% 
+  kbl() %>% 
+  kable_minimal()
+
+#average for each cook time
+popcorn %>% 
+  group_by(time) %>% 
+  summarize(mean = mean(pop_rate)) %>% 
+  kbl() %>% 
+  kable_minimal()
+```
+
+## Question 5
+
+```{r}
+popcorn %>% 
+  group_by(brand, time) %>% 
+  summarize(mean = mean(pop_rate),
+            sd = sd(pop_rate),
+            median = median(pop_rate),
+            range = max(pop_rate) - min(pop_rate))
+
+
+means <- popcorn %>% 
+  group_by(brand, time) %>% 
+  summarize(mean = mean(pop_rate),
+            n = n())
+
+fastco_diff <- means[2,3] - means[1,3]
+fastco_diff
+
+pop_diff <- means[4,3] - means[3,3]
+pop_diff
+```
+
+## Question 6
+
+*Hint: see Table 4.3*
+
+> The sample average of the 135 cook time group would be indicated by $\overline{y}_{\cdot2\cdot$ because 135 seconds is the second level of the second factor. We are averaging across all brands (the first position is a $\cdot$) and across all observations (the third position is always a $\cdot$ for any average across any group)
+
+## Questions 8 - 10
+
+\[Already completed for you\]. The following code calculates the three measures of between-group variability (MSBrand, MSTime, MSBrandTime), and the within-group variability MSE. See Equations 4.1 - 4.4.
+
+```{r}
+popcorn %>% 
+  mutate(ybar_grand = mean(pop_rate)) -> popcorn
+
+#MSBrand - see equation 4.1
+popcorn %>% 
+  group_by(brand, ybar_grand) %>% 
+  summarize(n_brand = n(),
+         ybar_brand = mean(pop_rate)) %>% 
+  mutate(term  = n_brand*(ybar_brand - ybar_grand)^2) %>% 
+  ungroup() %>% 
+  summarize(MSBrand = sum(term)/(2-1)) %>% 
+  pull(MSBrand) -> MSBrand
+MSBrand
+
+#MSTime - see equation 4.2
+popcorn %>% 
+  group_by(time, ybar_grand) %>% 
+  summarize(n_time = n(),
+         ybar_time = mean(pop_rate)) %>% 
+  mutate(term  = n_time*(ybar_time - ybar_grand)^2) %>% 
+  ungroup() %>% 
+  summarize(MSTime = sum(term)/(2-1)) %>% 
+  pull(MSTime) -> MSTime
+MSTime
+
+#MSBrandTime - see equation 4.3
+popcorn %>% 
+  group_by(time, brand, ybar_grand) %>% 
+  summarize(n_timebrand = n(),
+         ybar_timebrand = mean(pop_rate)) %>% 
+  mutate(term  = n_timebrand*(ybar_timebrand - ybar_grand)^2) %>% 
+  ungroup() %>% 
+  summarize(MSTimeBrand = (sum(term) - MSTime*(2-1) - MSBrand*(2-1))/(4 - 1-1-1)) -> MSTimeBrand
+MSTimeBrand
+
+#MSE - see equation 4.4
+popcorn %>% 
+  group_by(time, brand) %>% 
+  summarize(n_ij = n(),
+            s2_ij = var(pop_rate)) %>% 
+  mutate(term  = (n_ij - 1)*s2_ij) %>% 
+  ungroup() %>% 
+  summarize(MSE = sum(term)/sum(n_ij - 1)) -> MSE
+```
+
+## Question 11
+
+```{r}
+MSBrand/MSE
+
+MSTime/MSE
+
+MSTimeBrand/MSE
+```
+
+## Question 12
+
+> F statistics will always be between 0 and $\infty$, since they follow an F distribution.
+
+## Interaction plot (Fig 4.2)
+
+```{r}
+#interaction plot
+popcorn %>% 
+  group_by(time, brand) %>% 
+  summarize(mean = mean(pop_rate)) %>% 
+  ggplot(aes(y = mean, x = time, 
+             group = brand, color = brand)) +
+  geom_point() +
+  geom_line() +
+  labs(x = "Cook time",
+       y = "Average pop rate",
+       title = "Interaction Plot") +
+  scale_color_viridis_d() +
+  theme_minimal()
+```
+
+## Main Effects plot
+
+```{r}
+#main effects plot
+
+
+#main effects plot for microwave factor
+popcorn %>% 
+  group_by(microwave) %>% 
+  summarize(mean = mean(pop_rate)) %>% 
+  ggplot(aes(y = mean, x = microwave,
+             group = 1)) +
+  geom_point() +
+  geom_line() +
+  ylim(78, 85) +
+  labs(x = "level",
+       y = "Average pop rate")
+
+#create a generic function to create a main effects plot
+#for any data & explanatory/response variable
+main_effects_plot <- function(data, 
+                              explanatory_variable, 
+                              response_variable,
+                              ylimits,
+                              labels){
+  data %>% 
+    #!!sym() is just the syntax used to pass a string 
+    #to a variable name to be used in a tidyverse fxn
+    group_by(!!sym(explanatory_variable)) %>% 
+    summarize(mean = mean(!!sym(response_variable))) %>% 
+    ggplot(aes(y = mean, x = !!sym(explanatory_variable),
+             group = 1)) +
+    geom_point() +
+    geom_line() +
+    ylim(ylimits[1], ylimits[2]) +
+    labs(x = labels[1],
+         y = labels[2])
+}
+#create main effects plot for microwave factor
+#(and save as object p1)
+p1 <- main_effects_plot(popcorn, "microwave", "pop_rate",
+                  c(75, 85),
+                  c("level", "Average pop rate"))
+
+#create main effects plot for brand factor
+#(and save as object p2)
+p2 <- main_effects_plot(popcorn, "brand", "pop_rate",
+                  c(75, 85),
+                  c("level", "Average pop rate"))
+#create main effects plot for time factor
+#(and save as object p3)
+p3 <- main_effects_plot(popcorn, "time", "pop_rate",
+                  c(75, 85),
+                  c("level", "Average pop rate"))
+#use plot_grid() from cowplot package to arrange several plots
+plot_grid(p1, p2, p3, nrow = 1)
+```
+
+## Question 13
+
+Fit an appropriate anova model and view the results.
+
+```{r}
+m1 <- lm(pop_rate ~ brand*time, data = popcorn)
+m1_anova <- aov(m1)
+tidy(m1_anova)
+```
+
+## Question 14
+
+> A large F statistic suggests that the differences between group means is large compared to the variability within groups (MSE). If our assumption of equal variance holds true, this suggests ththat the difference between the two group means could rarely occur by chance (resulting in a small p-value). In other words, a large F statistic serves as evidence against the null hypothesis.
+
+## Question 15
+
+### Part a
+
+> There are no clear outliers or skewness in the data
+
+### Part b
+
+```{r}
+#informal test for equal variance
+sds <- popcorn %>% 
+  group_by(brand, time) %>% 
+  summarize(sd = sd(pop_rate))
+sds
+max(sds$sd)/min(sds$sd)
+```
+
+> The spread of each group looks relatively similar, and the ratio of standard deviations does not exceed 2
+
+```{r}
+popcorn %>% 
+  mutate(residuals = m1_anova$residuals) -> popcorn
+
+ggplot(popcorn, aes(x = residuals)) +
+  geom_histogram(color = "white",
+                 binwidth = 2)
+```
+
+> The residuals appear to roughly follow a normal distribution
+
+## Question 16
+
+```{r}
+means <- popcorn %>% 
+  group_by(brand, time, microwave) %>% 
+  summarize(mean_pop_rate = mean(pop_rate))
+means
+
+ggplot(popcorn, aes(x = factor(time), 
+                    y = pop_rate)) +
+  facet_grid(microwave ~ brand) +
+  geom_point()
+```
+
+> For PopSecret, 135 seconds seems to significantly increase the mean of pop rates. However, this does not seem true for Fastco.
+
+> The spread of the responses within each group look roughly similar
+
+> We do not see any significant outliers, or unusual observations.
+
+## Question 17
+
+```{r}
+sds <- popcorn %>% 
+  group_by(brand, time, microwave) %>% 
+  summarize(sd = sd(pop_rate))
+
+max(sds$sd)/min(sds$sd)
+```
+
+> The ratio of largest to smallest standard deviation is less than 2, so there is no reason to believe the equal variance assumption is violated
+
+## Question 18
+
+### Part a
+
+```{r}
+m2 <- lm(pop_rate ~ brand + time + microwave 
+         + brand*time + brand*microwave + 
+           microwave*time, 
+         data = popcorn)
+m2_anova <- aov(m2)
+tidy(m2_anova)
+```
+
+### Part b
+
+```{r}
+popcorn <- popcorn %>% 
+  mutate(residuals_m2 = m2_anova$residuals)
+ggplot(popcorn, aes(x = residuals_m2)) +
+  geom_histogram(color = "white",
+                 binwidth = 2)
+```
+
+> The assumption does not appear to be violated
+
+### Part c
+
+The time effect is significant at $\alpha = 0.05$ (p-value 0.015), suggesting time does affect pop rate. While brand isn't significant as an individual predictor (p-value 0.729), its interaction with time is (p-value 0.0486), suggesting the brand does influence the role that time plays on pop rate. Microwave does not appear to affect pop rate, as its main effect and interaction effects are all non-significant.
+
+### Part d
+
+> Random sampling controls for potential biases caused by extraneous variabels and allows conclusions to be generalized to the population of interest. Here, the students did their best to collect the bags randomly, but they were limited to how the stores stock the shelves and which stores sold the brands in their city. We probably should not generalize these results to all bags of popcorn from these two brands.
+
+> Random allocation controls for potential biases caused by extraneous variables and makes causal conclusions possible. Of course, we cannot randomly allocate a popcorn bag to a brand, so the brand effects are simply observed correlations and should not be considered in a causal context. However, the bags were randomly assigned to cooking times, so we can say that the longer cooking time leads to a higher percentage of popped kernels. In addition we can conclude that the effect of cooking time varies depending on the brand.
+
+## Question 19
+
+> MSBrand, MSTime and MSBrandTime are the same. F statistics are difference since the MSE has changed slightly. Whenever terms are added to the model, the MSE may decrease if the new terms explain some of the previously unexplained variance. If the residuals are much smaller after adding new terms, the MSE is typically smaller, providing larger F statistics. In this case, microwave did not explain much of the variability, so the F-statistic did not change much.
