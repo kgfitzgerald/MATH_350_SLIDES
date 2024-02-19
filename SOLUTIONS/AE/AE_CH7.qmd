@@ -1,0 +1,194 @@
+---
+title: "AE-CH7"
+author: "Your Name Here"
+format: 
+  html:
+    self-contained: true
+    toc: true
+    toc_float: true
+    number_section: false
+    highlight: "tango"
+    theme: "cosmo"
+    df-print: paged
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+This Application Exercise walks through the guided activities in Chapter 7 of the textbook. There are spaces for you to answer each question (with code and/or text). Feel free to also use this document to add your own notes along the way.
+
+## Load packages & data
+
+```{r}
+#| label: load-packages-data
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(janitor)
+library(ggridges)
+library(broom)
+library(cowplot)
+#library(lme4)
+
+shuttle <- read_csv("./data/C7 Shuttle.csv") %>% 
+  clean_names()
+glimpse(shuttle)
+```
+
+
+## Question 1
+
+## Question 2
+
+```{r}
+ggplot(shuttle, aes(x = temperature,
+                    y = success)) +
+  geom_point()
+
+ggplot(shuttle, aes(x = temperature,
+                    y = factor(success))) +
+  geom_boxplot()
+
+ggplot(shuttle, aes(x = temperature,
+                    y = factor(success))) +
+  geom_density_ridges()
+```
+
+## Question 3
+
+```{r}
+ggplot(shuttle, aes(x = temperature,
+                    y = success)) +
+  geom_point() +
+  geom_smooth(method = "lm")
+
+m1 <- lm(success ~ temperature, 
+         data = shuttle)
+tidy(m1)
+
+-1.90 + 0.0374*60
+-1.90 + 0.0374*85
+```
+
+What's the problem with these predictions? 
+
+[Skip Q4 - done in class together]
+
+## Question 5
+
+```{r}
+
+
+create_plot <- function(beta0, beta1){
+  x <- seq(0, 35, 0.01)
+  y <- exp(beta0 + beta1*x)/(1 + exp(beta0 + beta1*x))
+
+  data <- data.frame(x, y)
+  ggplot(data, aes(x = x, y = y)) +
+    geom_line() +
+    labs(title = paste("beta0 = ", beta0,
+                       ", beta1 = ",
+                       beta1, sep = ""))
+}
+p1 <- create_plot(-10, 0.5)
+p2 <- create_plot(-5, 0.5)
+p3 <- create_plot(-10, 1)
+p4 <- create_plot(-5, 1)
+p5 <- create_plot(-10, 1.5)
+p6 <- create_plot(-5, 1.5)
+plot_grid(p1, p3, p5, p2, p4, p6, nrow = 2)
+
+p1 <- create_plot(10, -0.5)
+p2 <- create_plot(5, -0.5)
+p3 <- create_plot(10, -1)
+p4 <- create_plot(5, -1)
+p5 <- create_plot(10, -1.5)
+p6 <- create_plot(5, -1.5)
+plot_grid(p1, p3, p5, p2, p4, p6, nrow = 2)
+```
+
+
+## Question 6
+
+```{r}
+m2 <- glm(success ~ temperature, 
+          family = "binomial",
+          data = shuttle)
+tidy(m2)
+```
+
+## Question 7
+
+$$\hat{\pi}_i = \frac{e^{b_0+b_1x_i}}{1 + e^{b_0+b_1x_i}}$$
+
+```{r}
+b0 <- tidy(m2)[1,2] %>% pull()
+b1 <- tidy(m2)[2,2] %>% pull()
+x <- c(31,50,75)
+pi_hat <- exp(b0 + b1*x)/(1 + exp(b0 + b1*x))
+pi_hat
+```
+
+## Question 8
+
+```{r}
+x <- c(60, 70)
+pi_hat <- exp(b0 + b1*x)/(1 + exp(b0 + b1*x))
+odds <- pi_hat/(1 - pi_hat)
+odds
+```
+
+
+## Question 9
+
+```{r}
+exp(10*b1)
+```
+
+## Question 10
+
+## Question 11
+
+```{r}
+b0_ols <- tidy(m1)[1,2] %>% pull()
+b1_ols <- tidy(m1)[2,2] %>% pull()
+
+b0_mle <- tidy(m2)[1,2] %>% pull()
+b1_mle <- tidy(m2)[2,2] %>% pull()
+
+data <- data.frame(x = seq(0,100, 1)) %>% 
+  mutate(y_ols = exp(b0_ols + b1_ols*x)/(1 + exp(b0_ols + b1_ols*x)),
+         y_mle = exp(b0_mle + b1_mle*x)/(1 + exp(b0_mle + b1_mle*x)))
+
+ggplot(data = data) +
+  geom_line(aes(x = x, y = y_ols), 
+            color = "red") +
+  geom_label(aes(x = 100, y = max(y_ols),
+                 label = "OLS")) +
+  geom_line(aes(x = x, y = y_mle), 
+            color = "blue") +
+  geom_label(aes(x = 100, y = max(y_mle),
+                 label = "MLE")) +
+  labs(x = "Temperature",
+       y = "Probability of success",
+       title = "MLE vs OLS estimation")
+
+
+```
+
+## Question 12
+
+## Question 13
+
+## Question 14
+
+## Question 15
+
+## Question 16
+
+## Question 17
+
+## Question 18
+
+
