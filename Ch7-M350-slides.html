@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Chapter 7: Logistic Regression</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Dr. Katie Fitzgerald" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/all.min.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.min.css" rel="stylesheet" />
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <link rel="stylesheet" href="boxes.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+layout: true
+  
+
+
+---
+
+
+
+
+
+
+
+class: middle, center
+
+# Chapter 7: Logistic Regression
+
+---
+
+class: middle, center
+
+# "The best thing about being a statistician is that you get to play in everyone's backyard" 
+
+- John Tukey
+
+---
+
+# AE-CH7
+
++ Navigate to course Github page
++ Open AE-CH7.qmd and copy contents
++ Create new .qmd in your MATH_350 project folder and paste contents from GitHub
++ Render your .qmd
+
+---
+
+# Space Shuttle Investigation
+
+.pull-left[
+January 28, 1986, NASA launched 25th shuttle flight from Kennedy Space Center in Florida. 
+
+73 seconds into flight, external fuel tank collapsed and spilled liquid oxygen and hydrogen. Ignited and killed all 7 crew members on board. 
+
+O-ring seal in the right solid rocket booster failed to isolate the fuel supply.
+
+Tragedy: engineers knew that cold temperatures caused O-rings to become brittle and fail to seal properly. They recommended against launch, but were overruled.
+
+Expected temperature for January 28, 1986 was 31 degrees Fahrenheit. 
+]
+
+.pull-right[
+&lt;img src="./images/fig7-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+]
+---
+
+# Research question &amp; data
+
+.pull-left[
+*Did temperature influence the likelihood of an O-ring failure?*
+
+24 prior flights deemed successful by NASA because even though some O-ring damage had occurred, none of it was severe enough to allow gas to escape. 
+
+In `shuttle` data (Table 7.1), launch considered successful if NO O-ring damage occurred.
+
+]
+
+.pull-right[
+&lt;img src="./images/Table7-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# `shuttle` data, AE #1-2
+
+
+```
+## Rows: 23
+## Columns: 4
+## $ flight_number &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13…
+## $ date          &lt;chr&gt; "4/12/1981", "11/12/1981", "3/22/1982", "…
+## $ temperature   &lt;dbl&gt; 66, 70, 69, 68, 67, 72, 73, 70, 57, 63, 7…
+## $ success       &lt;dbl&gt; 1, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0,…
+```
+
++ Question 1: explanatory and response variables?
+
++ Question 2: Imagine you're an engineer working for Thiokol Corporation prior to January 1986. Create a few graphs of the data in Table 7.1
+
+---
+
+# Linear vs. Logistic regression
+
++ Linear = continuous response variable
++ Logistic = dichotomous (binary) response variable
+
+Examples:
+
++ whether disease is present or absent
++ whether or not a person is a good credit risk for a loan
++ whether or not a high school student should be admitted to a particular college
++ whether or not an individual is involved in substance abuse
++ Others?? 
+
+---
+
+# Linear regression review
+
+"Ordinary least squares regression": 
+
+`$$y_i = \beta_0 + \beta_1 + \epsilon_i, \ \ \ i = 1,\dots n$$`
+
+`$$E(Y_i | x_i) = \beta_0 + \beta_1x_i, \ \ \ i = 1, \dots n$$`
+
+`$$\epsilon_i \overset{\text{iid}}{\sim} N(0, \sigma^2)$$`
+
+## AE-CH7 #3 
+
+Create scatterplot with a least squares regression line for the space shuttle data. Calculate the predicted response `\(\hat{y}_i = b_0 + b_1x_i\)` when temperature = 60 and when temperature = 85 degrees Fahrenheit.
+
+---
+
+# Probability of success
+
+When response is binary, we usually define response to be probability of success rather than 0 or 1. 
+
+That is, let $$
+`\begin{aligned}
+\pi_i &amp;= P(Y_i = 1) = \text{Probability that a launch has no O-ring damage at temperature } x_i \\
+&amp;= E(Y_i | x_i) \\
+&amp;= \beta_0 + \beta_1x_i
+\end{aligned}`
+$$
+
+Interpret predictions from temperatures of 60 and 85. What's wrong? 
+
+---
+
+# Logistic regression
+
+
+.pull-left[
+Need a function that will restrict output to be between 0 and 1 (to behave like probabilities). 
+
+`$$ln\left(\frac{\pi_i}{1 - \pi_i}\right) = \beta_0 + \beta_1x_i$$`
+
++ ln is natural log
++ `\(\beta_0, \beta_1\)` are regression parameters
++ `\(\pi_i\)` is probability of a successful launch for a given temperature `\(x_i\)`
+
+The ratio `\(\pi/(1 - \pi)\)` is called the **odds**, so `\(ln[\pi/(1 - \pi)]\)` is called the **log-odds**, or **logistic** or **logit** transformation of `\(\pi\)`
+
+***NOTE: in statistics, when we say log, we always mean natural log.***
+
+Solve for `\(\pi_i\)`
+]
+
+.pull-right[
+&lt;img src="./images/fig7-3.png" width="60%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# Model assumptions
+
+For each `\(x_i\)` value, we assume `\(Y_i \sim Bernoulli(\pi_i)\)`. This means:
+
++ Each `\(Y_i\)` is independent
++ `\(Y_i\)` has only two possible outcomes, 0 and 1
++ `\(P(Y_i = 1 |x_i) = \pi_i\)`
++ `\(P(Y_i = 0 | x_i) = 1 - \pi_i\)`
++ For any given `\(x_i\)` value, the probability of success is constant. 
+
+
+--
+
+
+## Recap:
+
+Simple linear regression model with binary response: `$$y_i = \pi_i + \epsilon_i = \beta_0 + \beta_1x_i + \epsilon_i$$`
+
+Logistic regression model with binary response:
+`$$y_i = \pi_i + \epsilon_i = \frac{e^{\beta_0 + \beta_1x_i}}{1 + e^{\beta_0 + \beta_1x_i}}$$`
+
+
+
+
+---
+
+# Generalized Linear Models (GLMs)
+
+Logistic regression is a special case of a **Generalized Linear Model**, which expands linear regression to cases where normal assumptions do not hold. 
+
+--
+
+All GLMs have three components:
+
+1. A **linear predictor**, e.g. `\(\beta_0 + \beta_1x_i\)`. Can have many explanatory variables, including interaction terms
+
+--
+
+2. A **random component** where each error is assumed to be independent. GLMs do NOT assume they are normally distributed, and do NOT require the variability of the errors to be constant.
+
+--
+
+3. A **link function** that fits the expected response value to a linear predictor. E.g. the link function for logistic regression is `\(ln(\pi/(1-\pi))\)`
+
+--
+
+The link function depends on the distribution of the response variable. In logistic regression, the response variable is binary, so a Bernoulli distribution is assumed. 
+
+Other options: gamma, Poisson, etc. 
+
+For linear regression with a normally distributed response, the link function is simply the identity function. I.e., no transformation is needed for OLS. 
+
+---
+
+# Maximum Likelihood Estimation
+
+`$$y_i = \pi_i + \epsilon_i = \frac{e^{\beta_0 + \beta_1x_i}}{1 + e^{\beta_0 + \beta_1x_i}}$$`
+
+Even though logistic regression gets us the S-shaped curve (restricted to 0-1) that we want, the error terms are not constant or normally distributed, so we can't use OLS for hypothesis tests and confidence intervals of `\(\beta_0\)` or `\(\beta_1\)`
+
+Maximum Likelihood Estimation (MLE) is another way of deriving estimates for parameters (e.g. `\(\beta_0\)` and `\(\beta_1\)`). In this class, we won't focus on the derivations but will just have software do the MLE for us. 
+
+--
+
+
+```r
+glm(success ~ temperature, #model formula, just like lm()
+    family = "binomial", #distribution &amp; link function specification - see ?family for options
+    data = shuttle)
+```
+
+### AE #5 - 6
+
+---
+
+# Interpreting Logistic Regression Models
+
+Interpretation often done in terms of odds of success.
+
+When the temperature is 59&amp;deg;F, the odds of a successful launch with no O-ring damage are `$$\frac{\hat{\pi}}{(1 - \hat{\pi})} = \frac{0.2066}{1-.2066} = 0.2605 \approx 0.25 = \frac{1}{4}$$`
+
+Thus, at 59&amp;deg;F we say the odds of a successful launch are about 1 to 4. 
+
+---
+
+# Slope interpretation
+
+`$$odds = \frac{\pi_i}{(1 - \pi_i)} = e^{\beta_0 + \beta_1x_i} = e^{\beta_0}(e^{\beta_1})^{x_i}$$`
+
+Thus, as `\(x_i\)` increases by 1, `$$e^{\beta_0}(e^{\beta_1})^{x_i + 1}=e^{\beta_0}(e^{\beta_1})^{x_i}(e^{\beta_1})$$`
+
+So, increasing `\(x_i\)` by 1 unit in a logistic regression model, increases the predicted odds by a factor of `\(e^{\beta_1}\)`. 
+
+In shuttle example, if temperature increases by 1 degree, we increase the odds of a successful launch by `$$e^{b_1} = e^{0.232} = 1.2613 \text{ times}$$`
+
+### AE #8 - 11
+
+---
+
+## Wald's test
+
+Wald's test for logistic regression coefficients is similar to a one-sample Z-test
+
+`$$H_0: \beta_1 = 0 \text{ vs. } H_A:\beta_1 \neq 0$$`
+
+`$$Z = \frac{b_1 - 0}{se(b_1)}$$`
+
+where `\(b_1\)` is the MLE of `\(\beta_1\)` and `\(se(b_1)\)` is its standard error. `\(b_1\)` is asymptotically normal, so `\(Z \sim N(0,1)\)` when sample size is large. Some textbooks and software will instead use `\(Z^2 \sim \chi^2_{1}\)`, but the tests are equivalent. 
+
+Compute `\(Z\)` for this data, and draw a conclusion.
+
+---
+
+## CI for odds ratio
+
+`$$\left(e^{(b_1 - Z^*se(b_1))}, e^{(b_1 + Z^*se(b_1))}\right)$$`
+
+When `\(\beta_1 = 0\)`, then the odds ratio `\(e^{\beta_1} = 1,\)` the odds of success for temperature `\(x_i\)` are the same as the odds of success for any other temperature. 
+
+Compute the confidence interval for this data, and interpret it.
+
+--
+
+When a 95% CI for the odds ratio does not contain 1, we...
+
+--
+
+### AE #12 - 13
+
+---
+
+# The Likelihood Ratio Test
+
+The **likelihood ratio test (LRT)** assesses the adequacy of a full model (of interest) and restricted log-likelihood models. 
+
+--
+
++ The **full model** (or unrestricted model) contains all parameters under consideration in the model (e.g. in this case, `\(\beta_0\)` and `\(\beta_1\)`) 
+
+--
+
++ The **restricted model** (or reduced model) is a model with fewer terms than the full model 
+
+--
+
++ If the restricted model contains no explanatory variables, this is called the **null models**
+
+--
+
++ If the full model has a significantly better fit (the expected values are closer to the observed values) than the restricted model, we reject `\(H_0: \beta_1 = 0\)` and conclude that `\(H_A: \beta_1 \neq 0\)`
+
+---
+
+# The Likelihood Ratio Test
+
+Restricted model: `$$\pi_i = \frac{e^{\beta_0}}{1 + e^{\beta_0}}$$`
+
+Full model: `$$\pi_i = \frac{e^{\beta_0 + \beta_1x_i}}{1 + e^{\beta_0 + \beta_1x_i}}$$`
+
+When `\(H_0\)` is true, can be shown that 
+
+`$$G = 2\times \text{log-likelihood(full model)} - 2\times \text{log-likelihood(restricted model)}$$`
+follows a `\(\chi^2_{df}\)` distribution, where degrees of freedom are the number of parameters in the full model minus the number of parameters in the restricted model. 
+
+The G-statistic measures the difference between the fits of the restricted and full models. 
+
+---
+
+# LRT in R
+
+R output gives the **null deviance** = `\(K - 2\times \text{log-likelihood(restricted model)}\)` and **residual deviance** = `\(K - 2\times \text{log-likelihood(full model)}\)`, where `\(K\)` is a constant, so G-statistic can be calculated as null deviance - residual deviance. 
+
+
+
+
+
+```
+## 
+## Call:
+## glm(formula = success ~ temperature, family = "binomial", data = shuttle)
+## 
+## Coefficients:
+##             Estimate Std. Error z value Pr(&gt;|z|)  
+## (Intercept) -15.0429     7.3786  -2.039   0.0415 *
+## temperature   0.2322     0.1082   2.145   0.0320 *
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 28.267  on 22  degrees of freedom
+## Residual deviance: 20.315  on 21  degrees of freedom
+## AIC: 24.315
+## 
+## Number of Fisher Scoring iterations: 5
+```
+
+---
+
+# Wald vs LRT
+
++ LRT is preferable to Wald in small sample sizes
++ In general, recommend about n = 100. Make sure to state p-values are approximate if dealing with small sample sizes
++ Wald can have one-sided alternative as well as non-zero hypothesized values
+
+---
+
+# What can we conclude?
+
+## AE #14
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+<style>
+.logo {
+  background-image: url(Azusa-Pacific-University-Logo.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  width: 350px;
+  height: 200px;
+  z-index: 0;
+}
+</style>
+
+<script>
+document
+  .querySelectorAll(
+    '.remark-slide-content' +
+    ':not(.title-slide)' +
+    // add additional classes to exclude here, e.g.
+    // ':not(.inverse)' +
+    ':not(.hide-logo)'
+  )
+  .forEach(el => {
+    el.innerHTML += '<div class="logo"></div>';
+  });
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

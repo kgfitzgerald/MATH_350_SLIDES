@@ -1,0 +1,146 @@
+---
+title: "Homework Chapter 4"
+subtitle: "SOLUTIONS"
+format: 
+  html:
+    self-contained: true
+    toc: true
+    toc_float: true
+    number_section: false
+    highlight: "tango"
+    theme: "cosmo"
+    df-print: paged
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+## Instructions
+
+This Homework comes from Chapter 4 of the Textbook. You should refer to AE_CH4 for some template code.
+
+Complete the following exercises:
+
+-   E.1
+
+-   E.2
+
+-   E.3 (can take a picture of your by-hand drawing and embed as image in your .html, or use R to generate and plot dummy data that fits the criteria described).
+
+-   E.4
+
+-   Choose THREE of E.5 - E.11 to complete. Each uses a different data set you haven't yet analyzed - choose the three that are most interesting to you.
+
+```{r}
+#| label: load-packages
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(janitor)
+library(broom)
+```
+
+## E.1
+
+Answers will vary. Possible solutions below.
+
+#### Part a
+
+> sales could be cylical and fluxate during different weeks of the year; location of the advertisement in the newspaper; appeal of the item(s) for which coupon is provided. These will all be controlled by holding them constant throughout the experiment. Random allocation will be used to control for other potential extraneous variables. 
+
+#### Part b
+
+> YOUR ANSWER HERE
+
+#### Part c
+
+> YOUR ANSWER HERE
+
+#### Part d
+
+> YOUR ANSWER HERE
+
+#### Part e
+
+> YOUR ANSWER HERE
+
+#### Part f
+
+> YOUR ANSWER HERE
+
+## E.2
+
+#### Part a
+
+> YOUR ANSWER HERE
+
+#### Part b
+
+> YOUR ANSWER HERE
+
+#### Part c
+
+> YOUR ANSWER HERE
+
+#### Part d
+
+> YOUR ANSWER HERE
+
+## E.3
+
+*Can take a picture of your by-hand drawing and embed as image in your .html, or use R to generate and plot dummy data that fits the criteria described*.
+
+> YOUR ANSWER HERE
+
+## E.4
+
+#### Part a
+
+*Type your answer using LaTeX (initialize and close formulas/math notation with double dollar signs). See LaTeX cheat sheet on Canvas (under Important Links), and/or Google for things you don't know the syntax for!*
+
+$$y_{ijkl} = \mu + ...$$
+
+#### Part b
+
+*Type your answer using LaTeX (initialize and close formulas/math notation with double dollar signs). See LaTeX cheat sheet on Canvas (under Important Links), and/or Google for things you don't know the syntax for!*
+
+$$SS_C = $$ $$SS_{BC} = $$ $$MS_C = $$
+
+$$MS_{BC} = $$ $$F =$$
+
+#### Part c
+
+```{r}
+
+```
+
+#### Part d
+
+```{r}
+
+```
+
+> YOUR ANSWER HERE
+
+## CHOSEN PROBLEM 1
+
+## CHOSEN PROBLEM 2
+
+## CHOSEN PROBLEM 3
+
+## Reflection prompts
+
+*Respond to each of the following after you have completed all exercises in this assignment*
+
+*(RP1): What were the main concepts covered in this assignment?*
+
+> YOUR ANSWER HERE
+
+*(RP2): What's one thing you understand better after completing these exercises?*
+
+> YOUR ANSWER HERE
+
+*(RP3): What exercise(s) gave you the most trouble? What was difficult about them/where did you get stuck?*
+
+> YOUR ANSWER HERE

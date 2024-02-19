@@ -1,0 +1,56 @@
+---
+title: "Exam 1 Review"
+subtitle: "Chapters 1,2,4"
+author: "Dr. Katie Fitzgerald"
+output: 
+    xaringan::moon_reader:
+      css: [default-fonts, default, boxes.css]
+      yolo: false
+      includes:
+        after_body: insert-logo.html  
+      seal: false  
+      lib_dir: libs
+      nature:
+        highlightStyle: github
+        highlightLines: true
+        countIncrementalSlides: false
+        ratio: "16:9"
+---
+
+```{r child = "setup.Rmd"}
+```
+
+```{r packages, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(rvest)
+library(janitor)
+```
+
+class: middle, center
+
+# Exam 1 Review: Chapters 1, 2, 4
+
+---
+
+# Homework revisited
+
+**Chapter 2, E.2** Suppose a test for $H_0: \beta_1 = 0$ vs. $H_A: \beta_1 \neq 0$ returns a small p-value. What CAN we conclude, and what can we NOT conclude? Why? If the answer is nuanced or "it depends", indicate what information you would need to draw a more clear conclusion. 
+
+  a) Reject $H_0$
+  
+  b) $\mu_1 - \mu_2 \neq 0$
+  
+  c) model provides a good estimate of response for a given value of $x_i$
+  
+  d) $x$ is a significant predictor of $y$
+  
+  e) $x$ causes $y$ to increase
+  
+  f) there is a linear relationship between $x$ and $y$
+  
+
+---
+
+# Homework revisited
+
+**Chapter 2, E.4** How would we 
