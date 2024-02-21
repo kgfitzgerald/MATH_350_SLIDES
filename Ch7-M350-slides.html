@@ -200,7 +200,7 @@ For each `\(x_i\)` value, we assume `\(Y_i \sim Bernoulli(\pi_i)\)`. This means:
 Simple linear regression model with binary response: `$$y_i = \pi_i + \epsilon_i = \beta_0 + \beta_1x_i + \epsilon_i$$`
 
 Logistic regression model with binary response:
-`$$y_i = \pi_i + \epsilon_i = \frac{e^{\beta_0 + \beta_1x_i}}{1 + e^{\beta_0 + \beta_1x_i}}$$`
+`$$y_i = \pi_i + \epsilon_i = \frac{e^{\beta_0 + \beta_1x_i}}{1 + e^{\beta_0 + \beta_1x_i}} + \epsilon_i$$`
 
 
 
@@ -326,7 +326,7 @@ The **likelihood ratio test (LRT)** assesses the adequacy of a full model (of in
 
 --
 
-+ If the restricted model contains no explanatory variables, this is called the **null models**
++ If the restricted model contains no explanatory variables, this is called the **null model**
 
 --
 
