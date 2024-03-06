@@ -118,7 +118,7 @@ tidy(m2)
 
 ## Question 7
 
-$$\hat{\pi}\_i = \frac{e^{b_0+b_1x_i}}{1 + e^{b_0+b_1x_i}}$$
+$$\hat{\pi}\\i = \frac{e^{b_0+b_1x_i}}{1 + e^{b_0+b_1x_i}}$$
 
 ```{r}
 b0 <- tidy(m2)[1,2] %>% pull()
@@ -145,9 +145,17 @@ exp(10*b1)
 
 ## Question 10
 
+> We do not expect the same difference between 52 and 51 because:
+>
+> Odds(60) - Odds(59) = (exp(b1)-1)\*Odds(59)
+>
+> Odds(52) - Odds(51) = (exp(b1) - 1)\*Odds(51)
+>
+> In OLS, an increase in one unit would always result in an increase in the response by a constant value, *b*<sub>1</sub>, but in logistic regression the change in odds is based on multiplication. Since Odds(59) is not equal to Odds(51), the increase is not constant.
+
 ## Question 11
 
-```{r}
+```{r, warning = FALSE}
 b0_ols <- tidy(m1)[1,2] %>% pull()
 b1_ols <- tidy(m1)[2,2] %>% pull()
 
@@ -176,14 +184,158 @@ ggplot(data = data) +
 
 ## Question 12
 
+```{r}
+se_b1 <- tidy(m2)[2,3] %>% pull()
+Z <- b1_mle / se_b1
+Z
+Z_star <- qnorm(.975) #95% CI
+exp(b1_mle - Z_star*se_b1)
+exp(b1_mle + Z_star*se_b1)
+```
+
 ## Question 13
+
+### Parts a - b
+
+```{r}
+shuttle <- shuttle %>% 
+  mutate(success_recoded = if_else(success == 1, 
+                                   0, 1))
+m3 <- glm(success_recoded ~ temperature, 
+          family = "binomial",
+          data = shuttle)
+tidy(m3)
+```
+
+> When a "success" is designated with a 0, the signs of the parameter estimates are switched
+
+### Part c
+
+Odds(temp + 1) = exp(-.232)xOdds(temp) = 0.793xOdds(temp), which is the inverse of the odds ration from the previous model.
+
+```{r}
+b0_m3 <- tidy(m3)[1,2] %>% pull()
+b1_m3 <- tidy(m3)[2,2] %>% pull()
+x <- c(60,70)
+pi_hat_m3 <- exp(b0_m3 + b1_m3*x)/(1 + exp(b0_m3 + b1_m3*x))
+pi_hat_m3
+odds_m3 <- pi_hat_m3/(1 - pi_hat_m3)
+odds_m3
+1/odds
+```
 
 ## Question 14
 
+$$H_0: \text{Restricted model: } \pi_i = \frac{e^{\beta_0}}{1 + e^{\beta_0}}$$
+
+$$H_A: \text{Full model: } \pi_i = \frac{e^{\beta_0 + \beta_1x_i}}{1 + e^{\beta_0 + \beta_1x_i}}$$
+
+```{r}
+summary <- summary(m2)
+summary
+G <- summary$null.deviance - summary$deviance
+G
+df <- 1
+pchisq(G, df, lower.tail = FALSE)
+```
+
+> The small p-value indicates that the null hypothesis can be rejected. However, due to the small sample size we should be cautious about the reliability of the p-value for the LRT. 
+
 ## Question 15
+
+### Part a
+
+```{r, message = FALSE}
+cancer <- read_csv("./data/C7 Cancer2.csv") %>% 
+  clean_names()
+glimpse(cancer)
+m4 <- glm(malignant ~ radius + concavity, 
+          family = "binomial",
+          data = cancer)
+tidy(m4)
+```
+
+### Part b
+
+```{r}
+summary <- summary(m4)
+summary
+G <- summary$null.deviance - summary$deviance
+G
+df <- 1
+pchisq(G, df, lower.tail = FALSE)
+```
+
+### Part c
+
+```{r}
+b0 <- tidy(m4)[1,2] %>% pull()
+b1 <- tidy(m4)[2,2] %>% pull()
+b2 <- tidy(m4)[3,2] %>% pull()
+
+
+#concave = 0
+x <- c(4,0)
+pi_hat <- exp(b0 + b1*x[1] + b2*x[2])/(1 + exp(b0 + b1*x[1] + b2*x[2]))
+pi_hat
+
+#concave = 1
+x <- c(4,1)
+pi_hat_m4 <- exp(b0 + b1*x[1] + b2*x[2])/(1 + exp(b0 + b1*x[1] + b2*x[2]))
+pi_hat_m4
+```
+
 
 ## Question 16
 
+### Part a
+
+```{r}
+m5 <- glm(malignant ~ radius, 
+          family = "binomial",
+          data = cancer)
+tidy(m5)
+summary <- summary(m5)
+summary
+G <- summary$null.deviance - summary$deviance
+G
+df <- 1
+pchisq(G, df, lower.tail = FALSE)
+```
+
+### Part b
+
+```{r}
+b0 <- tidy(m5)[1,2] %>% pull()
+b1 <- tidy(m5)[2,2] %>% pull()
+x <- 4
+pi_hat <- exp(b0 + b1*x)/(1 + exp(b0 + b1*x))
+pi_hat
+```
+
+
 ## Question 17
 
+```{r}
+odds <- exp(b2)
+odds
+```
+
+> After adjusting for radius, the odds of malignancy for cells with concave nuclei is estimated to be about 28 times larger than the odds of malignancy for cells with round nuclei. 
+
 ## Question 18
+
+```{r}
+cancer <- cancer %>% 
+  mutate(benign = if_else(malignant == 1, 0, 1))
+m6 <- glm(benign ~ radius + concavity, 
+          family = "binomial",
+          data = cancer)
+tidy(m6)
+
+b2 <- tidy(m6)[3,2] %>% pull()
+odds <- exp(b2)
+odds
+```
+
+> After adjusting for radius, the odds of a benign cell with concave nuclei is estimated to be about 4% of the odds of a benign cell with round nuclei. These odds are the inverse of the ones given in Question 17. 1/27.368 = 0.036
