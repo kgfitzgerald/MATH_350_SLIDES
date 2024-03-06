@@ -36,7 +36,6 @@ shuttle <- read_csv("./data/C7 Shuttle.csv") %>%
 glimpse(shuttle)
 ```
 
-
 ## Question 1
 
 ## Question 2
@@ -71,9 +70,9 @@ tidy(m1)
 -1.90 + 0.0374*85
 ```
 
-What's the problem with these predictions? 
+What's the problem with these predictions?
 
-[Skip Q4 - done in class together]
+\[Skip Q4 - done in class together\]
 
 ## Question 5
 
@@ -108,7 +107,6 @@ p6 <- create_plot(5, -1.5)
 plot_grid(p1, p3, p5, p2, p4, p6, nrow = 2)
 ```
 
-
 ## Question 6
 
 ```{r}
@@ -120,7 +118,7 @@ tidy(m2)
 
 ## Question 7
 
-$$\hat{\pi}_i = \frac{e^{b_0+b_1x_i}}{1 + e^{b_0+b_1x_i}}$$
+$$\hat{\pi}\_i = \frac{e^{b_0+b_1x_i}}{1 + e^{b_0+b_1x_i}}$$
 
 ```{r}
 b0 <- tidy(m2)[1,2] %>% pull()
@@ -138,7 +136,6 @@ pi_hat <- exp(b0 + b1*x)/(1 + exp(b0 + b1*x))
 odds <- pi_hat/(1 - pi_hat)
 odds
 ```
-
 
 ## Question 9
 
@@ -190,5 +187,3 @@ ggplot(data = data) +
 ## Question 17
 
 ## Question 18
-
-

@@ -7,8 +7,8 @@ format:
     toc: true
     toc_float: true
     number_section: false
-    highlight: "tango"
-    theme: "cosmo"
+    #highlight: "tango"
+    #theme: "cosmo"
     df-print: paged
 editor: visual
 editor_options: 
@@ -39,6 +39,7 @@ Complete the following exercises:
 library(tidyverse)
 library(janitor)
 library(broom)
+library(cowplot)
 ```
 
 ## E.1
@@ -47,81 +48,204 @@ Answers will vary. Possible solutions below.
 
 #### Part a
 
-> sales could be cylical and fluxate during different weeks of the year; location of the advertisement in the newspaper; appeal of the item(s) for which coupon is provided. These will all be controlled by holding them constant throughout the experiment. Random allocation will be used to control for other potential extraneous variables. 
+> sales could be cylical and fluxate during different weeks of the year; location of the advertisement in the newspaper; appeal of the item(s) for which coupon is provided. These will all be controlled by holding them constant throughout the experiment. Random allocation will be used to control for other potential extraneous variables.
 
 #### Part b
 
-> YOUR ANSWER HERE
+> Advertisement, 3 levels:
+>
+> -   no advertisement
+>
+> -   advertisement offering coupon for one free item
+>
+> -   advertisement offering a coupon for a discount on multiple items
+>
+> Location, 4 levels (4 cities)
 
 #### Part c
 
-> YOUR ANSWER HERE
+> Answers will vary. One option: percent increase in sales, since different stores may already have different levels of sales, and an increase in sales of the same amount at two stores may be different increases in total sales, which gives more information than an increase in sales alone.
 
 #### Part d
 
-> YOUR ANSWER HERE
+> Answers will vary. If funds are available, could test each type of ad three times at each location. Thus, each of the four locations will have 9 weeks of advertisements, so that there are 36 observational units.
 
 #### Part e
 
-> YOUR ANSWER HERE
+> Answers will vary. Order in which things will be tested should be randomized in some way. One solution: order will be randomly decided at each city; order of factor level combinations will be randomized since each factor-level combination could influence the results of the next factor-level combination.
 
 #### Part f
 
-> YOUR ANSWER HERE
+> Ad factor will have 2 degrees of freedom, and location factor will have 3.
 
 ## E.2
 
 #### Part a
 
-> YOUR ANSWER HERE
+> Answers will vary. Potential solution: location of the tomatoes in the garden could influence the results, as some areas may have more sunlight. The amount of water each tomato recieves could also influence the results; the group where the tomatoes are planted could also influence them. To control for these variables, the tomatoes would have to be planted randomly throughout the garden, the garden would have to be checked to make sure the soil is homogeneous, and each tomato would have to be watered the same amount.
 
 #### Part b
 
-> YOUR ANSWER HERE
+> The units are the tomatoes, and a sample size of preferably thirty or greater so that there are five tomatoes tested at each factor level combination.
 
 #### Part c
 
-> YOUR ANSWER HERE
+> The six factor-level combinations are fertilizer and no fertilizer for each species of tomato (3). The order in which each plant is assigned to a fertilizer will be randomized; the species of tomato cannot be randomized. However, each spot in the garden can be randomly assigned a species of tomato and whether fertilizer is added.
 
 #### Part d
 
-> YOUR ANSWER HERE
+> The fertilizer factor has 1 df, and species of tomato has 2 df
 
 ## E.3
 
-*Can take a picture of your by-hand drawing and embed as image in your .html, or use R to generate and plot dummy data that fits the criteria described*.
+```{r}
+data <- data.frame(factor = c("A", "A", 
+                              "B", "B"),
+                   level = c(1, 2, 1, 2),
+                   mean = c(25, 75, 75, 25))
 
-> YOUR ANSWER HERE
+ggplot(data, aes(x = factor(level), y = mean,
+                 group = factor,
+                 linetype = factor)) +
+  geom_point() +
+  geom_line() +
+  labs(title = "Interaction plot",
+       x = "Factor level") +
+  theme_minimal()
+```
 
 ## E.4
 
 #### Part a
 
-*Type your answer using LaTeX (initialize and close formulas/math notation with double dollar signs). See LaTeX cheat sheet on Canvas (under Important Links), and/or Google for things you don't know the syntax for!*
+$$y_{ijkl} = \mu + \alpha_i + \beta_j + \gamma_k + (\alpha\beta)_{ij} + (\alpha\gamma)_{ik} + (\beta\gamma)_{jk} + \epsilon_{ijkl},$$
 
-$$y_{ijkl} = \mu + ...$$
+where $i = 1,2; \ \ j = 1,2; \ \ k = 1,2; \ \ l = 1,2,3,4$
 
 #### Part b
 
-*Type your answer using LaTeX (initialize and close formulas/math notation with double dollar signs). See LaTeX cheat sheet on Canvas (under Important Links), and/or Google for things you don't know the syntax for!*
+$$SSC = \sum_{k = 1}^K n_{k}(\overline{y}_{\cdot\cdot k \cdot} - \overline{y}_{\cdot\cdot \cdot \cdot})^2$$
 
-$$SS_C = $$ $$SS_{BC} = $$ $$MS_C = $$
+$$SSBC = \sum_{j = 1}^J\sum_{k = 1}^K n_{jk}(\overline{y}_{\cdot j k \cdot} -\overline{y}_{\cdot j \cdot \cdot} - \overline{y}_{\cdot\cdot k \cdot} + \overline{y}_{\cdot\cdot \cdot \cdot})^2$$
 
-$$MS_{BC} = $$ $$F =$$
+$$MSC = \frac{SSC}{df_C}$$
+$$MSBC = \frac{SSBC}{df_{BC}}$$
+
+$$F_{C} = \frac{MSC}{MSE}$$
+
+$$F_{BC} = \frac{MSBC}{MSE}$$
 
 #### Part c
 
-```{r}
+Compute main effects:
+
+```{r, warning = FALSE, message = FALSE}
+popcorn <- read_csv("./data/C4 Popcorn.csv") %>% 
+  clean_names()
+
+compute_main_effect <- function(data, 
+                                explanatory_variable,
+                                response_variable){
+  grand_mean <- data %>% 
+    summarize(mean(!!sym(response_variable))) %>% 
+    pull()
+  data %>% 
+    #!!sym() is just the syntax used to pass a string 
+    #to a variable name to be used in a tidyverse fxn
+    group_by(!!sym(explanatory_variable)) %>% 
+    summarize(group_mean = mean(!!sym(response_variable))) %>% 
+    mutate(main_effect = group_mean - grand_mean)
+    
+}
+brand_ME <- compute_main_effect(popcorn, 
+                                "brand", "pop_rate")
+microwave_ME <- compute_main_effect(popcorn, 
+                                "microwave", "pop_rate")
+time_ME <- compute_main_effect(popcorn, 
+                                "time", "pop_rate")
+
+brand_ME
+microwave_ME
+time_ME
 
 ```
+
+Create main effects plots: 
+
+```{r}
+main_effects_plot <- function(data, 
+                              explanatory_variable, 
+                              response_variable,
+                              ylimits,
+                              labels){
+  data %>% 
+    #!!sym() is just the syntax used to pass a string 
+    #to a variable name to be used in a tidyverse fxn
+    group_by(!!sym(explanatory_variable)) %>% 
+    summarize(mean = mean(!!sym(response_variable))) %>% 
+    ggplot(aes(y = mean, x = !!sym(explanatory_variable),
+             group = 1)) +
+    geom_point() +
+    geom_line() +
+    ylim(ylimits[1], ylimits[2]) +
+    labs(x = labels[1],
+         y = labels[2])
+}
+#create main effects plot for microwave factor
+#(and save as object p1)
+p1 <- main_effects_plot(popcorn, "brand", "pop_rate",
+                  c(75, 85),
+                  c("level", "Average pop rate"))
+p2 <- main_effects_plot(popcorn, "microwave", "pop_rate",
+                  c(75, 85),
+                  c("level", "Average pop rate"))
+p3 <- main_effects_plot(popcorn, "time", "pop_rate",
+                  c(75, 85),
+                  c("level", "Average pop rate"))
+plot_grid(p1, p2, p3, nrow = 1)
+```
+
+> The graph helps us to visualize the effect size since the y-axis is hte same across all the graphs, so we can visually compare the difference in the effect size across all the factors. We quickly see that the effect of time is larger than the other factors. 
 
 #### Part d
 
-```{r}
 
+
+```{r}
+colnames(brand_ME) <- c("brand", "group_mean_i", "main_effect_i")
+colnames(microwave_ME) <- c("microwave", "group_mean_j", "main_effect_j")
+IE <- popcorn %>%
+  group_by(brand, microwave) %>% 
+  summarize(group_mean_ij = mean(pop_rate), 
+            n = n()) %>% 
+  ungroup() %>% 
+  left_join(brand_ME) %>% 
+  left_join(microwave_ME) %>% 
+  mutate(grand_mean = weighted.mean(group_mean_ij, n),
+         IE = group_mean_ij  - 
+           (main_effect_i + main_effect_j + 
+              grand_mean)) %>% 
+  relocate(IE)
+IE 
 ```
 
-> YOUR ANSWER HERE
+```{r, echo = FALSE}
+IE <- IE %>% 
+  filter(brand == "Fastco", microwave == "Room") %>% 
+  mutate_if(is.numeric, round, digits = 3)
+```
+
+
+> The interaction effect of Room*Fastco is calculated as 
+
+$$
+\begin{aligned}
+&= \text{average of Room, Fastco group - (effect of Room + effect of Fastco + grand mean)} \\
+&= \overline{y}_{12\cdot} - [\hat{\alpha}_1 + \hat{\beta}_2 + \overline{y}_{\cdot \cdot \cdot}] \\
+&= `r IE$group_mean_ij` - [`r IE$main_effect_i` + `r IE$main_effect_j` + `r IE$grand_mean`] \\
+&= `r IE$IE`
+\end{aligned}
+$$
 
 ## CHOSEN PROBLEM 1
 

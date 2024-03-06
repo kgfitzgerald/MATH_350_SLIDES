@@ -223,7 +223,7 @@ p_value2 <- sum(diff > abs(diff_sample) |
 p_value2
 ```
 
-> Here we are testing the hypotheses *H*<sub>0</sub> : *μ*<sub>*o**p**e**n*</sub> − *μ*<sub>*c**l**o**s**e**d*</sub> = 0 vs. *H*<sub>0</sub> : *μ*<sub>*o**p**e**n*</sub> − *μ*<sub>*c**l**o**s**e**d*</sub> ≠ 0. We obtain an empirical p-value of `r p_value2`, which is greater than *α* = 0.05, so we fail to reject *H*<sub>0</sub>. That is, there is not sufficient evidence to claim that bodylength differs by type of nest built. There was no random sampling or random allocation used here since it is based on evolutionary data, so even if the finding was significant it could not be used to infer a causal relationship between length and nest type. Other confounding variables could be affecting what type of nest the birds create.
+> Here we are testing the hypotheses *H*<sub>0</sub> : *μ*<sub>*o**p**e**n***</sub> − μ<sub>cl**o**s**e**d</sub> = 0 vs. *H*<sub>0</sub> : *μ*<sub>*o**p**e**n***</sub> − μ<sub>cl**o**s**e**d</sub> ≠ 0. We obtain an empirical p-value of `r p_value2`, which is greater than *α* = 0.05, so we fail to reject *H*<sub>0</sub>. That is, there is not sufficient evidence to claim that bodylength differs by type of nest built. There was no random sampling or random allocation used here since it is based on evolutionary data, so even if the finding was significant it could not be used to infer a causal relationship between length and nest type. Other confounding variables could be affecting what type of nest the birds create.
 
 ## E.14
 
