@@ -433,9 +433,9 @@ Using only the BGA location from the `cancer` data, fit model $$log(\hat{\lambda
 bga_data <- cancer %>% 
   filter(location == "BGA")
 
-m1 <- glm(cases ~ median_age + offset(log(person_years)), 
+m15 <- glm(cases ~ median_age + offset(log(person_years)), 
           data = bga_data, family = "poisson")
-tidy(m1)
+tidy(m15)
 ```
 
 ---

@@ -1,0 +1,592 @@
+---
+title: "AE-CH8 / HW-CH8"
+author: "Your Name Here"
+format: 
+  html:
+    self-contained: true
+    toc: true
+    toc_float: true
+    number_section: false
+    highlight: "tango"
+    theme: "cosmo"
+    df-print: paged
+editor: visual
+execute: 
+  warning: false
+  message: false
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, echo = FALSE}
+options(scipen=999)
+```
+
+
+This Application Exercise walks through the guided activities in Chapter 8 of the textbook. There are spaces for you to answer each question (with code and/or text). Feel free to also use this document to add your own notes along the way.
+
+## Load packages & data
+
+```{r}
+#| label: load-packages-data
+#| message: false
+#| warning: false
+library(tidyverse)
+library(janitor)
+library(broom)
+theme_set(theme_minimal())
+
+cancer <- read_csv("./data/C8 CancerCluster.csv") %>% 
+  clean_names()
+```
+
+# Cancer data
+
+## Question 1
+
+```{r}
+67/1138
+```
+
+Proportion of people who reported cancer diagnosis was 67/1138 = `r round(67/1138, 4)`
+
+## Question 2
+
+```{r}
+person_years <- 1138*25
+```
+
+Number of person-years was `r person_years`
+
+## Question 3
+
+```{r}
+cancer_rate <- 67/person_years
+cir <- cancer_rate*100000
+```
+
+Observed cancer rate was `r round(cancer_rate, 5)`.
+
+Observed cancer incidence rate (CIR) was `r round(cir, 1)`
+
+## Question 4
+
+```{r}
+expected <- 326/100000*person_years
+expected
+```
+
+> The observed count of 67 is actually lower than the expected count, meaning 67 is not indicative of a cancer cluster in Randolph. 
+
+## Question 5
+
+```{r}
+person_years2 <- 1138*12.5
+expected2 <- 326/100000*person_years2
+expected2
+```
+
+> 67 does now seem higher than the expected count of `r round(expected2, 1)`. We should incorporate statistical uncertainty before determining whether this is unusually high. 
+
+## Question 6
+
+> Assumption A could be false if family members within a household are systematically more or less likely than their neighbors to get screened, perhaps due to a famliy history of cancer. More screening means higher likelihood of discovering cancer. 
+
+## Question 7
+
+> Different ages might have different probability of diagnosis. Younger people are less likely to get cancer than older people.
+
+## Question 8
+
+> Different familial disease history and wealth might influence how likely people are to visit a hospital and receive a diagnosis.
+
+## Question 9
+
+```{r}
+years <- 25
+n <- 1138
+person_years <- n*years
+incidence_rate <- 326/100000
+
+#simulate cases for a single neighborhood
+rbinom(1, size = person_years, 
+       prob = incidence_rate)
+
+#simulate 10,000 neighborhoods
+sims <- rbinom(10000, size = person_years,
+               prob = incidence_rate)
+#view summary of simulations
+#sanity check- should get mean & median around 93
+summary(sims)
+
+#plot simulations
+sims <- data.frame(cases = sims)
+ggplot(sims, aes(x = cases)) +
+  geom_histogram(color = "white")
+
+#compute p-value
+sum(sims$cases > 67)/nrow(sims)
+```
+
+## Question 10
+
+```{r}
+years <- 12.5
+n <- 1138
+person_years <- n*years
+incidence_rate <- 326/100000
+
+#simulate cases for a single neighborhood
+rbinom(1, size = person_years, 
+       prob = incidence_rate)
+
+#simulate 10,000 neighborhoods
+sims <- rbinom(10000, size = person_years,
+               prob = incidence_rate)
+#view summary of simulations
+summary(sims)
+
+#plot simulations
+sims <- data.frame(cases = sims)
+ggplot(sims, aes(x = cases)) +
+  geom_histogram(color = "white")
+
+#compute p-value
+sum(sims$cases > 67)/nrow(sims)
+```
+
+## Skip 11 - 14
+
+## Question 15
+
+```{r}
+glimpse(cancer)
+bga_data <- cancer %>% 
+  filter(location == "BGA")
+
+m15 <- glm(cases ~ median_age + offset(log(person_years)), 
+          data = bga_data, family = "poisson")
+tidy(m15)
+```
+
+## Question 16
+
+```{r}
+b0 <- tidy(m15)[1,2] %>% pull()
+b1 <- tidy(m15)[2,2] %>% pull()
+rate_est <- exp(b0 + b1*62)
+rate_est
+cir_est <- rate_est*100000
+cir_est
+
+cir_obs <- bga_data %>% 
+  filter(median_age == 62) %>% 
+  pull(rate)
+cir_obs
+
+cir_obs - cir_est
+```
+
+
+> The estimated CIR is `r round(cir_est, 1)` and the observed CIT is `r round(cir_obs, 1)`. The estimate is not very good (the values are not close). 
+
+## Question 17
+
+```{r}
+ctr_data <- cancer %>% 
+  filter(location == "CTR")
+
+m17 <- glm(cases ~ median_age + offset(log(person_years)), 
+          data = ctr_data, family = "poisson")
+tidy(m17)
+```
+
+> The $b_1$ estimate is larger for the CTR dataset, indicating that the log(cancer rate) is growing faster with age for this sample. 
+
+## Question 18
+
+```{r}
+#extract regression coefficients for m17
+b0_m17 <- tidy(m17)[1,2] %>% pull()
+b1_m17 <- tidy(m17)[2,2] %>% pull()
+
+#compute CIR for CTR data (m17), age = 62
+cir_est_m17_62 <- exp(b0_m17 + b1_m17*62)*100000
+cir_est_m17_62
+
+#extract observed CIR for CTR data, age = 62
+cir_obs_62 <- ctr_data %>% 
+  filter(median_age == 62) %>% 
+  pull(rate)
+cir_obs_62
+```
+
+> For median age of 62 years:
+
+> the estimated cancer incidence rate (CIR) is $\hat{\lambda/t} = exp(`r b0_m17` + `r b1_m17`(62))*100000 = `r cir_est_m17_62`$ 
+
+> the observed CIR is `r cir_obs_62`
+
+> these two values are fairly close (difference of `r cir_est_m17_62 - cir_obs_62`)
+
+```{r}
+#compute CIR for CTR data (m17), age = 72
+cir_est_m17_72<- exp(b0_m17 + b1_m17*72)*100000
+cir_est_m17_72
+
+#extract observed CIR for CTR data, age = 72
+cir_obs_72 <- ctr_data %>% 
+  filter(median_age == 72) %>% 
+  pull(rate)
+cir_obs_72
+```
+
+> For median age of 62 years:
+
+> the estimated cancer incidence rate (CIR) is $\hat{\lambda/t} = exp(`r b0_m17` + `r b1_m17`(72))*100000 = `r cir_est_m17_72`$ 
+
+> the observed CIR is `r cir_obs_72`
+
+> these two values are fairly close (difference of `r cir_est_m17_72 - cir_obs_72`)
+
+## Question 19
+
+```{r}
+exp(b1_m17*10)
+```
+
+Cancer incidence rates are estimated to be `r round(exp(b1_m17*10),2)` times higher for each additional 10 years in median age. 
+
+## Question 20
+
+```{r}
+m20 <- glm(cases ~ median_age + offset(log(person_years)), 
+          data = cancer, family = "poisson")
+tidy(m20)
+```
+
+> This model probably does not make sense because the estimated coefficients for median age are very different for the two locations. 
+
+## Question 21
+
+```{r}
+m21 <- glm(cases ~ location + offset(log(person_years)), 
+          data = cancer, family = "poisson")
+tidy(m21)
+
+b1_m21 <- tidy(m21)[2,2] %>% pull()
+exp(b1_m21)
+```
+
+> The CIR is `r round(exp(b1_m21), 2)` times higher for CTR compared to BGA. 
+
+## Question 22
+
+```{r}
+m22 <- glm(cases ~ median_age + location + 
+             offset(log(person_years)), 
+          data = cancer, family = "poisson")
+tidy(m22)
+
+b1_m22 <- tidy(m22)[2,2] %>% pull()
+b2_m22 <- tidy(m22)[3,2] %>% pull()
+exp(b1_m22)
+exp(b2_m22)
+```
+
+> Adjusting for location, the CIR is estimated to increase by `r round(exp(b1_m22), 2)` times on average for each additional year in median age.
+
+> Adjusting for median age, the CTR location is estimated to be `r round(exp(b2_m22), 2)` times higher than the BGA location. 
+
+## Question 23
+
+> Adjusting for median age, the CTR location is estimated to be `r round(exp(b2_m22), 2)` times higher than the BGA location. 
+
+## Question 24
+
+> The CTR data are not linear - they appear to follow an exponential distribution
+
+## Question 25
+
+```{r}
+ggplot(cancer, aes(x = median_age,
+                   y = log(rate),
+                   group = location,
+                   color = location,
+                   linetype = location)) +
+  geom_line() +
+  geom_point()
+```
+
+> The CTR data are now linear but hte BGA data are not
+
+## Question 26
+
+> No, we cannot use the same general discription for both locations. 
+
+## Question 27
+
+```{r}
+m27 <- glm(cases ~ median_age*location + 
+             offset(log(person_years)), 
+          data = cancer, family = "poisson")
+tidy(m27)
+```
+
+
+
+## Question 28
+
+```{r}
+b0_m27 <- tidy(m27)[1,2] %>% pull()
+b1_m27 <- tidy(m27)[2,2] %>% pull()
+b2_m27 <- tidy(m27)[3,2] %>% pull()
+b3_m27 <- tidy(m27)[4,2] %>% pull()
+```
+
+$$BGA \text{ (location = 0)}: \hat{\lambda}/t = exp(b_0 + b_1x) = exp(`r round(b0_m27,3)` + `r round(b1_m27,3)`x)$$
+
+$$CTR \text{ (location = 1)}: \hat{\lambda}/t = exp((b_0 + b_2) + (b_1 + b_3)x) = exp(`r round(b0_m27 + b2_m27,3)` + `r round(b1_m27 + b3_m27,3)`x)$$
+
+## Question 29
+
+```{r}
+exp((b1_m27 + b3_m27)*10) #ctr
+exp((b1_m27)*10) #bga
+```
+
+> CTR location: exp(`r round(b1_m27 + b3_m27, 3)`*10)  = `r round(exp((b1_m27 + b3_m27)*10), 2)` times higher
+
+> BGA location: exp(`r round(b1_m27, 3)`*10)  = `r round(exp((b1_m27)*10), 2)` times higher
+
+## Question 30
+
+```{r}
+tidy(m27)
+```
+
+> yes, the relevant p-value is the one for the interaction term. Since it is small, there is evidence to suggest the location does affect the relationship between age and log-CIR. 
+
+## Question 31
+
+```{r}
+summary_restricted <- summary(m22) #no interaction
+summary_restricted
+summary_full <- summary(m27) #interaction
+summary_full
+G <- summary_restricted$deviance - summary_full$deviance
+G
+df <- summary_restricted$df.residual - summary_full$df.residual
+pchisq(G, df, lower.tail = FALSE)
+```
+
+> The LRT G-statistic is `r round(G,2)`, which follows a chi-squared distribution with `r df` degree of freedom. The p-value is `r round(pchisq(G, df, lower.tail = FALSE), 3)`, therefore there is sufficient evidence to conclude there is a significant interaction between age and location. The sample size is large enough here because all predicted means $\hat{\lambda}_i$ are larger than 5, as shown below.
+
+```{r}
+cancer <- cancer %>% 
+  mutate(location_01 = if_else(location == "BGA", 0, 1),
+         lambda_hat_m27 = person_years*exp(b0_m27 + b1_m27*median_age + b2_m27*location_01 + b3_m27*median_age*location_01))
+cancer %>% pull(lambda_hat_m27)
+```
+
+
+## Question 32
+
+> A quadratic model may be more appropriate, but with only 4 data points it's hard to discern. 
+
+## Question 33
+
+```{r}
+ctr_data <- 
+m33 <- glm(cases ~ median_age + I(median_age^2) + offset(log(person_years)), 
+          data = ctr_data, family = "poisson")
+summary(m33)
+deviance_stat <- summary(m33)$deviance
+df <- summary(m33)$df.residual
+pchisq(deviance_stat, df, lower.tail = FALSE)
+```
+
+> With a p-value of `r round(pchisq(deviance_stat, df, lower.tail = FALSE), 3)`, there is not evidence that the model is a poor fit (see page 269). 
+
+## Question 34
+
+```{r}
+summary(m27)
+pchisq(summary(m27)$deviance, 
+       df = summary(m27)$df.residual,
+       lower.tail = FALSE)
+```
+
+> The deviance on the interaction model in 27 is `r round(summary(m27)$deviance, 1)` with `r summary(m27)$df.residual` degrees of freedom, yielding a p-value of `r pchisq(summary(m27)$deviance, df = summary(m27)$df.residual, lower.tail = FALSE)`. This indicates the model may not be a good fit. Looking at the individual deviance residuals shows that some of them are larger than 2 in magnitude. A plot indicates a quadratic term may be appropriate. 
+
+```{r}
+summary(m27)$deviance.resid
+
+cancer <- cancer %>% 
+  mutate(dev_res_m27 = summary(m27)$deviance.resid)
+ggplot(cancer, aes(x = median_age, 
+                   y = dev_res_m27)) +
+  geom_point()
+```
+
+To conduct a LRT for whether a quadratic term is appropriate, we fit a new model with an interaction term and a quadratic term and compare it to `m27`, which is the interaction model without the quadratic term. 
+
+```{r}
+m34 <- glm(cases ~ median_age*location + I(median_age^2) +
+             offset(log(person_years)), 
+          data = cancer, family = "poisson")
+summary_restricted <- summary(m27) #no quadratic
+summary_restricted
+summary_full <- summary(m34) #quadratic
+summary_full
+G <- summary_restricted$deviance - summary_full$deviance
+G
+df <- summary_restricted$df.residual - summary_full$df.residual
+pchisq(G, df, lower.tail = FALSE)
+```
+
+> There is significant evidence that a quadratic term should be included in the model. 
+
+# Galapagos
+
+## Question 50
+
+```{r}
+gala <- read_csv("./data/C8 Gala.csv") %>% 
+  clean_names()
+glimpse(gala)
+
+create_plot <- function(explanatory){
+  ggplot(gala, aes(x = !!sym(explanatory),
+                   y = log(species))) +
+    geom_point()
+}
+create_plot("area")
+create_plot("elevation")
+create_plot("nearest")
+create_plot("scruz")
+create_plot("adjacent")
+```
+
+> Most of the covariates are not linearly related to the log(species) response variable, indicating a Poisson regression may not be best. 
+
+
+## Question 51
+
+```{r}
+gala <- gala %>% 
+  mutate(scruz = if_else(scruz == 0, scruz + 0.01, scruz))
+create_plot2 <- function(explanatory){
+  ggplot(gala, aes(x = log(!!sym(explanatory)),
+                   y = log(species))) +
+    geom_point()
+}
+create_plot2("area")
+create_plot2("elevation")
+create_plot2("nearest")
+create_plot2("scruz")
+create_plot2("adjacent")
+m50 <- glm(cases ~ median_age*location + I(median_age^2) +
+             offset(log(person_years)), 
+          data = cancer, family = "poisson")
+```
+
+> Now the transfored explanatory variables do look linearly related to log(species), so a Poisson regression is more appropriate. log(area) and log(elevation) look like they will be the most useful predictors.
+
+## Question 52
+
+```{r}
+m52 <- glm(species ~ log(area) + log(elevation), 
+          data = gala, family = "poisson")
+summary_m52 <- summary(m52)
+summary_m52
+
+G <- summary_m52$null.deviance - summary_m52$deviance
+df <- summary_m52$df.null - summary_m52$df.residual
+G
+df
+pchisq(G, df, lower.tail = FALSE)
+```
+
+> There is sufficient evidence to claim that at least one of log(area) and log(elevation) are useful predictors of log(species). 
+
+## Question 53
+
+```{r}
+m53 <- glm(species ~ log(area) + log(elevation) + nearest + scruz + adjacent, 
+          data = gala, family = "poisson")
+
+summary_full <- summary(m53) #all 5 covariates
+summary_restricted <- summary_m52 #2 covariates only
+
+G <- summary_restricted$deviance - summary_full$deviance
+df <- summary_restricted$df.residual - summary_full$df.residual
+G
+df
+pchisq(G, df, lower.tail = FALSE)
+```
+
+> There is strong evidence that at least one of these additional covariates is useful. 
+
+## Question 54
+
+> Yes, log(elevation) appeared to be strongly related to log(species), but it is not significant in this updated model. 
+
+## Question 55
+
+```{r}
+gala %>% 
+  select(area, elevation, nearest, scruz, adjacent) %>% 
+  cor()
+```
+
+> elevation and area are highly correlated
+
+## Question 56
+
+> Scruz and adjacent appear significant but did not appear related to log(species) in the graph. 
+
+## Question 57
+
+```{r}
+summary_full
+pchisq(summary_full$deviance, 
+       summary_full$df.residual,
+       lower.tail = FALSE)
+```
+
+> The deviance statistic is large and the p-value small, indicating that the model does not fit the data very well. 
+
+## Question 58
+
+```{r}
+m58 <- glm(species ~ log(area) + log(elevation) + nearest + scruz + adjacent, 
+          data = gala, family = "quasipoisson")
+summary(m58)
+```
+
+> YOUR ANSWER HERE
+
+## Question 59
+
+```{r}
+m58b <- glm(species ~ log(area) + log(elevation) + scruz + adjacent, 
+          data = gala, family = "quasipoisson")
+tidy(m58b)
+
+m58c <- glm(species ~ log(area) + scruz + adjacent, 
+          data = gala, family = "quasipoisson")
+tidy(m58c)
+
+m58d <- glm(species ~ log(area) + adjacent, 
+          data = gala, family = "quasipoisson")
+tidy(m58d)
+
+b0 <- tidy(m58d)[1,2] %>% pull()
+b1 <- tidy(m58d)[2,2] %>% pull()
+b2 <- tidy(m58d)[3,2] %>% pull()
+
+exp(b0 + b1*2 + b2*15)
+```
+
+
