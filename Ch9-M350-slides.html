@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Chapter 9: Survival Analysis</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Dr. Katie Fitzgerald" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/all.min.css" rel="stylesheet" />
+    <link href="libs/font-awesome/css/v4-shims.min.css" rel="stylesheet" />
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <link rel="stylesheet" href="boxes.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+layout: true
+  
+
+
+---
+
+
+
+
+
+
+
+class: middle, center
+
+# Chapter 9: Survival Analysis
+
+---
+
+class: middle, center
+
+# "Far better an approximate answer to the right question, which is often vague, than the exact answer to the wrong question, which can always be made precise." 
+
+- John Tukey (Ch 9)
+
+---
+
+# AE-CH9
+
++ Navigate to course Github page
++ Open AE-CH9.qmd and copy contents
++ Create new .qmd in your MATH_350 project folder and paste contents from GitHub
++ Render your .qmd
+
+---
+
+# Survival analysis
+
+Response variation is the *time* until a target event of interest.
+
++ death (medicine / public health)
++ drug relapse (public health)
++ college graduation (education)
++ time until drivers blocked in traffic honk their horn (sociology or psychology)
++ age at which first alcoholic drink is taken (public health)
++ time until formerly incarcerated person is rearrested (criminology)
++ time until a light bulb burns out (manufacturing)
+
+Others? 
+
+--
+
+Depending on the context, this time might be considered a **failure time**, **survival time**, or **time-to-event random variable**. 
+
+--
+
+Unit experiencing the event may be living (e.g. person or animal) or inanimate (e.g. light bulb, computer)
+
+---
+
+# Melting chocolate
+
+Chocolatiers and food scientists are obsessed with factors that affect the melting process of chocolate!
+
+--
+
+Brief experiment: how long does it take for chocolate chips to melt?
+
+--
+
+Restriction - we have limited time, will need to end our data collection after 60 seconds.
+
+What are the potential problems with this? 
+
+--
+
+Goals
+
++ Estimate the proportion of chips that remain unmelted beyond a specific point in time
++ Estimate the average time to takes for white or milk chocolate chips to melt
++ Determine if the type of chip is related to the chip melting experience
++ For chips that have not melted by a particular time, at what rate are they melting in the next "instant" of time? 
+
+---
+
+# Experiment
+
+Due to limited sample size (and time), we're going to just test one for fun, but we'll use the `MeltingChipsJS` data provided by the book.
+
++ Randomly assign each student to receive a white or milk chocolate chip
+
+--
+
++ When instructed, place chocolate chip on your tongue and press it to the roof of your mouth
+
+--
+
++ Record the amount of time until it completely melts (how are we defining this?)
+
+--
+
++ If chip is not melted, record `time` of 60, and an indicator variable `censor` will indicate whether the observation was complete (1) or incomplete (0)
+
+--
+
++ Data should include chip `type`, `time`, and `censor`.
+
+--
+
++ If chips are accidentally swallowed, `time` should be the time when swallowed, and the data should be recorded as incomplete. 
+
+---
+
+# Survival data - key concept
+
+Response variable in a survival analysis is the time until the event of interest occurs. Survival analysis methods are appropriate for data from experiments or studies that possess:
+
++ a **well-defined event** of interest
+
+--
+
++ a **clearly defined beginning of time** (no individual has experienced event yet)
+
+--
+
++ a **meaningful scale** for measuring time (e.g. seconds, minutes, days, weeks, etc.)
+
+--
+
+Time-to-event data are *different* from time series data, which are measurements on the same observational units collected at different points in time.
+
+---
+
+# Incomplete Event Times: Censoring
+
+Common in survival analysis is that some event times are **incomplete**; we have only partial information about the time until the event of interest occurs.
+
+--
+
++ Times known exactly = **complete**
+
+--
+
++ **Right censoring** = observation begins at start time and ends before the event of interest is observed
+
+  + Can occur from dropping out OR study ending before event
+
+--
+
++ **Left censoring** = event of interest is known to have occurred before the study began
+
+--
+
++ **Interval censoring** = event of interest is known to have occurred between two time points, but the precise time is not known
+
+--
+
+Incomplete observations can introduce systematic error (bias) into estimated quantities (e.g. mean, median) if not handled appropriately. 
+
+## AE #2-3
+
+---
+
+# The Survival Function
+
+Primary function used to characterize the values of a time-to-event random variable `\(T\)` is the **survival function** `\(S(t)\)`
+
+`$$S(t) = P(T &gt; t),$$`
+
+which gives the probability a randomly selected individual in the population will survive (not experience the event of interest) beyond time `\(t\)`. In other words, the proportion of individuals who haven't experienced event of interest by time `\(t\)`. 
+
+--
+
+What is interpretation of `\(S(45)\)` for chocolate chip melting example? 
+
+--
+
+What is `\(S(0)\)` for all survival analyses?
+
+--
+
+Is `\(S(t)\)` an increasing or decreasing function? 
+
+--
+
+Important: `\(S(t)\)` does NOT give the probability that an individual experiences the event at time `\(t\)`. 
+
+---
+
+# The Empirical Survival Function
+
+In order to fully know `\(S(t)\)`, we would need to know the melting times of the entire population of chips, or know the exact probability distribution of `\(T\)`.
+
+--
+
+In practice, we have a sample of survival times, and we need to find an estimator for `\(S(t)\)`. 
+
+This is analogous to `\(\mu, \overline{x}\)` or `\(\beta_1, b_1\)` issue. 
+
+--
+
+Potential estimator:
+
+`$$\hat{S}(t)_E = \frac{\text{# of chips that haven't melted after t seconds}}{\text{Total # of chips in the sample}}$$`
+
+Hypothetical data (Table 9.1): 
+
+| Student | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|---------|---|---|---|---|---|---|---|
+| Time | 35 | 30 | 60 | 45 | 25 | 55 | 30
+
+AE #4: Compute `\(\hat{S}(25)_E\)`, `\(\hat{S}(30)_E\)`, `\(\hat{S}(40)_E\)`, `\(\hat{S}(60)_E\)`
+
+---
+
+# AE #5 - Censored data
+
+Now imagine some of that data was censored.
+
+| Student | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|---------|---|---|---|---|---|---|---|
+| Time | 35+ | 30 | 60+ | 45 | 25 | 55 | 30+
+
+Compute `\(\hat{S}(45)_E\)` using two approaches:
+
++ Assume it's all complete data (ignore censoring)
++ Eliminate all censored observations and estimate based on complete cases only (complete-case-analysis)
+
+--
+
+What implications do both approaches have? 
+
+---
+
+# Kaplan-Meier Estimator
+
+When a dataset contains incomplete data, the best estimator of the survival function is the **Kaplan-Meier** estimator, `\(\hat{S}_{KM}\)`. Usually computed via software, but we'll discuss the logic, which involves breaking the data into a series of time intervals.
+
+--
+
++ Order the *complete* event times from the smallest to largest
+
+--
+
++ Label the smallest complete time as `\(t_1\)`, the next smallest as `\(t_2\)`, etc.
+
+--
+
++ Number of *complete* cases is denoted by `\(m\)`, which is less than or equal to `\(n\)`, the total number of observations (complete + incomplete)
+
+--
+
++ `\(t_1\)` through `\(t_m\)` used to define time intervals 
+
+    + By convention, the `\(0^{th}\)` interval begins at time `\(t_0 = 0\)` and ends just prior to the time when the first event occurs. Given by `\([0,t_1)\)`
+    + `\([t_i, t_{i + 1})\)`, for `\(i = 1, 2, \dots m - 1\)`
+    + `\([t_m, t_n)\)` if largest time is censored
+    + `\([t_m, t_m]\)` is largest observed time is complete
+    
+---
+
+# AE #6 - 8
+
+| Student | 1 | 2 | 3 | 4 | 5 | 6 | 7 |
+|---------|---|---|---|---|---|---|---|
+| Time | 35+ | 30 | 60+ | 45 | 25 | 55 | 30+
+
++ Question 6: what is `\(m\)`? List `\(t_1\)` through `\(t_m\)`
+
+--
+
++ Question 7: First two intervals are [0, 25) and [25,30). Write out the rest. Note: incomplete times are ignored in creating intervals. 
+
+--
+
++ Question 8: Determine `\(d_i\)`, the number of melted chips in each interval, and `\(n_i\)` the number of chips at risk of melting in each interval (all chips that have not yet melted or been censored at start of interval), for `\(i = 0,1,2,3,4\)`
+
+---
+
+# AE #9 - 12
+
+The conditional probability of experiencing the event in the `\(i\)`th time interval, given that the event has not occurred by the start of the interval is given by: 
+
+`$$\hat{p}_i = \frac{d_i}{n_i}$$`
+
+--
+
+`\(1 - \hat{p}_i\)` is the probability of *not* experiencing the event (i.e., of *surviving*) through the `\(i\)`th time interval, given that the individual has not experienced the event prior to the `\(i\)`th interval. 
+
+--
+
++ Question 9: What is the value of `\(\hat{p}_0\)`? Interpret this value.
+
+--
+
++ Question 10: Show that about 14% of the chips that have not melted by the 25th second will melt between the 25th and 30th second.
+
+---
+
+# Kaplan-Meier Estimator
+
+The final step in getting the Kaplan-Meier estimated probabilities is to multiply together each conditional probability of surviving through the `\(i\)`th time interval to get the *unconditional* probability of surviving through the `\(i\)`th time interval.
+
+--
+
+The Kaplan-Meier estimator of the survival function is given by 
+`$$\hat{S}_{KM} = \prod_{t_i \leq t} (1 - d_i/n_i)$$`
+
+--
+
+Recall probability rules from 361. Let `\(A_i\)` be any event that occurs after interval `\(i\)`.
+
++ `\(\hat{S}_{KM}(25) = (1 - \hat{p}_1)(1 - \hat{p}_0)\)` is an estimate of `\(P(A_1) = P(A_1 \cap A_0) = P(A_1 | A_0)P(A_0)\)`
+
+--
+
++ `\(\hat{S}_{KM}(30) = (1 - \hat{p}_2)(1 - \hat{p}_1)(1 - \hat{p}_0)\)` is an estimate of `\(P(A_2) = P(A_2 \cap A_1 \cap A_0) = P(A_2 | A_1)P(A_1 | A_0)P(A_0)\)`
+
+---
+
+# AE #11 - 17
+
+Questions 11 - 13: Fill in the rest of the table
+
+| Interval `\(i\)` | Time interval | `\(n_i\)` | Number censored | `\(d_i\)` | `\(\hat{p}_i\)` | `\(1 - \hat{p}_i\)` | `\(\hat{S}(t)_{KM}\)` |
+|-----|-----|-----|-----|-----|-----|-----|-----|
+|0 | [0, 25) | 7| | | | | |
+|1 | [25, 30) | 7| | | | | |
+|2 | [30, 45) | 6| | | | | |
+|3 | [45, 55) | 3| | | | | | 
+|4 | [55, 60) | 2| | | | | |
+
+--
+
+Question 14: What is the estimate for `\(S(45)\)` in the table? Interpret this value. 
+
+--
+
+Question 15: Estimate the proportion of chips that have melted by 35 seconds.
+
+--
+
+Question 16: Estimate the proportion of chips that have not melted after 50 seconds.
+
+--
+
+Question 17: Skip, but note that when there is no censoring, the KM estimator will match the empirical survival function.
+
+---
+
+# Kaplan-Meier Curves
+
+Plots the values of `\(\hat{S}(t)_{KM}\)` against the complete event times `\(t_1, t_2, \dots, t_m\)`.
+
+&lt;img src="./images/KM_fig_9-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+Question 18: Compare values in table to those in the figure. How would the KM curve change if the largest observed melting time were not censored?
+
+---
+
+# Survival analysis in R - AE #19
+
+The package `ggsurvfit` allows us to plot K-M curves in R. 
+
+The function `Surv` (from `survival` package, automatically loaded with `ggsurvfit`) converts time &amp; censoring data to a "survival object" that is then used as the response variable in a model. 
+
+`survfit2` fits the model
+
+`ggsurvfit` plots the curve
+
+
+```r
+#install.packages("ggsurvfit")
+library(ggsurvfit)
+
+response &lt;- Surv(time = melt$time,
+                 event = melt$complete)
+
+survfit2(response ~ 1 + type, 
+         data = melt) %&gt;% 
+  ggsurvfit() +
+  labs(
+    x = "Seconds",
+    y = "Overall survival probability"
+  )
+```
+
+---
+
+# K-M curves
+
+Describe what's going on in the four different (hypothetical) scenarios.
+
+&lt;img src="./images/KM_fig_9-2.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Estimating the Mean Survival Time
+
+May seem odd that we talked about fitting the model before descriptive statistics, but that's because the survival probabilities are needed to estimate the descriptive statistics. 
+
+`$$\hat{\mu} = \sum_{i = 0}^{m-1}\hat{S}(t_i)_{KM}(t_{i + 1} - t_i) + \hat{S}(t_m)_{KM}(t_n - t_m)$$`
+
+Recall `\(\hat{S}(t_0)_{KM} = 1\)`, and note that the last term (outside the sum) will be 0 when the largest observed time is complete (i.e. `\(t_m = t_n\)`). 
+
+--
+
+This can be thought of as a weighted average, where the K-M curve estimates act as weights (probabilities) for the time-to-event intervals. 
+
+---
+
+# Mean survival time = area under curve
+
+Question 21: Use this figure to visually estimate the mean survival time.
+
+&lt;img src="./images/fig_9-3.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Estimating percentiles
+
+`$$\hat{t}_p = \text{ smallest complete event time } t_i \text{ in the sample such that } \hat{S}(t_i)_{KM} \leq 1 - \frac{p}{100}$$`
+
+For example, 70th percentile is 55. 
+
+&lt;img src="./images/KM_fig_9-4.png" width="60%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Estimation in R - AE #25
+
+
+```r
+response &lt;- Surv(time = melt$time,
+                 event = melt$complete)
+m1 &lt;- survfit2(response ~ 1 + type, 
+         data = melt)
+print(m1, rmean = 75) #will give mean and median
+```
+
+
+
+
+---
+
+# CIs for surival probailities
+
+Just like any other sample statistic, the estimates of survival probabilities are subject to **sampling variability.**
+
+The approximate `\(100(1 - \alpha)\%\)` confidence interval for `\(S(t) = P(T &gt; t)\)` at a fixed time `\(t\)` is given by
+
+`$$\hat{S}(t)_{KM} \pm Z_{\alpha/2}SE(\hat{S}(t)_{KM}),$$`
+
+where `$$SE(\hat{S}(t)_{KM}) = \hat{S}(t)_{KM}\sqrt{\left(\sum_{t_i \leq t}\frac{d_i}{n_i(n_i - d_i)}\right)}$$`
+
+Add `add_confidence_interval()` layer to `ggsurvfit()`.  
+
+`summary(m1)` and `tidy(m1)` will provide the SEs for each estimated probability. 
+
+# AE 26, 29 - 31
+
+
+
+---
+
+# Comparing survival functions
+
+Log-rank / Wilcoxen test 
+
+`$$H_0: S_1(t) = S_2(t)}$$`
+
+for all times `\(t\)` during which at least one of the groups has at least one subject at risk of experiencing events
+
+`$$H_A: S_1(t) \neq S_2(t)$$`
+
+for at least one time `\(t\)`. 
+
+The R function `survdiff` implements a more sophisticated mix of hte log-rank / Wilcoxen test. On homework, don't need to conduct them separately. 
+
+
+```r
+survdiff(response ~ type, data = melt)
+```
+
+## AE #36
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+<style>
+.logo {
+  background-image: url(Azusa-Pacific-University-Logo.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  width: 350px;
+  height: 200px;
+  z-index: 0;
+}
+</style>
+
+<script>
+document
+  .querySelectorAll(
+    '.remark-slide-content' +
+    ':not(.title-slide)' +
+    // add additional classes to exclude here, e.g.
+    // ':not(.inverse)' +
+    ':not(.hide-logo)'
+  )
+  .forEach(el => {
+    el.innerHTML += '<div class="logo"></div>';
+  });
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
