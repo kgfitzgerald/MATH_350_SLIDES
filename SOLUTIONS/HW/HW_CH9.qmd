@@ -1,0 +1,277 @@
+---
+title: "Homework Chapter 9"
+author: "SOLUTIONS"
+format: 
+  html:
+    self-contained: true
+    toc: true
+    toc_float: true
+    number_section: false
+    highlight: "tango"
+    theme: "cosmo"
+    df-print: paged
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+## Instructions
+
+This Homework comes from Chapter 9 of the Textbook. You should refer to AE_CH9 for some template code.
+
+Complete the following exercises:
+
+-   E.1 (can access pdfs through APU library website. You may also choose to find a more recent article that uses survival analysis)
+
+-   E.2
+
+-   E.3
+
+-   E.12 (only do `survdiff()` once - don't need log rank and Wilcoxen separately)
+
+-   E.13
+
+-   E.15 (a - c only)
+
+```{r}
+#| label: load-packages
+#| message: false
+#| warning: false
+
+library(tidyverse)
+library(janitor)
+library(ggsurvfit)
+library(survival)
+library(broom)
+
+vet <- read_csv("./data/C9 Veteran.csv") %>% 
+  clean_names()
+```
+
+## E.1
+
+#### Part a
+
+> Answers will vary
+
+#### Part b
+
+> Answers will vary
+
+#### Part c
+
+> Answers will vary
+
+#### Part d
+
+> Answers will vary
+
+## E.2
+
+#### Part a
+
+> The time-to-event random variable is hte time to develop a tumor
+
+#### Part b
+
+> Only rats A, B, and D have complete event times
+
+#### Part c
+
+> Rats C and E have right censored event times, as they did not develop a tumor by the end of the experiment. Rat F also has a right censored event time as it died before it developed any tumors and before the end of the experiment.
+
+## E.3
+
+#### Part a
+
+> Event of interest: tumor onset
+
+> Beginning of time: treatment of the suspected carcinogen
+
+> Time-to-event random variable: metric not clear but possibly days until sacrifice or death
+
+> Type(s) of censoring: Right censoring may be possible if one or more of the animals died in some way unrelated to the experiment (e.g., animal escaped and was hit by a car or ran away). 
+
+#### Part b
+
+> Event of interest: moderate or severe breast retraction
+
+> Beginning of time: after radiation or radiation + chemo treatment
+
+> Time-to-event random variable: months until breast retraction was recorded
+
+> Type(s) of censoring: right censoring would be possible if no breast retraction occured by the end of the study
+
+#### Part c
+
+> Event of interest: use of marijuana
+
+> Beginning of time: birth
+
+> Time-to-event random variable: years/age at which marijuana was first used
+
+> Type(s) of censoring: interval censoring possible if a student was able to give some interval in which they first used marijuana but not the exact time. Right censoring would occur if the student never used marijuana.
+
+## E.12
+
+#### Part a
+
+```{r}
+response <- Surv(time = vet$time,
+                 event = vet$status)
+survfit2(response ~ 1 + trt, 
+         data = vet) %>% 
+  ggsurvfit() +
+  labs(
+    x = "Days",
+    y = "Overall survival probability"
+  ) + 
+  add_confidence_interval()
+```
+
+> The survival curves for the two treatment groups are quite similar (especially for the first 30 days), but diverge over time. The curve for the standard treatment (1) reaches an estimated survival probability of 0 by day 533, while the test treatment (2) doesn't do so until day 1000. 
+
+#### Part b
+
+```{r}
+survdiff(response ~ trt, data = vet)
+```
+
+> The p-value is quite large (0.9), so there is not sufficient evidence to claim there is a difference between the two survival curves across the two treatment groups.  
+
+#### Part c
+
+```{r}
+vet <- vet %>% 
+  mutate(group = case_when((trt == 1 & karno < median(karno)) ~ "Trt standard, K low",
+                           (trt == 1 & karno >= median(karno)) ~ "Trt standard, K high",
+                           (trt == 2 & karno < median(karno)) ~ "Trt test, K low",
+                           (trt == 2 & karno >= median(karno)) ~ "Trt test, K high")
+         )
+
+survfit2(response ~ 1 + group, 
+         data = vet) %>% 
+  ggsurvfit() +
+  labs(
+    x = "Days",
+    y = "Overall survival probability"
+  ) + 
+  add_confidence_interval()
+
+survdiff(response ~ group, data = vet)
+```
+
+> After splitting the treatment groups into 4 by incorporating high/low Karnofsky scores (a measure of good/bad health), then there is a significant difference between the curves (p-value < 0.0001). We can reject the null hypothesis and claim the survival experiences were not identical for the 4 groups. 
+
+## E.13
+
+#### Part a
+
+```{r}
+horn <- read_csv("./data/C9 Hornhonk.csv") %>% 
+  clean_names() %>% 
+  mutate(complete = censor,
+         censored = if_else(complete == 1, 0, 1))
+
+response <- Surv(time = horn$seconds,
+                 event = horn$complete)
+m13 <- survfit2(response ~ 1, 
+         data = horn) 
+m13 %>% 
+  ggsurvfit() +
+  labs(
+    x = "Seconds",
+    y = "Overall survival probability"
+  ) + 
+  add_confidence_interval()
+```
+
+> After about 1.4 seconds motorists start honking and the estimated proportion of motorists who have not honked their horn decreases rapidly, though this rate slows down at about 4.5 seconds and even more so at about 7.6 seconds. 
+
+#### Part b
+
+```{r}
+print(m13, rmean = max(horn$seconds))
+tidy(m13)
+
+tidy(m13) %>% 
+  filter(estimate < .6) %>% 
+  slice(1)
+```
+
+> At 3.21 seconds, at least 40% of the motorists will have honked (60% have "survived"): $S(3.21)_{KM} \leq 1 - 40/100$
+
+## E.15
+
+#### Part a
+
+```{r}
+rearrest <- read_csv("./data/C9 Rearrest.csv") %>% 
+  clean_names() %>% 
+  mutate(complete = censor,
+         censored = if_else(complete == 1, 0, 1))
+
+response <- Surv(time = rearrest$months,
+                 event = rearrest$complete)
+m15 <- survfit2(response ~ 1, 
+         data = rearrest) 
+m15 %>% 
+  ggsurvfit() +
+  labs(
+    x = "Months",
+    y = "Overall survival probability"
+  ) + 
+  add_confidence_interval()
+```
+
+> The proportion of inmates who are not rearrested starts decreasing rapidly from close to begining of time, until stabilizing (decreases less rapidly) at about 7 months. Just over 20% don't get rearrested. 
+
+#### Part b
+
+```{r}
+tidy(m15) %>% 
+  filter(estimate < .5) %>% 
+  slice(1)
+```
+
+> At 15.7 months, at least half of the released inmates have been rearrested
+
+#### Part c
+
+```{r}
+rearrest <- rearrest %>% 
+  mutate(type = case_when(personal == 1 & property == 1 ~ "both",
+                          personal == 1 & property == 0 ~ "personal",
+                          personal == 0 & property == 1 ~ "property",
+                          personal == 0 & property == 0 ~ "neither"))
+
+m15c <- survfit2(response ~ type, 
+         data = rearrest) 
+m15c %>% 
+  ggsurvfit() +
+  labs(
+    x = "Months",
+    y = "Overall survival probability"
+  ) + 
+  add_confidence_interval()
+
+survdiff(response ~ type, data = rearrest)
+```
+
+> It appears that a much greater proportion of inmates who committed personal crimes remain free by the end of the study (~60%) compared to about 30% and 17% for those with property crimes and both personal and property crimes respectively. The p-value is quite small, indicating that the difference in survival curves between groups is significant. 
+
+## Reflection prompts
+
+*Respond to each of the following after you have completed all exercises in this assignment*
+
+*(RP1): What were the main concepts covered in this assignment?*
+
+> YOUR ANSWER HERE
+
+*(RP2): What's one thing you understand better after completing these exercises?*
+
+> YOUR ANSWER HERE
+
+*(RP3): What exercise(s) gave you the most trouble? What was difficult about them/where did you get stuck?*
+
+> YOUR ANSWER HERE
