@@ -1,0 +1,420 @@
+---
+title: "Homework Chapter 7"
+author: "Your Name Here"
+format: 
+  html:
+    self-contained: true
+    toc: true
+    toc_float: true
+    number_section: false
+    highlight: "tango"
+    theme: "cosmo"
+    df-print: paged
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+## Instructions
+
+This Homework comes from Chapter 7 of the Textbook. You should refer to AE_CH7 for some template code.
+
+Complete the following exercises:
+
+-   E.2 (skip part e & f)
+
+-   E.5
+
+-   E.6 (a-c)
+
+-   E.9 (a - c)
+
+-   E.10
+
+```{r}
+#| label: load-packages
+#| message: false
+#| warning: false
+library(tidyverse)
+library(janitor)
+library(broom)
+```
+
+## E.2
+
+#### Part a
+
+```{r, warning = FALSE, message = FALSE}
+donner <- read_csv("./data/C7 Donner.csv") %>%
+  clean_names()
+
+m2 <- glm(survived ~ gender, 
+                    family = "binomial",
+                    data = donner)
+
+tidy(m2)
+```
+
+
+#### Part b
+
+```{r}
+z_cutoff <- qnorm(0.975)
+b0 <- tidy(m2)[1,2] %>% pull()
+b1 <- tidy(m2)[2,2] %>% pull()
+se_b1 <- tidy(m2)[2,3] %>% pull()
+
+odds <- exp(b1)
+odds
+
+lb <- exp(b1 - z_cutoff * se_b1)
+ub <- exp(b1 + z_cutoff * se_b1)
+lb
+ub
+```
+
+> The odds ratio from this logistic regression model is $e^{b_1} = e^{`r round(b1, 3)`}$ = `r round(odds, 3)`, which means that the odds of survival increase by 1/0.276 = 3.623 times when the subject is female. (Note "decreasing by one unit" of gender means moving from male to female for this data, thus the predicted odds will be multiplied by $e^{-b_1} = 1/e^{b_1}$. See "Key Concept" note on pg 220 of text)
+
+#### Part c
+
+```{r}
+summary <- summary(m2)
+summary
+G <- summary$null.deviance - summary$deviance
+G
+df <- 1
+p_value <- pchisq(G, df, lower.tail = FALSE)
+p_value
+```
+
+> From the likelihood ratio test, which tests the adequacy of the full model versus the reduced model, the G-statistic is `r round(G, 3)`, which corresponds to a p-value of `r round(p_value, 3)` with 1 degree of freedom. This means that the fit of the full model (knowing Gender) is significantly better than the reduced (null) model. 
+
+#### Part d
+
+```{r}
+Z <- tidy(m2)[2, 4] %>% pull()
+p_value <- tidy(m2)[2,5] %>% pull()
+```
+
+> The information for the Wald's test is given in the `tidy(m2)` output above. The Z-statistic is `r round(Z, 3)`, with a corresponding p-value of `r round(p_value, 3)` for the two-sided test of $H_0: \beta_1 = 0$. Combining this with the likelihood ratio test results in part c (since the full versus null model only differs by the inclusion of the $\beta_1*Gender$ term), we can reject the null hypothesis and conclude that gender is related to the odds of survival. The sample size is not very large, but the similar results provide some confidence that the tests are accurate. 
+
+#### Part g
+
+> As this is only an observational study, we cannot say that gender caused the observed difference in survival rates, as there could have been other variables outside the model affecting the results. This was not a simple random sample, so we cannot say that the results will hold for any general population. 
+
+## E.5
+
+#### Part a
+
+```{r, warning = FALSE, message = FALSE}
+tattoos <- read_csv("./data/C7 Tatoos.csv") %>%
+  clean_names()
+
+#fit logistic regression model
+m5 <- glm(removal ~ method + gender + depth, 
+                    family = "binomial", 
+                    data = tattoos)
+#see model results, including Wald's tests
+tidy(m5)
+
+#extract results for likelihood ratio test
+summary <- summary(m5)
+G <- summary$null.deviance - summary$deviance
+G
+df <- summary$df.null - summary$df.residual
+p_value <- pchisq(G, df, lower.tail = FALSE)
+p_value
+```
+
+> Based on Wald's test (from `statistic` and `p.value` columns above), it appears that only `depth` is significant, with a Z-statistic of `r round(tidy(m5)[4,4] %>% pull(), 3)` and corresponding p-value of `r round(tidy(m5)[4,5] %>% pull(), 3)`.
+> For the likelihood ratio test, the G-statistic is `r round(G, 3)`, which corresponds to a p-value of `r round(p_value, 3)` with `df` degrees of freedom. 
+> Therefore we can conclude that at least one of the coefficients is not zero, and one of the terms is significant. 
+
+#### Part b
+
+```{r}
+#fit logistic regression model
+m5b <- glm(removal ~ gender + depth, 
+                    family = "binomial", 
+                    data = tattoos)
+#see model results, including Wald's tests
+tidy(m5b)
+
+#extract results for likelihood ratio test
+summary_m5b <- summary(m5b)
+G <- summary_m5b$null.deviance - summary_m5b$deviance
+G
+df <- summary_m5b$df.null - summary_m5b$df.residual
+p_value <- pchisq(G, df, lower.tail = FALSE)
+p_value
+```
+
+> Based on Wald's test (from `statistic` and `p.value` columns above), it appears that only `depth` is significant, with a Z-statistic of `r round(tidy(m5b)[4,4] %>% pull(), 3)` and corresponding p-value of `r round(tidy(m5b)[4,5] %>% pull(), 3)`.
+> For the likelihood ratio test, the G-statistic is `r round(G, 3)`, which corresponds to a p-value of `r round(p_value, 3)` with `df` degrees of freedom. 
+> Therefore we can conclude that at least one of the coefficients is not zero, and one of the terms is significant.
+
+#### Part c
+
+```{r}
+#extract values for drop-in-deviance test
+G <- summary_m5b$deviance - summary$deviance
+G
+df <- summary_m5b$df.residual - summary$df.residual
+p_value <- pchisq(G, df, lower.tail = FALSE)
+p_value
+```
+
+> For the drop-in-deviance test (comparing models from parts a (full) and b (reduced)), we get a G-statistic of `r round(G, 3)`, which corresponds to a p-value of `r round(p_value, 3)` with `df` degree of freedom. Therefore, we fail to reject the null hypothesis, and conclude that the explanatory variable `method` can be eliminated from the model. 
+
+#### Part d
+
+```{r}
+#fit logistic regression model
+m5d <- glm(removal ~ method, 
+                    family = "binomial", 
+                    data = tattoos)
+#see model results, including Wald's tests
+tidy(m5d)
+
+#extract results for likelihood ratio test
+summary_m5d <- summary(m5d)
+G <- summary_m5d$null.deviance - summary_m5d$deviance
+G
+df <- summary_m5d$df.null - summary_m5d$df.residual
+p_value <- pchisq(G, df, lower.tail = FALSE)
+p_value
+```
+
+> Based on Wald's test `method` has a Z-statistic of `r round(tidy(m5d)[4,4] %>% pull(), 3)` and corresponding p-value of `r round(tidy(m5d)[4,5] %>% pull(), 3)`.
+> For the likelihood ratio test, the G-statistic is `r round(G, 3)`, which corresponds to a p-value of `r round(p_value, 3)` with `df` degree of freedom. 
+> Based on both of these tests, we fail to reject the null hypothesis and we do not have enough evidence to conclude that successful removal of a tattoo depends on the method. 
+
+#### Part e
+
+> The drop-in-deviance test is a better approach because it accounts for other variables already in the model. This allows us to see if the additional variable is useful to the model, or if it should be eliminated, regardless of whether it is significant by itself. 
+
+## E.6
+
+#### Part a
+
+```{r}
+birdkeeping <- read_csv("./data/C7 BirdKeeping.csv") %>%
+  clean_names()
+
+m6 <- glm(lung_cancer ~ gender + status + age + smoked + cigarettes + bird,
+                  family = "binomial",
+                  data = birdkeeping)
+
+tidy(m6)
+summary_m6 <- summary(m6)
+G <- summary_m6$null.deviance - summary_m6$deviance
+G
+df <- summary_m6$df.null - summary_m6$df.residual
+p_value <- pchisq(G, df, lower.tail = FALSE)
+p_value
+```
+
+> Based on Wald's test (from `statistic` and `p.value` columns above), it appears that only `smoked` and `bird` are significant, with Z-statistics of `r round(tidy(m6)[5,4] %>% pull(), 3)` and `r round(tidy(m6)[7,4] %>% pull(), 3)` and corresponding p-values of `r round(tidy(m6)[5,5] %>% pull(), 3)` and `r round(tidy(m6)[7,5] %>% pull(), 3)`.
+> For the likelihood ratio test, the G-statistic is `r round(G, 3)`, which corresponds to a p-value of `r round(p_value, 3)` with `df` degrees of freedom. 
+> Therefore we can conclude that at least one of the coefficients is not zero, and one of the terms is significant.
+
+#### Part b
+
+```{r}
+m6b <- glm(lung_cancer ~ gender + status + age + smoked + cigarettes,
+                  family = "binomial",
+                  data = birdkeeping)
+
+tidy(m6b)
+```
+
+
+#### Part c
+
+```{r}
+#extract values for drop-in-deviance test
+summary_m6b <- summary(m6b)
+G <- summary_m6b$deviance - summary_m6$deviance
+G
+df <- summary_m6b$df.residual - summary_m6$df.residual
+p_value <- pchisq(G, df, lower.tail = FALSE)
+p_value
+```
+
+> For the drop-in-deviance test (comparing models from parts a (full) and b (reduced)), we get a G-statistic of `r round(G, 3)`, which corresponds to a p-value of `r round(p_value, 3)` with `df` degree of freedom. Therefore, we reject the null hypothesis, and conclude that, after accounting for other variables in the model, the explanatory variable `bird` keeping is related to the probability of having lung cancer, and is important to the model even when the other terms are included.  
+
+## E.9
+
+#### Part a
+
+```{r, warning = FALSE, message = FALSE}
+#convert age to numeric variable so model handles it appropriately
+donner <- donner %>% 
+  mutate(age = as.numeric(age))
+
+#fit logistic regression model
+m9 <- glm(survived ~ gender + age, 
+                      family = "binomial",
+                      data = donner)
+tidy(m9)
+
+#extract relevant model estimates
+b0 <- tidy(m9)[1,2] %>% pull()
+b1 <- tidy(m9)[2,2] %>% pull()
+b2 <- tidy(m9)[3,2] %>% pull()
+
+#compute estimated probabilities of survival
+donner <- donner %>%
+  mutate(pi_hat = exp(b0 + b1*gender + b2*age)/(1 + exp(b0 + b1*gender + b2*age)))
+
+#plot estimated probabilities
+ggplot(donner, aes(x = age, y = pi_hat, color = as.factor(gender))) + 
+  geom_point() + 
+  geom_line()
+
+
+```
+
+> The odds ratios for the two variables are $e^{b_1} = e^{`r round(b1, 3)`}$ = `r round(exp(b1), 3)` for gender and $e^{b_2} = e^{`r round(b2, 3)`}$ = `r round(exp(b2), 3)`for age. This tells us that compared to females of the same age, the odds of survival for males decreases by a factor `r round(exp(b1), 3)` or about 70%. Similarly for another person of the same gender, a subject who is one year older than another subject will see their odds for survival decrease by `r round(exp(b2), 3)` times on average, or about 3.3%. This can also be seen on the plot, where the line for males (gender = 1) is lower than for females, and both curves decrease with age. 
+
+#### Part b
+
+```{r}
+#fit logistic regression model
+m9b <- glm(survived ~ gender*age, 
+                      family = "binomial",
+                      data = donner)
+tidy(m9b)
+
+#extract relevant model estimates
+b0_m9b <- tidy(m9b)[1,2] %>% pull()
+b1_m9b <- tidy(m9b)[2,2] %>% pull()
+b2_m9b <- tidy(m9b)[3,2] %>% pull()
+b3_m9b <- tidy(m9b)[4,2] %>% pull()
+
+#compute estimated probabilities of survival
+donner <- donner %>%
+  mutate(pi_hat_m9b = exp(b0_m9b + b1_m9b*gender + b2_m9b*age + b3_m9b*gender*age)/(1 + exp(b0_m9b + b1_m9b*gender + b2_m9b*age + b3_m9b*gender*age)))
+
+#plot estimated probabilities
+ggplot(donner, aes(x = age, y = pi_hat_m9b, color = as.factor(gender))) + 
+  geom_point() + 
+  geom_line()
+```
+
+> The odds ratios for the three terms in this model are $e^{b_1} = e^{`r round(b1_m9b, 3)`}$ = `r round(exp(b1_m9b), 3)` for gender, $e^{b_2} = e^{`r round(b2_m9b, 3)`}$ = `r round(exp(b2_m9b), 3)` for age, and $e^{b_3} = e^{`r round(b3_m9b, 3)`}$ = `r round(exp(b3_m9b), 3)`for the gender x age interaction. This tells us that compared to females of the same age, the odds of survival for males decreases by a factor `r round(exp(b1_m9b), 3)` or about 75%. Similarly for males, a subject who is one year older than another subject will see their odds for survival decrease by $e^{b_2 + b_3} = e^{`r round(b2_m9b, 3) + round(b3_m9b, 3)`}$ = `r round(exp(b2_m9b + b3_m9b), 3)` times on average, or about 3.1%. For females, a subject who is one year older than another subject will see their odds for survival decrease by $e^{b_2} = e^{`r round(b2_m9b, 3)`}$ = `r round(exp(b2_m9b), 3)` times on average, or about 4%. This can also be seen on the plot, where the curve for males (gender = 1) is lower than for females, both curves decrease with age, but the slope for females is slightly steeper.
+
+#### Part c
+
+> The models are quite similar. By adding the interaction term, the slope becomes slightly steeper for females. This results in older males having a slightly higher estimated odds of surviving (0.9% increase in odds for a unit increase in age). However, the interaction term is not significant, so we can opt for the simpler model without it. 
+
+## E.10
+
+#### Part a
+
+```{r}
+cancer <- read_csv("./data/C7 Cancer2.csv") %>%
+  clean_names()
+
+
+m10 <- glm(malignant ~ radius*concavity + I(radius^2), 
+                    family = "binomial",
+                    data = cancer)
+tidy(m10)
+```
+
+#### Part b
+
+```{r}
+m10b <- glm(malignant ~ radius*concavity, 
+                    family = "binomial",
+                    data = cancer)
+tidy(m10b)
+summary(m10b)
+
+#extract values for drop-in-deviance test
+summary_m10 <- summary(m10)
+summary_m10b <- summary(m10b)
+G <- summary_m10b$deviance - summary_m10$deviance
+G
+df <- summary_m10b$df.residual - summary_m10$df.residual
+p_value <- pchisq(G, df, lower.tail = FALSE)
+p_value
+```
+
+> For the drop-in-deviance test (comparing models from parts a (full) and b (reduced)), we get a G-statistic of `r round(G, 3)`, which corresponds to a p-value of `r round(p_value, 3)` with `df` degree of freedom. Therefore, we fail to reject the null hypothesis, and conclude that, after accounting for other variables in the model, the quadratic term for `radius` does not need to be included in the model. 
+
+#### Part c
+
+```{r}
+ggplot(cancer, aes(x = radius, y = radius^2)) +
+  geom_point()
+cor(cancer$radius, cancer$radius*cancer$radius)
+```
+
+> Yes, these two variables are very highly correlated with one another. 
+
+#### Part d
+
+> Radius is an important variable in the logistic regression model, but it doesn't appear to be significant because radius*radius is highly correlated with radius and it is already in the model. This is why in part a the p-value was large but in part b it appeared to be significant. This is a multicollinearity issue; they are both important for the model, but including them both is redundant as they are so similar. 
+
+#### Part e
+
+
+```{r}
+m10e <- glm(malignant ~ radius + concavity, 
+                    family = "binomial",
+                    data = cancer)
+tidy(m10e)
+summary(m10e)
+
+#extract values for drop-in-deviance test
+summary_m10e <- summary(m10e)
+G <- summary_m10e$deviance - summary_m10b$deviance
+G
+df <- summary_m10e$df.residual - summary_m10b$df.residual
+p_value <- pchisq(G, df, lower.tail = FALSE)
+p_value
+```
+
+> For the drop-in-deviance test (comparing models from parts a (full) and b (reduced)), we get a G-statistic of `r round(G, 3)`, which corresponds to a p-value of `r round(p_value, 3)` with `df` degree of freedom. Therefore, we fail to reject the null hypothesis, and conclude that, after accounting for other variables in the model, the interaction term does not need to be included in the model. 
+
+#### Part f
+
+```{r}
+m10f <- glm(malignant ~ concavity, 
+                    family = "binomial",
+                    data = cancer)
+tidy(m10f)
+summary(m10f)
+
+#extract values for drop-in-deviance test
+summary_m10f <- summary(m10f)
+G <- summary_m10f$deviance - summary_m10e$deviance
+G
+df <- summary_m10f$df.residual - summary_m10e$df.residual
+p_value <- pchisq(G, df, lower.tail = FALSE)
+p_value
+```
+
+> For the drop-in-deviance test (comparing models from parts a (full) and b (reduced)), we get a G-statistic of `r round(G, 3)`, which corresponds to a p-value of `r round(p_value, 3)` with `df` degree of freedom. Therefore, we reject the null hypothesis, and conclude that radius should be included in the model with concavity. 
+
+#### Part g
+
+> Our final model should include radius and concave, as these are the ones considered significant via drop-in-deviance tests. To remove either of these variables would adversely affect the measure of association. Further, this model is simpler than the more complicated interaction or quadratic terms, which didn't provide much benefit. 
+
+## Reflection prompts
+
+*Respond to each of the following after you have completed all exercises in this assignment*
+
+*(RP1): What were the main concepts covered in this assignment?*
+
+> YOUR ANSWER HERE
+
+*(RP2): What's one thing you understand better after completing these exercises?*
+
+> YOUR ANSWER HERE
+
+*(RP3): What exercise(s) gave you the most trouble? What was difficult about them/where did you get stuck?*
+
+> YOUR ANSWER HERE
