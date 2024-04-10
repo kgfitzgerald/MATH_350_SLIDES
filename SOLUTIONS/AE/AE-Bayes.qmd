@@ -1,0 +1,110 @@
+---
+title: "AE-Bayes"
+author: "Your Name Here"
+format: 
+  html:
+    self-contained: true
+    toc: true
+    toc_float: true
+    number_section: false
+    highlight: "tango"
+    theme: "cosmo"
+    df-print: paged
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+This Application Exercise walks through examples from the [Bayes Rules! textbook](https://www.bayesrulesbook.com). There are spaces for you to answer each question (with code and/or text). Feel free to also use this document to add your own notes along the way.
+
+## Load packages & data
+
+```{r}
+#| label: load-packages-data
+#| message: false
+#| warning: false
+
+# Load packages
+library(bayesrules)
+library(tidyverse)
+library(janitor)
+library(cowplot)
+```
+
+```{r}
+#optimist prior - beta(14,1)
+p1 <- plot_beta(alpha = 14, beta = 1)
+summarize_beta(alpha = 14, beta = 1)
+
+#clueless prior - beta(1,1)
+p2 <- plot_beta(alpha = 1, beta = 1)
+summarize_beta(alpha = 1, beta = 1)
+
+#pessimist prior - beta(5,11)
+p3 <- plot_beta(alpha = 5, beta = 11)
+summarize_beta(alpha = 5, beta = 11)
+
+plot_grid(p1, p2, p3, nrow = 1)
+
+#import bechdel dataset
+data(bechdel)
+
+#set seed and take random sample
+set.seed(84735)
+sample <- sample_n(bechdel, 20)
+
+#compute summary statistics
+counts <- sample %>% count(binary)
+y <- counts %>% filter(binary == "PASS") %>% pull(n)
+n <- sum(counts$n)
+
+#summarize posterior - optimist
+summarize_beta_binomial(alpha = 14, beta = 1, y = y, n = n)
+plot_beta_binomial(alpha = 14, beta = 1, y = y, n = n)
+
+#summarize posterior - clueless
+summarize_beta_binomial(alpha = 1, beta = 1, y = y, n = n)
+plot_beta_binomial(alpha = 1, beta = 1, y = y, n = n)
+
+#summarize posterior - pessimist
+summarize_beta_binomial(alpha = 5, beta = 11, y = y, n = n)
+plot_beta_binomial(alpha = 5, beta = 11, y = y, n = n)
+```
+
+```{r}
+#same prior, different data
+
+#oksana - 1991
+bechdel_1991 <- bechdel %>% 
+  filter(year == 1991)
+
+counts_1991 <- bechdel_1991 %>% count(binary)
+counts_1991
+y_1991 <- counts_1991 %>% filter(binary == "PASS") %>% pull(n)
+n_1991 <- sum(counts_1991$n)
+y_1991/n_1991
+
+#summarize posterior - oksana
+summarize_beta_binomial(alpha = 14, beta = 1, 
+                        y = y_1991, n = n_1991)
+plot_beta_binomial(alpha = 14, beta = 1, 
+                   y = y_1991, n = n_1991) +
+  labs(title = "Oksana")
+
+#omari 2000
+bechdel_2000 <- bechdel %>% 
+  filter(year == 2000)
+
+counts_2000 <- bechdel_2000 %>% count(binary)
+counts_2000
+y_2000 <- counts_2000 %>% filter(binary == "PASS") %>% pull(n)
+n_2000 <- sum(counts_2000$n)
+y_2000/n_2000
+
+#summarize posterior - oksana
+summarize_beta_binomial(alpha = 14, beta = 1, 
+                        y = y_2000, n = n_2000)
+plot_beta_binomial(alpha = 14, beta = 1, 
+                   y = y_2000, n = n_2000) +
+  labs(title = "Oksana")
+```
