@@ -1,0 +1,223 @@
+---
+title: "Your Bayes Questions Revisited"
+output: 
+    xaringan::moon_reader:
+      css: [default-fonts, default, boxes.css]
+      yolo: false
+      includes:
+        after_body: insert-logo.html  
+      seal: false  
+      lib_dir: libs
+      nature:
+        highlightStyle: github
+        highlightLines: true
+        countIncrementalSlides: false
+        ratio: "16:9"
+---
+
+```{r child = "setup.Rmd"}
+
+```
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE,
+                      warning = FALSE)
+```
+
+```{r packages, echo=FALSE, message=FALSE, warning=FALSE}
+library(tidyverse)
+library(janitor)
+library(broom)
+```
+
+## Bayesian vs. Frequentist - What's the same?
+
+Update on my previous comments: Not *everything* you've learned in 361/250/362 has been specifically frequentist.
+
+--
+
+*Probability* and *statistical theory* are, for the most part, paradigm-agnostic. For example:
+
++ Probability rules / set algebra $P(A \cup B) = P(A) + P(B) - P(A\cap B)$
+
+--
+
++ Distributions of random variables (pdfs/pmfs, uniform, binomial, bernoulli, exponential, chi-squared, normal, t, geometric, F)
+
+--
+
++ Expected value, variance definitions and properties 
+
+--
+
++ Exploratory Data Analysis / Data Visualization
+
+--
+
++ Modeling logic (though estimation / inference differs) - linear regression, logistic regression, GLMs, ANOVA
+
+--
+
+"Bayesian methods require a knowledge of classical methods as well as some additional material. Most of this additional material is either applied calculus or statistical computing"
+
+---
+
+## Bayesian vs. Frequentist - What's different?
+
+Core difference is *philosophical*, including in the definition of probability itself:
+
+--
+
++ Frequentists: objective probability, limit of long-run frequency of a random event
+
++ Bayesian: subjective probability, measures degree of belief
+
+--
+
+"A core disagreement... is that frequentists see probability measure as a property of the outside world and Bayesians view probability as a personal internalization of observed uncertainty."
+
+--
+
+Primary ways this difference manifests itself:
+
++ Statistical inference! (Confidence intervals, hypothesis testing)
+
+--
+
++ Estimation methods for parameters of interest
+
+  + Frequentists rely on formulas derived from statistical theory (usually by finding sampling distributions of test statistics)
+  + Bayesians rely on subjective choices about prior and data models, which are then used to estimate a posterior model (often this involves simulation / MCMC techniques)
+
+---
+
+## Bayesian vs. Frequentist - when do they agree? 
+
+Conclusions from statistical inference under the two paradigms will match in two scenarios:
+
+--
+
++ When you use an uninformative prior
+
++ When there is a lot of data, such that it swamps any prior
+
+---
+
+## Which approach should I use when?
+
+Before we get to that question, let's discuss desirable characteristics of *any* model-building and data analysis process (from Jeff Gill, 2015):
+
++ Overt and clear model assumptions
+
+--
+
++ a principled way to make probability statements about the real quantities of theoretical interest
+
+--
+
++ an ability to update these statements (i.e. learn) as new information is received
+
+--
+
++ systematic incorporation of previous knowledge on the subject
+
+--
+
++ missing information handled seamlessly as part of the estimation process
+
+--
+
++ recognition that population quantities can be changing over time rather than forever fixed
+
+--
+
++ the means to model all data types including hierarchical forms
+
+--
+
++ straightforward assessment of both model quality and sensitivity to assumptions
+
+---
+
+## Argument for Bayesian
+
+Bayesian statistics possess all of the above, and has the following additional advantages (from Gill, 2015, Press, 1989):
+
++ often results in narrower CIs
++ often gives smaller model variance
++ predictions are usually better
++ "proper" prior distributions give moels with good frequentist properties
++ reasonably "objective" assumptions are available
+
+---
+
+# When is frequentist preferred?
+
++ when population parameters of interest are truly fixed and unchanging under all realistic circumstances
+
+--
+
++ when we do *not* have any prior information to add to the model specification process
+
+--
+
++ when conducting randomized/controlled experiments, especially when you need power calculations / sample size costs a priori
+
+--
+
++ when you care more about "significance" than effect size*
+
+--
+
++ when computers are slow or relatively unavailable to you
+
+--
+
++ when you prefer very automated "cookbook" type procedures
+
+---
+
+# A few more comments
+
++ Frequentists use likelihood, too (think: Likeilihood ratio test)
+
+$$\frac{L(\theta_1|x)}{L(\theta_2|x)}$$
+
++ Bayesians rely on the same model assumptions as frequentists (the frequentist model for the response variable becomes the likelihood model for the data in Bayesian modeling)
+
+  + model is linear
+  + i.i.d variables
+  + homoscedasticity 
+  + distributional assumption (of error terms / likelihood)
+  + Bayesians also add in prior distributions for each unknown parameter
+  
+--
+
++ Bayesians rely on random sampling just as much as frequentists, just not the philosophical notion of repeated sampling / sampling distributions
+
+---
+
+## Why is computing so important for Bayesian statistics?
+
+Consider trying to model support for a presidential candidate, Michelle. Chapter 3 gives example for this by modeling support for Michelle in Minnesota, which included modeling a single parameter $\pi$.
+
+--
+
+If you want to model her support in *all states*, you now are trying to model *dozens* of parameters $\theta = \{\theta_1, \theta_2, \dots, \theta_k \}$ 
+
+--
+
+We still build a posterior given a set of data $y$ on state-level polls, demographics, etc using $$f(\theta | y) = \frac{f(\theta)L(\theta|y)}{f(y)} \propto f(\theta)L(\theta|y)$$
+but now $\theta$ is a *vector*, and $f(\theta)$ and $L(\theta|y)$ are complicated *multivariate* functions, which often involve intractible multiple integrals that may not have closed form solutions.
+
+--
+
+MCMC algorithms to the rescue - Markov Chain Monte Carlo
+
+Fun fact: Markov chains were used by scientists at Los Alamos National Lab in the 40s as part of their top secret nuclear weapons project. Were trying to better understand neutron travel. They gave their work the code name "Monte Carlo".
+
+--
+
+Now "Monte Carlo" is used to refer to basically any simulation that uses a random probability model to simulate uncertain outcomes (you've done this many times in 361/362 and 350) 
+
+
