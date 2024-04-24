@@ -1,0 +1,173 @@
+---
+title: "HW Bayes 01"
+author: "Your Name Here"
+format: 
+  html:
+    self-contained: true
+    toc: true
+    toc_float: true
+    number_section: false
+    highlight: "tango"
+    theme: "cosmo"
+    df-print: paged
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+## Instructions
+
+This Homework comes from Chapters 1 & 2 of the [Bayes Rules! Textbook](https://www.bayesrulesbook.com/). The questions chosen for this week's homework should be answerable based on prior statistical knowledge and the Bayesian activities done in class during Week 11. However, in Week 12 you will be asked to read the full Chapters 1 & 2 of this textbook, so you may find the reading useful for this homework, too.
+
+### [Chapter 1 Exercises](https://www.bayesrulesbook.com/chapter-1#exercises):
+
+-   1.1
+
+-   Choose 1.3 or 1.4
+
+### [Chapter 2 Exercises:](https://www.bayesrulesbook.com/chapter-2#exercises-1)
+
+-   2.1
+
+-   2.2
+
+-   2.4
+
+-   2.9
+
+```{r}
+#| label: load-packages
+#| message: false
+#| warning: false
+
+```
+
+## 1.1
+
+#### Part a
+
+> prior: chocolate = brown, white milk comes from white cows
+
+#### Part b
+
+> data: chocolate syrup exists and is brown
+
+#### Part c
+
+> posterior: chocolate milk comes from cow's milk + chocolate syrup, not brown cows
+
+## 1.3 OR 1.4
+
+*Answers will vary*
+
+## 2.1
+
+#### Part a
+
+> P(B\|A) \> P(B)
+
+#### Part b
+
+> P(B\|A) \< P(B)
+
+#### Part c
+
+> P(B\|A) \> P(B)
+
+#### Part d
+
+> P(B\|A) \> P(B)
+
+## 2.2
+
+#### Part a
+
+> P(B\|A) = 0.73; conditional probability
+
+#### Part b
+
+> P(A) = 0.2; marginal probability
+
+#### Part c
+
+> P(D) = 0.15; marginal probability
+
+#### Part d
+
+> P(D\|C) = 0.91; conditional probability
+
+#### Part e
+
+> *P*(*F*∩*E*) = 0.38; joint probability
+
+#### Part f
+
+> *P*(*E*\|*F*) = 0.95; conditional probability
+
+## 2.4
+
+```{r}
+#V = vampires exist
+#D = sparkles like a diamond
+#P(V) = 0.05 (prior)
+#P(D|V) = 0.7 (likelihood)
+#P(D|V') = 0.03
+#Want P(V|D) = P(D|V)P(V)/P(D)
+#Denominator (normalizing constant): 
+#P(D) = P(D|V)P(V) + P(D|V')P(V')
+
+prior <- 0.05
+likelihood <- 0.7
+denom <- 0.7*0.05 + 0.03*.95
+posterior <- prior*likelihood/denom
+posterior
+```
+
+> The probability that vampires exist given that Edward sparkles like a diamond is `r posterior`.
+
+## 2.9
+
+#### Part a
+
+|              | good mood | bad mood | total   |
+|--------------|-----------|----------|---------|
+| 0 texts      | 0.02      | 0.078    | 0.098   |
+| 1 - 45 texts | 0.336     | 0.516    | 0\. 852 |
+| 46+ texts    | 0.044     | 0.006    | 0.05    |
+| Total        | 0.4       | 0.6      | 1.0     |
+
+#### Part b
+
+> P(good mood) = 0.4; prior
+
+#### Part c
+
+```{r}
+0.044/0.40
+```
+
+> P(46+ \| good mood) = 0.11; likelihood
+
+#### Part d
+
+```{r}
+0.044/0.05
+```
+
+> > P(good mood \| 46+) = 0.88; posterior
+
+## Reflection prompts
+
+*Respond to each of the following after you have completed all exercises in this assignment*
+
+*(RP1): What were the main concepts covered in this assignment?*
+
+> YOUR ANSWER HERE
+
+*(RP2): What's one thing you understand better after completing these exercises?*
+
+> YOUR ANSWER HERE
+
+*(RP3): What exercise(s) gave you the most trouble? What was difficult about them/where did you get stuck?*
+
+> YOUR ANSWER HERE

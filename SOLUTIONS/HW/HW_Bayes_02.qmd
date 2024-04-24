@@ -1,0 +1,295 @@
+---
+title: "HW Bayes 02"
+author: "Your Name Here"
+format: 
+  html:
+    self-contained: true
+    toc: true
+    toc_float: true
+    number_section: false
+    highlight: "tango"
+    theme: "cosmo"
+    df-print: paged
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+## Instructions
+
+This Homework comes from Chapters 1 & 2 of the [Bayes Rules! Textbook](https://www.bayesrulesbook.com/). You should complete this assignment after having read the full Chapters 1 & 2 in Week 12.
+
+### [Chapter 1 Exercises](https://www.bayesrulesbook.com/chapter-1#exercises):
+
+-   1.6
+
+-   1.8
+
+### [Chapter 2 Exercises:](https://www.bayesrulesbook.com/chapter-2#exercises-1)
+
+-   2.3
+
+-   2.6
+
+-   2.11
+
+-   2.13
+
+-   2.14
+
+-   2.18
+
+-   2.20
+
+-   2.21
+
+```{r}
+#| label: load-packages
+#| message: false
+#| warning: false
+library(tidyverse)
+library(bayesrules)
+library(janitor)
+```
+
+## 1.6
+
+#### Part a
+
+> Null: I do NOT get the job, Alternative: I get the job. Assuming I do NOT get the job, what is the probability that I'm qualified for the position?
+
+#### Part b
+
+> What's the probability I get the job, assuming I am qualified for the position
+
+#### Part c
+
+> The Bayesian question is the more natural one and more likely to be of practical interest.
+
+## 1.8
+
+#### Part a
+
+> Answers will vary: mathematical framework for updating your belief in a hypothesis based on new data
+
+#### Part b
+
+> Bayesian and frequentist frameworks both share a mathematical foundation in probability and involve answering scientific questions with data and accounting for uncertainty in conclusions
+
+## 2.3
+
+#### Part a
+
+> No, the sample size is not fixed so this is not a "number of successes in n trials" scenario.
+
+#### Part b
+
+> Yes, Y ~ binomial(27, 0.9)
+
+#### Part c
+
+> No, the sample size is not fixed so this is not a "number of successes in n trials" scenario.
+
+#### Part d
+
+> No, the outcome is a time, not a discrete number of successes
+
+#### Part e
+
+> No, the outcome is a probability, not a discrete number of successes
+
+#### Part f
+
+> Yes, Y ~ binomial(60, 0.8)
+
+## 2.6
+
+> If L = Sandra likes a restaurant, we want to know P(L\|\<4 stars), which can be found by P(\<4 stars \| L)P(L)/P(\<4 stars). The piece we don't have is the marginal probability P(\<4 stars).
+
+## 2.11
+
+#### Part a
+
+> *Y*\|*π* ∼ *b**i**n**o**m**i**a**l*(6,*π*)
+>
+> $f(y\|\pi) = L(\pi\|y) = {6\choose y} \pi^y(1 - \pi)^{6 - y}$
+
+#### Part b
+
+```{r}
+dbinom(x = 4, size = 6, prob = 0.3)
+```
+
+#### Part c
+
+$$
+Posterior = f(\pi\\y=4) = \frac{f(\pi)f(y = 4\\\pi)}{f(y = 4)}
+$$
+
+```{r}
+pi <- c(0.3, 0.4, 0.5)
+prior <- c(0.25, 0.60, 0.15)
+likelihood <- dbinom(4, size = 6, prob = pi)
+normalizing <- sum(prior*likelihood)
+posterior <- prior*likelihood/normalizing
+posterior
+```
+
+|             | *π* = 0.3        | *π* = 0.4        | *π* = 0.5        |
+|-------------|------------------|------------------|------------------|
+| *f*(*π*\|4) | `r posterior[1]` | `r posterior[2]` | `r posterior[3]` |
+
+## 2.13
+
+#### Part a
+
+> Answers will vary, but 47/80 = 0.5875, so probability from 0.7 should shift down towards 0.6.
+
+#### Part b
+
+```{r}
+pi <- c(0.4, 0.5, 0.6, 0.7)
+prior <- c(0.1, 0.2, 0.44, 0.26)
+likelihood <- dbinom(47, size = 80, prob = pi)
+normalizing <- sum(prior*likelihood)
+posterior <- prior*likelihood/normalizing
+posterior
+```
+
+|             | *π* = 0.4        | *π* = 0.5        | *π* = 0.6        | *π* = 0.7        |
+|-------------|------------------|------------------|------------------|------------------|
+| *f*(*π*\|4) | `r posterior[1]` | `r posterior[2]` | `r posterior[3]` | `r posterior[4]` |
+
+> Probability from 0.7 shifted down to 0.6. Probability from 0.5 and 0.4 also shifted up to 0.6.
+
+#### Part c
+
+```{r}
+likelihood <- dbinom(470, size = 800, prob = pi)
+normalizing <- sum(prior*likelihood)
+posterior <- prior*likelihood/normalizing
+posterior
+```
+
+> Nearly all the probability is now concentrated on 0.6. The large amount of data swamped the prior, so the posterior is determined almost entirely by the data.
+
+## 2.14
+
+#### Part a
+
+```{r}
+pi <- c(0.15, 0.25, 0.5, 0.75, 0.85)
+prior <- c(3, 3, 8, 3, 3)/20
+prior
+```
+
+|          | *π* = 0.15   | *π* = 0.25   | *π* = 0.5    | *π* = 0.75   | *π* = 0.85   |
+|----------|--------------|--------------|--------------|--------------|--------------|
+| *f*(*π*) | `r prior[1]` | `r prior[2]` | `r prior[3]` | `r prior[4]` | `r prior[5]` |
+
+#### Part b
+
+```{r}
+likelihood <- dbinom(3, 13, pi)
+normalizing <- sum(prior*likelihood)
+posterior <- prior*likelihood/normalizing
+posterior
+```
+
+|             | *π* = 0.15       | *π* = 0.25       | *π* = 0.5        | *π* = 0.75       | *π* = 0.85       |
+|-------------|------------------|------------------|------------------|------------------|------------------|
+| *f*(*π\|y*) | `r posterior[1]` | `r posterior[2]` | `r posterior[3]` | `r posterior[4]` | `r posterior[5]` |
+
+#### Part c
+
+> The probability shifted to the lower values of *π*. Li learned the bus is less likely to be late than she expected.
+
+## 2.18
+
+```{r}
+set.seed(437)
+lactose <- data.frame(pi = c(0.4, 0.5, 0.6, 0.7))
+
+prior <- c(0.1, 0.2, 0.44, 0.26)
+
+lactose_sim <- sample_n(lactose, size = 10000, 
+                        weight = prior, replace = TRUE)
+
+lactose_sim <- lactose_sim %>%
+  mutate(y = rbinom(10000, size = 80, prob = pi))
+
+lactose_sim %>% 
+  tabyl(pi) %>% 
+  adorn_totals("row")
+
+
+ggplot(lactose_sim, aes(x = y)) + 
+  stat_count(aes(y = after_stat(prop))) + 
+  facet_wrap(~ pi)
+
+# Focus on simulations with y = 47
+data <- lactose_sim %>% 
+  filter(y == 47)
+
+# Summarize the posterior approximation
+data %>% 
+  tabyl(pi) %>% 
+  adorn_totals("row")
+
+# Plot the posterior approximation
+ggplot(data, aes(x = pi)) + 
+  geom_bar()
+```
+
+## 2.20
+
+```{r}
+cat_yes <- data.frame(ID_cat = rbinom(800, size =1, 
+                                      prob = 0.8),
+                      cat = rep("yes", 800))
+cat_no <- data.frame(ID_cat = rbinom(9200, size =1, 
+                                     prob = 0.5),
+                      cat = rep("no", 9200))
+
+
+data <- data.frame(rbind(cat_yes, cat_no))
+
+data %>% 
+  filter(ID_cat == 1 ) %>% 
+  count(cat) %>% 
+  mutate(prob = n/sum(n))
+```
+
+## 2.21
+
+```{r}
+d_yes <- data.frame(ID_have = rbinom(300, size = 1, 
+                                     prob = 0.93),
+                    disease = rep("yes", 300))
+d_no <- data.frame(ID_have = rbinom(9700, size = 1, 
+                                    prob = 0.07),
+                   disease = rep("no", 9700))
+
+data <- data.frame(rbind(d_yes, d_no))
+
+data %>% 
+  filter(ID_have == 1) %>% 
+  count(disease) %>% 
+  mutate(prob = n/sum(n))
+```
+
+## Reflection prompts
+
+*Respond to each of the following after you have completed all exercises in this assignment*
+
+*(RP1): What were the main concepts covered in this assignment?*
+
+> YOUR ANSWER HERE
+
+*(RP2): What's one thing you understand better after completing these exercises?*
+
+> YOUR ANSWER HERE
+
+*(RP3): What exercise(s) gave you the most trouble? What was difficult about them/where did you get stuck?*
+
+> YOUR ANSWER HERE
