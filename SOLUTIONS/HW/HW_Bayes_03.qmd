@@ -1,0 +1,283 @@
+---
+title: "HW Bayes 03"
+author: "Your Name Here"
+format: 
+  html:
+    self-contained: true
+    toc: true
+    toc_float: true
+    number_section: false
+    highlight: "tango"
+    theme: "cosmo"
+    df-print: paged
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+## Instructions
+
+This Homework comes from Chapters 3 & 8 of the [Bayes Rules! Textbook](https://www.bayesrulesbook.com/).
+
+### [Chapter 3 Exercises](https://www.bayesrulesbook.com/chapter-3#exercises):
+
+-   3.1
+
+-   3.3
+
+-   3.4
+
+-   3.11
+
+-   3.18
+
+-   BONUS: 3.8
+
+### [Chapter 8 Exercises:](https://www.bayesrulesbook.com/chapter-8#exercises-1)
+
+-   8.2
+
+-   8.4
+
+-   8.6
+
+-   8.9
+
+-   8.14 (skip a, use a beta prior)
+
+```{r}
+#| label: load-packages
+#| message: false
+#| warning: false
+
+```
+
+## 3.1
+
+#### Part a
+
+> YOUR ANSWER HERE
+
+#### Part b
+
+> YOUR ANSWER HERE
+
+#### Part c
+
+> YOUR ANSWER HERE
+
+#### Part d
+
+> YOUR ANSWER HERE
+
+## 3.3
+
+#### Part a
+
+> YOUR ANSWER HERE
+
+```{r}
+
+```
+
+
+#### Part b
+
+> YOUR ANSWER HERE
+
+#### Part c
+
+> YOUR ANSWER HERE
+
+#### Part d
+
+> YOUR ANSWER HERE
+
+```{r}
+
+```
+
+
+#### Part e
+
+> YOUR ANSWER HERE
+
+```{r}
+
+```
+
+
+## 3.4
+
+> YOUR ANSWER HERE
+
+## 3.11
+
+### Part a
+
+> YOUR ANSWER HERE
+
+```{r}
+
+```
+
+### Part b
+
+> YOUR ANSWER HERE
+
+### Part c
+
+```{r}
+
+```
+
+### Part d
+
+```{r}
+
+```
+
+> YOUR ANSWER HERE
+
+## 3.18
+
+### Part a
+
+```{r}
+
+```
+
+### Part b
+
+```{r}
+
+```
+
+
+### Part c
+
+> YOUR ANSWER HERE
+
+## 3.8 (BONUS)
+
+*Can upload screenshot of by-hand work, or type up derivations in LaTeX*
+
+## 8.2
+
+### Part a
+
+> YOUR ANSWER HERE
+
+### Part b
+
+> YOUR ANSWER HERE
+
+## 8.4 
+
+### Part a
+
+> YOUR ANSWER HERE
+
+### Part b
+
+> YOUR ANSWER HERE
+
+### Part c
+
+> YOUR ANSWER HERE
+
+## 8.6
+
+### Part a
+
+```{r}
+
+```
+
+### Part b
+
+```{r}
+
+```
+
+### Part c
+
+```{r}
+
+```
+
+## 8.9
+
+### Part a
+
+```{r}
+
+```
+
+### Part b
+
+```{r}
+
+```
+
+> YOUR ANSWER HERE
+
+### Part c
+
+```{r}
+
+```
+
+> YOUR ANSWER HERE
+
+### Part d
+
+```{r}
+
+```
+
+> YOUR ANSWER HERE
+
+### Part e
+
+> YOUR ANSWER HERE
+
+## 8.14
+
+### Part b
+
+> YOUR ANSWER HERE
+
+### Part c
+
+> YOUR ANSWER HERE
+
+### Part d
+
+```{r}
+
+```
+
+### Part e
+
+```{r}
+
+```
+
+> YOUR ANSWER HERE
+
+## Reflection prompts
+
+*Respond to each of the following after you have completed all exercises in this assignment*
+
+*(RP1): What were the main concepts covered in this assignment?*
+
+> YOUR ANSWER HERE
+
+*(RP2): What's one thing you understand better after completing these exercises?*
+
+> YOUR ANSWER HERE
+
+*(RP3): What exercise(s) gave you the most trouble? What was difficult about them/where did you get stuck?*
+
+> YOUR ANSWER HERE

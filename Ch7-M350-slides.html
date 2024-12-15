@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="" xml:lang="">
   <head>
-    <title>Chapter 7: Logistic Regression</title>
+    <title>Teaching Demo: Intro to Logistic Regression</title>
     <meta charset="utf-8" />
     <meta name="author" content="Dr. Katie Fitzgerald" />
     <script src="libs/header-attrs/header-attrs.js"></script>
@@ -34,7 +34,30 @@ layout: true
 
 class: middle, center
 
-# Chapter 7: Logistic Regression
+# Teaching Demo: Intro to Logistic Regression
+
+---
+
+# Context
+
++ Lecture I've given in APU's *Statistical Models* course, which has the equivalent of MATH 062 as a pre-req
+
+--
+
++ Students already familiar with:
+    + Distributions, expected value, etc.
+    + basic linear regression / OLS
+    + R/RStudio + Quarto documents + R projects
+
+--
+
++ Students provided with:
+    + Link to web-based lecture slides [https://kgfitzgerald.github.io/MATH_350_SLIDES/Ch7-M350-slides.html](https://kgfitzgerald.github.io/MATH_350_SLIDES/Ch7-M350-slides.html)
+    + Link to course Github repo, with .qmd templates for in-class activities and assignments [https://github.com/kgfitzgerald/APU_MATH_350_templates/](https://github.com/kgfitzgerald/APU_MATH_350_templates/)
+    
+--
+
++ Material adapted from *Practicing Statistics: Guided Investigations for the Second Course* (Kuyper &amp; Skylar)
 
 ---
 
@@ -48,9 +71,8 @@ class: middle, center
 
 # AE-CH7
 
-+ Navigate to course Github page
-+ Open AE-CH7.qmd and copy contents
-+ Create new .qmd in your MATH_350 project folder and paste contents from GitHub
++ Navigate to course Github page: [https://github.com/kgfitzgerald/APU_MATH_350_templates/](https://github.com/kgfitzgerald/APU_MATH_350_templates/)
++ Download AE_CH7.qmd and place in MATH_062 project folder
 + Render your .qmd
 
 ---
@@ -58,21 +80,89 @@ class: middle, center
 # Space Shuttle Investigation
 
 .pull-left[
-January 28, 1986, NASA launched 25th shuttle flight from Kennedy Space Center in Florida. 
 
-73 seconds into flight, external fuel tank collapsed and spilled liquid oxygen and hydrogen. Ignited and killed all 7 crew members on board. 
-
-O-ring seal in the right solid rocket booster failed to isolate the fuel supply.
-
-Tragedy: engineers knew that cold temperatures caused O-rings to become brittle and fail to seal properly. They recommended against launch, but were overruled.
-
-Expected temperature for January 28, 1986 was 31 degrees Fahrenheit. 
+- January 28, 1986, NASA launched 25th shuttle flight from Kennedy Space Center in Florida. 
 ]
 
 .pull-right[
 &lt;img src="./images/fig7-1.png" width="60%" style="display: block; margin: auto;" /&gt;
 ]
+
 ---
+
+# Space Shuttle Investigation
+
+.pull-left[
+
+- January 28, 1986, NASA launched 25th shuttle flight from Kennedy Space Center in Florida.
+
+- 73 seconds into flight, external fuel tank collapsed and spilled liquid oxygen and hydrogen. Ignited and killed all 7 crew members on board. 
+]
+
+.pull-right[
+&lt;img src="./images/fig7-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# Space Shuttle Investigation
+
+.pull-left[
+
+- January 28, 1986, NASA launched 25th shuttle flight from Kennedy Space Center in Florida. 
+
+- 73 seconds into flight, external fuel tank collapsed and spilled liquid oxygen and hydrogen. Ignited and killed all 7 crew members on board. 
+
+- O-ring seal in the right solid rocket booster failed to isolate the fuel supply. 
+]
+
+.pull-right[
+&lt;img src="./images/fig7-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# Space Shuttle Investigation
+
+.pull-left[
+
+- January 28, 1986, NASA launched 25th shuttle flight from Kennedy Space Center in Florida. 
+
+- 73 seconds into flight, external fuel tank collapsed and spilled liquid oxygen and hydrogen. Ignited and killed all 7 crew members on board. 
+
+- O-ring seal in the right solid rocket booster failed to isolate the fuel supply. 
+
+- Tragedy: engineers knew that cold temperatures caused O-rings to become brittle and fail to seal properly. Expected temperature for January 28, 1986 was 31 degrees Fahrenheit. 
+
+]
+
+.pull-right[
+&lt;img src="./images/fig7-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# Space Shuttle Investigation
+
+.pull-left[
+
+- January 28, 1986, NASA launched 25th shuttle flight from Kennedy Space Center in Florida. 
+
+- 73 seconds into flight, external fuel tank collapsed and spilled liquid oxygen and hydrogen. Ignited and killed all 7 crew members on board. 
+
+- O-ring seal in the right solid rocket booster failed to isolate the fuel supply. 
+
+- Tragedy: engineers knew that cold temperatures caused O-rings to become brittle and fail to seal properly. Expected temperature for January 28, 1986 was 31 degrees Fahrenheit.
+
+- They recommended against launch, but were overruled. A science communication / knowledge mobilization disaster!! 😱😰
+]
+
+.pull-right[
+&lt;img src="./images/fig7-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
 
 # Research question &amp; data
 
@@ -107,6 +197,10 @@ In `shuttle` data (Table 7.1), launch considered successful if NO O-ring damage 
 
 + Question 2: Imagine you're an engineer working for Thiokol Corporation prior to January 1986. Create a few graphs of the data in Table 7.1
 
+--
+
+Can we fit a linear model to this data?
+
 ---
 
 # Linear vs. Logistic regression
@@ -118,9 +212,13 @@ Examples:
 
 + whether disease is present or absent
 + whether or not a person is a good credit risk for a loan
-+ whether or not a high school student should be admitted to a particular college
++ whether or not a high schooler will graduate in 4 years
 + whether or not an individual is involved in substance abuse
 + Others?? 
+
+--
+
+Logistic regression is a classification method. It's the baseline algorithm for classification tasks in machine learning.
 
 ---
 
@@ -128,31 +226,172 @@ Examples:
 
 "Ordinary least squares regression": 
 
-`$$y_i = \beta_0 + \beta_1 + \epsilon_i, \ \ \ i = 1,\dots n$$`
+`$$y_i = \beta_0 + \beta_1x_i + \epsilon_i, \ \ \ i = 1,\dots n$$`
 
 `$$E(Y_i | x_i) = \beta_0 + \beta_1x_i, \ \ \ i = 1, \dots n$$`
 
 `$$\epsilon_i \overset{\text{iid}}{\sim} N(0, \sigma^2)$$`
 
+&lt;img src="images/reg_curves.png" alt="regression curves" width="20%" /&gt;
+
+--
+
 ## AE-CH7 #3 
 
-Create scatterplot with a least squares regression line for the space shuttle data. Calculate the predicted response `\(\hat{y}_i = b_0 + b_1x_i\)` when temperature = 60 and when temperature = 85 degrees Fahrenheit.
++ Create scatterplot with a least squares regression line for the space shuttle data. 
++ Calculate the predicted response `\(\hat{y}_i = b_0 + b_1x_i\)` when temperature = 60 and when temperature = 85 degrees Fahrenheit.
++ What's wrong?
 
 ---
 
 # Probability of success
 
-When response is binary, we usually define response to be probability of success rather than 0 or 1. 
+When response is binary, instead of modeling Y as a function of X directly, we instead model the *probability of success* given X. 
 
 That is, let $$
 `\begin{aligned}
-\pi_i &amp;= P(Y_i = 1) = \text{Probability that a launch has no O-ring damage at temperature } x_i \\
-&amp;= E(Y_i | x_i) \\
-&amp;= \beta_0 + \beta_1x_i
+\pi_i &amp;= P(Y_i = 1 | x_i) = \text{Probability that a launch has no O-ring damage at temperature } x_i \\
+&amp;= E(Y_i | x_i)
 \end{aligned}`
 $$
 
-Interpret predictions from temperatures of 60 and 85. What's wrong? 
+--
+
+As our predictions for `\(x_i = 60\)` and `\(x_i = 85\)` demonstrated, if we simply use a linear model `\(\pi_i = E(Y_i|x_i) = \beta_0 + \beta_1x_i\)` to model the probability of success, we end up with invalid values for `\(\pi_i\)`. 
+
+---
+
+# Logistic regression
+
+
+.pull-left[
+Need a function that will restrict output to be between 0 and 1 (to behave like probabilities). 
+
+]
+
+.pull-right[
+&lt;img src="./images/fig7-3.png" width="60%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# Logistic regression
+
+
+.pull-left[
+Need a function that will restrict output to be between 0 and 1 (to behave like probabilities). 
+
+`$$ln\left(\frac{\pi_i}{1 - \pi_i}\right) = \beta_0 + \beta_1x_i$$`
+
+]
+
+.pull-right[
+&lt;img src="./images/fig7-3.png" width="60%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# Logistic regression
+
+
+.pull-left[
+Need a function that will restrict output to be between 0 and 1 (to behave like probabilities). 
+
+`$$ln\left(\frac{\pi_i}{1 - \pi_i}\right) = \beta_0 + \beta_1x_i$$`
+
++ ln is natural log
+
+]
+
+.pull-right[
+&lt;img src="./images/fig7-3.png" width="60%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# Logistic regression
+
+
+.pull-left[
+Need a function that will restrict output to be between 0 and 1 (to behave like probabilities). 
+
+`$$ln\left(\frac{\pi_i}{1 - \pi_i}\right) = \beta_0 + \beta_1x_i$$`
+
++ ln is natural log
++ `\(\beta_0, \beta_1\)` are regression parameters
+
+]
+
+.pull-right[
+&lt;img src="./images/fig7-3.png" width="60%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# Logistic regression
+
+
+.pull-left[
+Need a function that will restrict output to be between 0 and 1 (to behave like probabilities). 
+
+`$$ln\left(\frac{\pi_i}{1 - \pi_i}\right) = \beta_0 + \beta_1x_i$$`
+
++ ln is natural log
++ `\(\beta_0, \beta_1\)` are regression parameters
++ `\(\pi_i\)` is probability of a successful launch for a given temperature `\(x_i\)`
+
+
+]
+
+.pull-right[
+&lt;img src="./images/fig7-3.png" width="60%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# Logistic regression
+
+
+.pull-left[
+Need a function that will restrict output to be between 0 and 1 (to behave like probabilities). 
+
+`$$ln\left(\frac{\pi_i}{1 - \pi_i}\right) = \beta_0 + \beta_1x_i$$`
+
++ ln is natural log
++ `\(\beta_0, \beta_1\)` are regression parameters
++ `\(\pi_i\)` is probability of a successful launch for a given temperature `\(x_i\)`
+
+The ratio `\(\pi/(1 - \pi)\)` is called the **odds**, so `\(ln[\pi/(1 - \pi)]\)` is called the **log-odds**, or **logistic** or **logit** transformation of `\(\pi\)`
+
+]
+
+.pull-right[
+&lt;img src="./images/fig7-3.png" width="60%" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# Logistic regression
+
+
+.pull-left[
+Need a function that will restrict output to be between 0 and 1 (to behave like probabilities). 
+
+`$$ln\left(\frac{\pi_i}{1 - \pi_i}\right) = \beta_0 + \beta_1x_i$$`
+
++ ln is natural log
++ `\(\beta_0, \beta_1\)` are regression parameters
++ `\(\pi_i\)` is probability of a successful launch for a given temperature `\(x_i\)`
+
+The ratio `\(\pi/(1 - \pi)\)` is called the **odds**, so `\(ln[\pi/(1 - \pi)]\)` is called the **log-odds**, or **logistic** or **logit** transformation of `\(\pi\)`
+
+***NOTE: in statistics, when we say log, we always mean natural log.***
+
+]
+
+.pull-right[
+&lt;img src="./images/fig7-3.png" width="60%" style="display: block; margin: auto;" /&gt;
+]
 
 ---
 
@@ -181,9 +420,17 @@ Solve for `\(\pi_i\)`
 
 ---
 
-# Model assumptions
+# Logistic regression model
 
-For each `\(x_i\)` value, we assume `\(Y_i \sim Bernoulli(\pi_i)\)`. This means:
+`\(\pi_i = \frac{e^{\beta_0 + \beta_1x_i}}{1 + e^{\beta_0 + \beta_1x_i}}\)`
+
+[Convince ourselves we fixed the 0-1 problem](https://www.desmos.com/calculator/l6jvacfgdh)
+
+### Model assumptions
+
+`\(Y_i \sim Bernoulli(\pi_i)\)`, for a given `\(x_i\)` 
+
+`\(Y_i = \pi_i + \epsilon_i\)`
 
 + Each `\(Y_i\)` is independent
 + `\(Y_i\)` has only two possible outcomes, 0 and 1
@@ -191,19 +438,83 @@ For each `\(x_i\)` value, we assume `\(Y_i \sim Bernoulli(\pi_i)\)`. This means:
 + `\(P(Y_i = 0 | x_i) = 1 - \pi_i\)`
 + For any given `\(x_i\)` value, the probability of success is constant. 
 
+---
+
+&lt;!-- ## Recap: --&gt;
+
+&lt;!-- Simple linear regression model (not recommended): `$$\pi_i = \beta_0 + \beta_1x_i$$` --&gt;
+
+&lt;!-- Logistic regression model: --&gt;
+&lt;!-- `$$ln\left(\frac{\pi_i}{1 - \pi_i}\right) = \beta_0 + \beta_1x_i \implies \pi_i= \frac{e^{\beta_0 + \beta_1x_i}}{1 + e^{\beta_0 + \beta_1x_i}}$$` --&gt;
+
+&lt;!-- ## Recap: --&gt;
+
+&lt;!-- Simple linear regression model with binary response: `$$y_i = \pi_i + \epsilon_i = \beta_0 + \beta_1x_i + \epsilon_i$$` --&gt;
+
+&lt;!-- Logistic regression model with binary response: --&gt;
+&lt;!-- `$$y_i = \pi_i + \epsilon_i = \frac{e^{\beta_0 + \beta_1x_i}}{1 + e^{\beta_0 + \beta_1x_i}} + \epsilon_i$$` --&gt;
+
+# Maximum Likelihood Estimation
+
+Recall: we're interested in the relationship between temperature `\(X\)` and O-ring failure `\(Y\)`. 
+
+`$$Y_i = \pi_i + \epsilon_i = \frac{e^{\beta_0 + \beta_1x_i}}{1 + e^{\beta_0 + \beta_1x_i}} + \epsilon_i$$`
+
+What parameters do we need to estimate? 
+
+--
+
+Even though the logistic regression model gets us the S-shaped curve (restricted to 0-1) that we want, the error terms are not constant or normally distributed, which were key assumptions in deriving confidence intervals and hypothesis tests procedures for OLS estimators of `\(\beta_0\)` or `\(\beta_1\)`
+
+--
+
+Maximum Likelihood Estimation (MLE) is another way of deriving estimates for parameters (e.g. `\(\beta_0\)` and `\(\beta_1\)`). In this class, we won't focus on the derivations but will just have software do the MLE for us. 
 
 --
 
 
-## Recap:
+``` r
+glm(success ~ temperature, #model formula, just like lm()
+    family = "binomial", #distribution &amp; link function specification - see ?family for options
+    data = shuttle)
+```
 
-Simple linear regression model with binary response: `$$y_i = \pi_i + \epsilon_i = \beta_0 + \beta_1x_i + \epsilon_i$$`
+### AE #6-7
 
-Logistic regression model with binary response:
-`$$y_i = \pi_i + \epsilon_i = \frac{e^{\beta_0 + \beta_1x_i}}{1 + e^{\beta_0 + \beta_1x_i}} + \epsilon_i$$`
+---
 
+# Interpreting Logistic Regression Models
 
+Interpretation often done in terms of odds of success.
 
+When the temperature is 59&amp;deg;F, the odds of a successful launch with no O-ring damage are `$$\frac{\hat{\pi}}{(1 - \hat{\pi})} = \frac{0.2066}{1-.2066} = 0.2605 \approx 0.25 = \frac{1}{4}$$`
+
+Thus, at 59&amp;deg;F we say the odds of a successful launch are about 1 to 4. 
+
+---
+
+# Slope interpretation
+
+`$$odds = \frac{\pi_i}{(1 - \pi_i)} = e^{\beta_0 + \beta_1x_i} = e^{\beta_0}(e^{\beta_1})^{x_i}$$`
+--
+
+Thus, as `\(x_i\)` increases by 1, `$$e^{\beta_0}(e^{\beta_1})^{x_i + 1}=e^{\beta_0}(e^{\beta_1})^{x_i}(e^{\beta_1})$$`
+
+So, increasing `\(x_i\)` by 1 unit in a logistic regression model, increases the predicted odds by a factor of `\(e^{\beta_1}\)`. 
+
+In shuttle example, if temperature increases by 1 degree, we increase the odds of a successful launch by a factor of `$$e^{b_1} = e^{0.232} = 1.2613$$`
+
+---
+
+# Recap: 
+
+Logistic regression models probability of success for a binary response variable
+
+`$$ln\left(\frac{\pi_i}{1 - \pi_i}\right) = \beta_0 + \beta_1x_i$$`
+
+`$$\pi_i= \frac{e^{\beta_0 + \beta_1x_i}}{1 + e^{\beta_0 + \beta_1x_i}}$$`
+
+## What extensions can you imagine?
 
 ---
 
@@ -235,166 +546,112 @@ For linear regression with a normally distributed response, the link function is
 
 ---
 
-# Maximum Likelihood Estimation
+# More practice
 
-`$$y_i = \pi_i + \epsilon_i = \frac{e^{\beta_0 + \beta_1x_i}}{1 + e^{\beta_0 + \beta_1x_i}}$$`
+AE-07 #8 - 13
 
-Even though logistic regression gets us the S-shaped curve (restricted to 0-1) that we want, the error terms are not constant or normally distributed, so we can't use OLS for hypothesis tests and confidence intervals of `\(\beta_0\)` or `\(\beta_1\)`
+&lt;!-- ## Wald's test --&gt;
 
-Maximum Likelihood Estimation (MLE) is another way of deriving estimates for parameters (e.g. `\(\beta_0\)` and `\(\beta_1\)`). In this class, we won't focus on the derivations but will just have software do the MLE for us. 
+&lt;!-- Wald's test for logistic regression coefficients is similar to a one-sample Z-test --&gt;
 
---
+&lt;!-- `$$H_0: \beta_1 = 0 \text{ vs. } H_A:\beta_1 \neq 0$$` --&gt;
 
+&lt;!-- `$$Z = \frac{b_1 - 0}{se(b_1)}$$` --&gt;
 
-```r
-glm(success ~ temperature, #model formula, just like lm()
-    family = "binomial", #distribution &amp; link function specification - see ?family for options
-    data = shuttle)
-```
+&lt;!-- where `\(b_1\)` is the MLE of `\(\beta_1\)` and `\(se(b_1)\)` is its standard error. `\(b_1\)` is asymptotically normal, so `\(Z \sim N(0,1)\)` when sample size is large. Some textbooks and software will instead use `\(Z^2 \sim \chi^2_{1}\)`, but the tests are equivalent.  --&gt;
 
-### AE #5 - 6
+&lt;!-- Compute `\(Z\)` for this data, and draw a conclusion. --&gt;
 
----
+&lt;!-- --- --&gt;
 
-# Interpreting Logistic Regression Models
+&lt;!-- ## CI for odds ratio --&gt;
 
-Interpretation often done in terms of odds of success.
+&lt;!-- `$$\left(e^{(b_1 - Z^*se(b_1))}, e^{(b_1 + Z^*se(b_1))}\right)$$` --&gt;
 
-When the temperature is 59&amp;deg;F, the odds of a successful launch with no O-ring damage are `$$\frac{\hat{\pi}}{(1 - \hat{\pi})} = \frac{0.2066}{1-.2066} = 0.2605 \approx 0.25 = \frac{1}{4}$$`
+&lt;!-- When `\(\beta_1 = 0\)`, then the odds ratio `\(e^{\beta_1} = 1,\)` the odds of success for temperature `\(x_i\)` are the same as the odds of success for any other temperature.  --&gt;
 
-Thus, at 59&amp;deg;F we say the odds of a successful launch are about 1 to 4. 
+&lt;!-- Compute the confidence interval for this data, and interpret it. --&gt;
 
----
+&lt;!-- -- --&gt;
 
-# Slope interpretation
+&lt;!-- When a 95% CI for the odds ratio does not contain 1, we... --&gt;
 
-`$$odds = \frac{\pi_i}{(1 - \pi_i)} = e^{\beta_0 + \beta_1x_i} = e^{\beta_0}(e^{\beta_1})^{x_i}$$`
+&lt;!-- -- --&gt;
 
-Thus, as `\(x_i\)` increases by 1, `$$e^{\beta_0}(e^{\beta_1})^{x_i + 1}=e^{\beta_0}(e^{\beta_1})^{x_i}(e^{\beta_1})$$`
+&lt;!-- ### AE #12 - 13 --&gt;
 
-So, increasing `\(x_i\)` by 1 unit in a logistic regression model, increases the predicted odds by a factor of `\(e^{\beta_1}\)`. 
+&lt;!-- --- --&gt;
 
-In shuttle example, if temperature increases by 1 degree, we increase the odds of a successful launch by `$$e^{b_1} = e^{0.232} = 1.2613 \text{ times}$$`
+&lt;!-- # The Likelihood Ratio Test --&gt;
 
-### AE #8 - 11
+&lt;!-- The **likelihood ratio test (LRT)** assesses the adequacy of a full model (of interest) and restricted log-likelihood models.  --&gt;
 
----
+&lt;!-- -- --&gt;
 
-## Wald's test
+&lt;!-- + The **full model** (or unrestricted model) contains all parameters under consideration in the model (e.g. in this case, `\(\beta_0\)` and `\(\beta_1\)`)  --&gt;
 
-Wald's test for logistic regression coefficients is similar to a one-sample Z-test
+&lt;!-- -- --&gt;
 
-`$$H_0: \beta_1 = 0 \text{ vs. } H_A:\beta_1 \neq 0$$`
+&lt;!-- + The **restricted model** (or reduced model) is a model with fewer terms than the full model  --&gt;
 
-`$$Z = \frac{b_1 - 0}{se(b_1)}$$`
+&lt;!-- -- --&gt;
 
-where `\(b_1\)` is the MLE of `\(\beta_1\)` and `\(se(b_1)\)` is its standard error. `\(b_1\)` is asymptotically normal, so `\(Z \sim N(0,1)\)` when sample size is large. Some textbooks and software will instead use `\(Z^2 \sim \chi^2_{1}\)`, but the tests are equivalent. 
+&lt;!-- + If the restricted model contains no explanatory variables, this is called the **null model** --&gt;
 
-Compute `\(Z\)` for this data, and draw a conclusion.
+&lt;!-- -- --&gt;
 
----
+&lt;!-- + If the full model has a significantly better fit (the expected values are closer to the observed values) than the restricted model, we reject `\(H_0: \beta_1 = 0\)` and conclude that `\(H_A: \beta_1 \neq 0\)` --&gt;
 
-## CI for odds ratio
+&lt;!-- --- --&gt;
 
-`$$\left(e^{(b_1 - Z^*se(b_1))}, e^{(b_1 + Z^*se(b_1))}\right)$$`
+&lt;!-- # The Likelihood Ratio Test --&gt;
 
-When `\(\beta_1 = 0\)`, then the odds ratio `\(e^{\beta_1} = 1,\)` the odds of success for temperature `\(x_i\)` are the same as the odds of success for any other temperature. 
+&lt;!-- Restricted model: `$$\pi_i = \frac{e^{\beta_0}}{1 + e^{\beta_0}}$$` --&gt;
 
-Compute the confidence interval for this data, and interpret it.
+&lt;!-- Full model: `$$\pi_i = \frac{e^{\beta_0 + \beta_1x_i}}{1 + e^{\beta_0 + \beta_1x_i}}$$` --&gt;
 
---
+&lt;!-- When `\(H_0\)` is true, can be shown that  --&gt;
 
-When a 95% CI for the odds ratio does not contain 1, we...
+&lt;!-- `$$G = 2\times \text{log-likelihood(full model)} - 2\times \text{log-likelihood(restricted model)}$$` --&gt;
+&lt;!-- follows a `\(\chi^2_{df}\)` distribution, where degrees of freedom are the number of parameters in the full model minus the number of parameters in the restricted model.  --&gt;
 
---
+&lt;!-- The G-statistic measures the difference between the fits of the restricted and full models.  --&gt;
 
-### AE #12 - 13
+&lt;!-- --- --&gt;
 
----
+&lt;!-- # LRT in R --&gt;
 
-# The Likelihood Ratio Test
+&lt;!-- R output gives the **null deviance** = `\(K - 2\times \text{log-likelihood(restricted model)}\)` and **residual deviance** = `\(K - 2\times \text{log-likelihood(full model)}\)`, where `\(K\)` is a constant, so G-statistic can be calculated as null deviance - residual deviance.  --&gt;
 
-The **likelihood ratio test (LRT)** assesses the adequacy of a full model (of interest) and restricted log-likelihood models. 
+&lt;!-- ```{r, echo = FALSE} --&gt;
+&lt;!-- m2 &lt;- glm(success ~ temperature,  --&gt;
+&lt;!--     family = "binomial",  --&gt;
+&lt;!--     data = shuttle) --&gt;
+&lt;!-- ``` --&gt;
 
---
 
-+ The **full model** (or unrestricted model) contains all parameters under consideration in the model (e.g. in this case, `\(\beta_0\)` and `\(\beta_1\)`) 
+&lt;!-- ```{r} --&gt;
+&lt;!-- summary(m2) --&gt;
+&lt;!-- ``` --&gt;
 
---
+&lt;!-- --- --&gt;
 
-+ The **restricted model** (or reduced model) is a model with fewer terms than the full model 
+&lt;!-- # Wald vs LRT --&gt;
 
---
+&lt;!-- + LRT is preferable to Wald in small sample sizes --&gt;
+&lt;!-- + In general, recommend about n = 100. Make sure to state p-values are approximate if dealing with small sample sizes --&gt;
+&lt;!-- + Wald can have one-sided alternative as well as non-zero hypothesized values --&gt;
 
-+ If the restricted model contains no explanatory variables, this is called the **null model**
+&lt;!-- --- --&gt;
 
---
+&lt;!-- # What can we conclude? --&gt;
 
-+ If the full model has a significantly better fit (the expected values are closer to the observed values) than the restricted model, we reject `\(H_0: \beta_1 = 0\)` and conclude that `\(H_A: \beta_1 \neq 0\)`
-
----
-
-# The Likelihood Ratio Test
-
-Restricted model: `$$\pi_i = \frac{e^{\beta_0}}{1 + e^{\beta_0}}$$`
-
-Full model: `$$\pi_i = \frac{e^{\beta_0 + \beta_1x_i}}{1 + e^{\beta_0 + \beta_1x_i}}$$`
-
-When `\(H_0\)` is true, can be shown that 
-
-`$$G = 2\times \text{log-likelihood(full model)} - 2\times \text{log-likelihood(restricted model)}$$`
-follows a `\(\chi^2_{df}\)` distribution, where degrees of freedom are the number of parameters in the full model minus the number of parameters in the restricted model. 
-
-The G-statistic measures the difference between the fits of the restricted and full models. 
-
----
-
-# LRT in R
-
-R output gives the **null deviance** = `\(K - 2\times \text{log-likelihood(restricted model)}\)` and **residual deviance** = `\(K - 2\times \text{log-likelihood(full model)}\)`, where `\(K\)` is a constant, so G-statistic can be calculated as null deviance - residual deviance. 
-
-
-
-
-
-```
-## 
-## Call:
-## glm(formula = success ~ temperature, family = "binomial", data = shuttle)
-## 
-## Coefficients:
-##             Estimate Std. Error z value Pr(&gt;|z|)  
-## (Intercept) -15.0429     7.3786  -2.039   0.0415 *
-## temperature   0.2322     0.1082   2.145   0.0320 *
-## ---
-## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-## 
-## (Dispersion parameter for binomial family taken to be 1)
-## 
-##     Null deviance: 28.267  on 22  degrees of freedom
-## Residual deviance: 20.315  on 21  degrees of freedom
-## AIC: 24.315
-## 
-## Number of Fisher Scoring iterations: 5
-```
-
----
-
-# Wald vs LRT
-
-+ LRT is preferable to Wald in small sample sizes
-+ In general, recommend about n = 100. Make sure to state p-values are approximate if dealing with small sample sizes
-+ Wald can have one-sided alternative as well as non-zero hypothesized values
-
----
-
-# What can we conclude?
-
-## AE #14
+&lt;!-- ## AE #14 --&gt;
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
+"slideNumberFormat": "",
 "highlightStyle": "github",
 "highlightLines": true,
 "countIncrementalSlides": false,
@@ -497,14 +754,14 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
 })(document);</script>
 <style>
 .logo {
-  background-image: url(Azusa-Pacific-University-Logo.png);
+  background-image: url(MATH_062_sticker.png);
   background-size: contain;
   background-repeat: no-repeat;
   position: absolute;
-  top: 1em;
-  right: 1em;
-  width: 350px;
-  height: 200px;
+  top: 0.5em;
+  right: 0.5em;
+  width: 150px;
+  height: 100px;
   z-index: 0;
 }
 </style>
