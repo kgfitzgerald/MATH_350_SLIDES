@@ -167,7 +167,7 @@ class: middle, center
 # Research question &amp; data
 
 .pull-left[
-*Did temperature influence the likelihood of an O-ring failure?*
+*What's the relationship between temperature and the likelihood of an O-ring failure?*
 
 24 prior flights deemed successful by NASA because even though some O-ring damage had occurred, none of it was severe enough to allow gas to escape. 
 
@@ -422,6 +422,7 @@ Solve for `\(\pi_i\)`
 
 # Logistic regression model
 
+.pull-left[
 `\(\pi_i = \frac{e^{\beta_0 + \beta_1x_i}}{1 + e^{\beta_0 + \beta_1x_i}}\)`
 
 [Convince ourselves we fixed the 0-1 problem](https://www.desmos.com/calculator/l6jvacfgdh)
@@ -438,6 +439,11 @@ Solve for `\(\pi_i\)`
 + `\(P(Y_i = 0 | x_i) = 1 - \pi_i\)`
 + For any given `\(x_i\)` value, the probability of success is constant. 
 
+]
+
+.pull-right[
+&lt;img src="./images/fig7-3.png" width="60%" style="display: block; margin: auto;" /&gt;
+]
 ---
 
 &lt;!-- ## Recap: --&gt;
